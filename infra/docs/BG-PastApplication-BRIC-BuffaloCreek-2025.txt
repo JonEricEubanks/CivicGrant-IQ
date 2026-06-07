@@ -1,0 +1,183 @@
+GRANT APPLICATION — FEDERAL EMERGENCY MANAGEMENT AGENCY (FEMA)
+Building Resilient Infrastructure and Communities (BRIC) Grant Program
+Application Year: FY2024 | Submitted: January 31, 2025
+
+Applicant: Village of Buffalo Grove, Illinois
+Project Title: Buffalo Creek Watershed Flood Resilience Infrastructure — Phase I
+Grant Request: $3,400,000
+Non-Federal Cost Share: $850,000 (20% — Village of Buffalo Grove)
+Total Project Cost: $4,250,000
+Application Status: Submitted to Illinois IEMA; Under Federal Review
+
+FEMA BRIC Sub-Application ID: BRIC-FY24-IL-0223
+State Hazard Mitigation Officer (SHMO): Illinois Emergency Management Agency (IEMA)
+UEI: X7MLFBG4PNE3 | SAM.gov Status: Active
+
+=============================================================================
+SECTION 1: PROJECT ABSTRACT
+=============================================================================
+The Village of Buffalo Grove requests $3,400,000 in FEMA BRIC funding to
+construct a flood warning and early notification system along the Buffalo Creek
+corridor, install three green infrastructure rain garden networks at strategic
+upstream collection points, and harden the Weiland Road lift station (critical
+infrastructure) against 500-year flood events. Buffalo Creek runs through
+3.4 miles of Buffalo Grove and discharges to the Des Plaines River; the creek
+watershed covers approximately 12,200 acres and has caused property damage
+exceeding $14.2 million in Buffalo Grove over the past decade.
+
+=============================================================================
+SECTION 2: COMMUNITY CAPABILITY STATEMENT
+=============================================================================
+
+2.1 Hazard Mitigation Planning Status
+  - Current FEMA-approved Local Hazard Mitigation Plan (LHMP): Yes
+  - Plan expiration: June 2027
+  - Buffalo Grove LHMP adopted: May 2022 (Ordinance #2022-16)
+  - Buffalo Creek flooding identified as Priority-1 hazard in LHMP
+
+2.2 Prior FEMA Mitigation Projects
+  - FY2020 HMGP: Flood warning sensor installation, four locations ($185,000)
+  - FY2017 PDM: Detention basin expansion, Mike Rylko Park ($620,000)
+  - FY2014 HMGP: Structure elevation program, 8 properties ($340,000)
+
+2.3 National Flood Insurance Program (NFIP) Status
+  - Buffalo Grove is an active NFIP community participant
+  - Community Rating System (CRS) Class 7 rating
+  - Current CRS savings for residents: $280,000 annually
+  - Zero NFIP policy lapses or compliance findings
+
+=============================================================================
+SECTION 3: PROBLEM STATEMENT
+=============================================================================
+
+Buffalo Creek is a tributary of the Des Plaines River that runs through the
+heart of Buffalo Grove for 3.4 miles. The creek is listed on the Illinois EPA
+Section 303(d) list of impaired waterways due to nutrient loading and sedimentation.
+The creek's 100-year floodplain encompasses 1,240 acres (12% of Buffalo Grove's
+total land area) and includes 342 residential structures, 18 commercial buildings,
+and two critical infrastructure facilities: the Weiland Road Water Reclamation
+Plant and the Weiland Road Sanitary Lift Station.
+
+Documented loss history:
+  - 2023 July storm event: 5.8 inches in 24 hours; $2.1M property damage
+  - 2022 October event: 4.9 inches in 18 hours; $1.8M property damage
+  - 2020 August event: 7.2 inches in 36 hours (highest recorded); $4.6M damage;
+    Weiland Lift Station flooded, causing 6-hour sewer system backup affecting
+    1,240 households
+
+Climate projections (ISWS, 2022): 100-year storm events are projected to increase
+in intensity by 18-24% by 2050 under moderate emissions scenarios, compounding
+existing drainage deficiencies.
+
+The three specific vulnerabilities this project addresses:
+
+VULNERABILITY 1 — Early Warning Gap:
+The existing flood warning network (installed with 2020 HMGP funds) covers only
+four monitoring points. Buffalo Creek has 11 tributaries with no monitoring.
+The 2023 storm event caused significant flash flooding with only 20 minutes
+warning time — insufficient for residents to protect property or evacuate.
+
+VULNERABILITY 2 — Upstream Runoff Volume:
+Three commercial/industrial sites in the upper Buffalo Creek watershed total
+42 acres of impervious surface with no post-construction stormwater controls
+(developed prior to modern Illinois stormwater ordinance requirements). These
+sites generate an estimated 18% of the peak runoff that causes downstream
+flooding during 2-year and larger storm events.
+
+VULNERABILITY 3 — Weiland Lift Station Flood Vulnerability:
+The Weiland Road Sanitary Lift Station, serving 9,400 customers (62% of the
+village), sits at Elevation 634.2 feet NAVD88 — only 1.8 feet above the
+100-year Base Flood Elevation (BFE). A repeat of the 2020 event would flood
+the facility, interrupting sanitary service and triggering an IEPA Sanitary
+Sewer Overflow (SSO) event affecting downstream waterways.
+
+=============================================================================
+SECTION 4: PROJECT SCOPE
+=============================================================================
+
+COMPONENT A — Flood Early Warning System Expansion ($890,000):
+Installation of 7 new stream gauges and weather stations at unmonitored tributary
+confluence points throughout the Buffalo Creek watershed. Each station includes:
+  - USGS-standard stilling well stream gauge (0.01-foot resolution)
+  - Tipping bucket rain gauge with real-time telemetry
+  - Solar power with 72-hour battery backup
+  - Integration with existing ALERT2 flood warning network
+  - Automated alert protocols to 911 dispatch, Village Manager, and residents
+    registered for emergency notifications
+
+Expected outcome: Warning time increased from 20 minutes to 90+ minutes for
+affected areas. Early warning system serves the full watershed including the
+Northwood neighborhood, Vernon Township, and portions of Wheeling, IL.
+
+COMPONENT B — Green Infrastructure Rain Garden Networks ($1,840,000):
+Construction of three large-scale rain garden networks at three commercial
+sites (negotiated access agreements in place):
+  - Site 1: Regency Square commercial center (11.2 impervious acres, north branch)
+    Rain garden size: 0.8 acres; storage volume: 2.4 acre-feet; infiltration rate: 0.8 in/hr
+  - Site 2: Deerfield Parkway industrial park (18.6 impervious acres, east branch)
+    Rain garden size: 1.2 acres; storage volume: 3.8 acre-feet
+  - Site 3: Milwaukee Avenue mixed-use district (12.4 impervious acres, main stem)
+    Rain garden size: 0.9 acres; storage volume: 2.7 acre-feet
+
+Native planting palettes selected from the Chicago Metropolitan Agency for
+Planning (CMAP) Green Infrastructure Vision toolkit for climate resilience.
+Total runoff reduction: estimated 8.9 acre-feet per 2-year storm event, reducing
+peak flows at the Weiland Station confluence by approximately 24%.
+
+COMPONENT C — Weiland Road Lift Station Hardening ($520,000):
+  - Flood barrier (deployable aluminum stop-log system): Install around station perimeter
+    to provide protection to Elevation 638.0 NAVD88 (5.6 feet above 100-year BFE)
+  - Emergency generator upgrade: Replace existing 100-kW generator with 250-kW unit
+    capable of operating all pumps at full capacity for 96 hours on full fuel tank
+  - Automatic generator transfer switch with remote monitoring
+  - Waterproof electrical conduit and junction boxes (NEMA 4X)
+  - 48-inch elevated concrete equipment pad for electrical panels
+  - Remote monitoring integration with Village SCADA system
+
+=============================================================================
+SECTION 5: BENEFIT-COST ANALYSIS
+=============================================================================
+FEMA Benefit-Cost Analysis Tool (BCA-Tool 6.0) was used to calculate benefits.
+
+Annual benefits:
+  - Avoided property damage (residential, 342 structures): $1,240,000
+  - Avoided commercial loss (18 buildings): $380,000
+  - Avoided emergency response costs: $95,000
+  - Avoided infrastructure repair (Weiland Lift Station): $280,000
+  - Avoided SSO environmental penalty savings: $120,000
+  Total annualized benefit: $2,115,000
+
+Project life: 50 years
+Discount rate: 7% (FEMA standard)
+Net Present Value (NPV): $28.4M
+Benefit-Cost Ratio (BCR): 6.68 — significantly exceeds FEMA minimum of 1.0
+
+The BCR is calculated conservatively using current (2024) property values and
+does not account for projected climate-related damage increases.
+
+=============================================================================
+SECTION 6: PROJECT SCHEDULE
+=============================================================================
+Month 1-3 (upon award):   Final design, easement execution, permits
+Month 4-5:                 Procurement (Illinois purchasing law compliance)
+Month 6-16:                Construction — rain gardens and stream gauges
+Month 8-14:                Construction — Weiland Lift Station hardening
+Month 15:                  System integration testing and commissioning
+Month 16:                  Project closeout and FEMA deliverables
+
+=============================================================================
+SECTION 7: LOCAL MATCH AND FINANCIAL COMMITMENT
+=============================================================================
+Village of Buffalo Grove local match: $850,000 (20%)
+Source: Capital Improvement Fund (approved in 2026 Adopted Budget, December 2025)
+Committed by: Board Resolution #2025-07 (February 3, 2025)
+Non-federal match is fully committed and will not be withdrawn.
+
+=============================================================================
+SECTION 8: MAINTENANCE AND OPERATIONS PLAN
+=============================================================================
+- Stream gauges: Annual calibration per USGS protocol, cost: $28,000/year
+- Rain gardens: Bi-annual mowing, invasive species removal, cost: $42,000/year
+- Lift station hardening: Annual inspection per manufacturer protocol, cost: $12,000/year
+- Total O&M: $82,000/year — funded in Village operating budget beginning FY2027
+- Responsible department: Public Works (Director: 847-459-2545)

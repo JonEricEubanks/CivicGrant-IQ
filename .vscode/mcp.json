@@ -1,0 +1,18 @@
+{
+  "inputs": {
+    "civicgrant-search-api-key": {
+      "type": "promptString",
+      "description": "Azure AI Search API key for CivicGrant IQ knowledge base",
+      "password": true
+    }
+  },
+  "servers": {
+    "civicgrant-iq-kb": {
+      "type": "http",
+      "url": "${env:SEARCH_ENDPOINT}/knowledgebases/civicgrant-kb/mcp?api-version=2025-11-01-preview",
+      "headers": {
+        "api-key": "${input:civicgrant-search-api-key}"
+      }
+    }
+  }
+}

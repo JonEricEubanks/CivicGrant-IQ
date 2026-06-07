@@ -1,0 +1,18 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  background: #f5f7fa;
+  color: #111827;
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f5f9ff; }
+::-webkit-scrollbar-thumb { background: #c8dff5; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #1a6fba; }

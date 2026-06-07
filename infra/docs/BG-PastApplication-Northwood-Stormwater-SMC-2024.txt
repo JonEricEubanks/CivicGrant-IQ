@@ -1,0 +1,205 @@
+GRANT APPLICATION — LAKE COUNTY STORMWATER MANAGEMENT COMMISSION
+Stormwater Infrastructure Improvement Program (SIIP)
+Application Year: 2023 | Award Year: 2024
+
+Applicant: Village of Buffalo Grove, Illinois
+Project Title: Northwood Neighborhood Stormwater Improvements — Phase I
+Grant Request: $5,500,000
+Total Project Cost: $13,800,000
+Local Match: $8,300,000 (60.1% local share)
+Award Status: AWARDED — Construction commenced January 2025
+
+=============================================================================
+SECTION A: APPLICANT INFORMATION
+=============================================================================
+Applicant Organization: Village of Buffalo Grove
+Federal EIN: 36-6005699
+DUNS/UEI: X7MLFBG4PNE3
+CAGE Code: 7MUW9
+Contact: Briget Schwab, Village Engineer | bfschwab@vbg.org | 847-459-2545
+Authorized Official: Dane Bragg, Village Manager | dbragg@vbg.org
+Address: 50 Raupp Boulevard, Buffalo Grove, IL 60089
+Phone: 847-459-2500
+
+=============================================================================
+SECTION B: PROJECT NARRATIVE
+=============================================================================
+
+B-1: Problem Statement and Community Need
+
+The Northwood neighborhood in Buffalo Grove has experienced recurring, severe
+stormwater flooding for over two decades. Located in the northeastern portion of
+the Village along the Lake County / Vernon Township border, the neighborhood sits
+in a flat glacial plain with limited natural drainage capacity. The drainage
+infrastructure serving the area was designed to 1970s standards and is inadequate
+for the 2-, 10-, and 100-year storm events now documented by the National Weather
+Service.
+
+Between 2015 and 2023, the Village recorded 23 separate flooding incidents in the
+Northwood neighborhood. The cumulative property damage from these events exceeded
+$3.4 million in private losses and $890,000 in public infrastructure damage.
+Residents have filed 47 formal drainage complaints with Public Works, and the
+neighborhood was specifically cited in the Village's 2022 Storm Water Master Plan
+as a Priority-1 remediation area.
+
+The root cause is structural: the existing stormwater system was designed for
+smaller storms and does not convey flows through three critical drainage pathways:
+(1) Northwood Park wetland and detention basin, which has become choked with
+sediment and invasive vegetation; (2) Ridgewood Pond, which lacks adequate outlet
+capacity; and (3) the network of open roadside ditches on the unincorporated
+Lake County side of the Northwood neighborhood boundary.
+
+Critically, the drainage problem cannot be solved by addressing only one property
+or one jurisdiction. This application describes a neighborhood-wide, multi-
+jurisdictional solution that addresses all three pathways simultaneously through
+coordinated construction between the Village of Buffalo Grove, Vernon Township,
+and the Buffalo Grove Park District.
+
+B-2: Project Description
+
+Phase I of the Northwood Neighborhood Stormwater Improvements includes the
+following major components:
+
+Component 1 — Northwood Park Wetland Naturalization and Regrading ($2.1M):
+The 4.8-acre detention basin at Northwood Park will be regraded to restore its
+original design capacity. Invasive species (primarily Phragmites australis) will
+be removed across 3.2 acres and replaced with native prairie plantings and
+emergent wetland species. A new inlet structure will be installed to control
+inflow velocity and reduce sediment loading. The naturalized basin will provide
+an estimated 14 acre-feet of additional flood storage and improve water quality
+through natural filtration of nitrogen and phosphorus before discharge to
+Buffalo Creek (IL EPA 303(d) impaired waterway).
+
+Component 2 — Ridgewood Pond Outlet Improvements ($1.4M):
+The existing 18-inch culvert outlet at Ridgewood Pond will be replaced with a
+36-inch reinforced concrete pipe with a gated control structure. The pond
+embankment will be armored with riprap to prevent erosion during peak flows.
+This improvement will allow Ridgewood Pond to accept flows from the Park District
+detention basin during major storm events, providing an estimated 8 acre-feet of
+additional temporary storage.
+
+Component 3 — Ditch Regrading and Culvert Replacement ($1.8M):
+Approximately 3,100 linear feet of open roadside ditches will be regraded to
+restore design grades, remove accumulated sediment, and improve conveyance
+capacity. Six undersized culverts (12-inch to 18-inch diameter, installed 1968-
+1982) will be replaced with 24-inch to 36-inch HDPE culverts. All culvert
+replacements will incorporate fish passage design per IDNR guidelines.
+
+Component 4 — Pavement Reconstruction and ADA Upgrades ($5.8M):
+Streets disturbed during underground utility construction will be reconstructed
+to current standards. This includes: Northwood Drive (1,840 LF), Ridgewood Drive
+(1,220 LF), Timber Drive (890 LF), and associated cross streets. All 14 existing
+pedestrian curb ramps within the project limits will be brought into ADA compliance
+per current PROWAG standards. Project includes new LED street lighting on
+Northwood Drive.
+
+Component 5 — Project Management, Engineering, and Contingency ($2.7M):
+Includes preliminary engineering, final design, construction inspection, materials
+testing, ROW acquisition (minimal — three easements from willing landowners),
+construction staking, and a 15% construction contingency.
+
+B-3: Alignment with SIIP Priorities
+
+This project directly addresses all five SIIP Priority Areas:
+
+1. Flood Risk Reduction: Phase I eliminates the 10-year flood risk for 234 homes
+   currently in the 10-year floodplain. FEMA FIRM mapping will be updated after
+   construction to reflect the reduced risk.
+
+2. Water Quality Improvement: The wetland naturalization component treats an
+   estimated 187 million gallons of annual stormwater runoff, removing an estimated
+   2,840 pounds of nitrogen and 890 pounds of phosphorus per year from Buffalo
+   Creek, a Lake County-designated priority waterway.
+
+3. Multi-Jurisdictional Coordination: The project requires and achieves active
+   coordination between four entities: Village of Buffalo Grove (lead applicant),
+   Vernon Township (permit and right-of-way cooperation), Buffalo Grove Park
+   District (access and maintenance agreement), and Lake County Highway Department
+   (roadway permits).
+
+4. Community Resilience: Post-construction, 234 properties will see a reduction
+   in stormwater insurance premiums. The project supports Buffalo Grove's NFIP
+   Community Rating System (CRS) classification, which currently saves Buffalo Grove
+   residents $280,000 annually in flood insurance premiums.
+
+5. Climate Adaptation: The naturalized wetland design incorporates climate-
+   resilient planting palettes selected for Illinois's projected 2050 climate
+   conditions (ISWS projections) and can accommodate 15% increases in storm
+   intensity without additional infrastructure investment.
+
+=============================================================================
+SECTION C: PROJECT SCHEDULE
+=============================================================================
+Phase I Schedule:
+  Month 1-6 (June-Dec 2023):  Final design, easement acquisition, permits
+  Month 7-8 (Jan-Feb 2025):   Wetland regrading and naturalization work (winter)
+  Month 9-14 (Mar-Aug 2025):  Underground utility installation, culvert work
+  Month 15-18 (Sep-Dec 2025): Pavement reconstruction, ADA ramp installation
+  Month 19-20 (Jan-Feb 2026): Punch list, seeding, landscape establishment
+  Month 21 (Mar 2026):         Substantial completion and project closeout
+
+=============================================================================
+SECTION D: BUDGET JUSTIFICATION
+=============================================================================
+Total Project Cost: $13,800,000
+
+Federal/State/County Grant Funding:
+  Lake County SMC SIIP Grant Request:     $5,500,000   (39.9%)
+
+Local Match — Village of Buffalo Grove:
+  Stormwater Management Fund:             $4,100,000   (29.7%)
+  Capital Improvement Fund:               $2,400,000   (17.4%)
+  Water & Sewer Fund (waterline relocation): $800,000  (5.8%)
+
+Local Match — Partners:
+  Buffalo Grove Park District:            $700,000     (5.1%)
+  Vernon Township (road improvements):    $300,000     (2.2%)
+
+Total Local Match: $8,300,000 (60.1%)
+
+The Village has secured Board approval for the full local match. Resolutions
+#2023-45 (Village) and #2023-12 (Park District) are attached as Exhibit D.
+
+=============================================================================
+SECTION E: LONG-TERM MAINTENANCE PLAN
+=============================================================================
+Post-construction maintenance will be handled under a formal Operations and
+Maintenance Agreement between the Village of Buffalo Grove and the Buffalo Grove
+Park District (attached as Exhibit E). Key provisions:
+
+- Annual inspections by licensed civil engineer
+- Invasive species removal and native planting maintenance (Park District)
+- Culvert and structure inspection (Village Public Works)
+- Annual stormwater monitoring report to Lake County SMC for 5 years
+- Funding source: Village Stormwater Management Fund ($85,000 annual allocation)
+
+The Village has maintained all prior grant-funded infrastructure with zero
+inspection deficiencies and zero grant compliance findings.
+
+=============================================================================
+SECTION F: COMMUNITY SUPPORT
+=============================================================================
+Letters of support are attached from:
+  - Vernon Township Supervisor
+  - Buffalo Grove Park District Executive Director
+  - Lake County Highway Department
+  - Illinois Environmental Protection Agency (Water Quality)
+  - 189 resident petition signatures supporting the project
+
+The project was presented at three community open houses (April, June, August 2023)
+with combined attendance of 340 residents. Public comments were overwhelmingly
+supportive (94% favorable per sign-in survey).
+
+=============================================================================
+SECTION G: CERTIFICATIONS
+=============================================================================
+The Village of Buffalo Grove hereby certifies that:
+  - All information in this application is accurate and complete
+  - The Village has legal authority to execute this project
+  - The Village will comply with all applicable federal and state requirements
+  - The local match commitment is firm and fully approved by the Village Board
+  - No conflicts of interest exist in the application process
+
+Authorized Signature: Dane Bragg, Village Manager
+Date: September 15, 2023
+Federal SAM.gov Registration: Active (expires December 2024)

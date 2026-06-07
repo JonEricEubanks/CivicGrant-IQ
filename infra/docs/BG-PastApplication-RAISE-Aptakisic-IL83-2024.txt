@@ -1,0 +1,219 @@
+GRANT APPLICATION — U.S. DEPARTMENT OF TRANSPORTATION
+Rebuilding American Infrastructure with Sustainability and Equity (RAISE) Discretionary Grants
+Program Year: FY2024 | Application Date: September 25, 2024
+
+Applicant: Village of Buffalo Grove, Illinois
+Project Title: Aptakisic Road / IL-83 Intersection Safety and Capacity Reconstruction
+Grant Request: $5,000,000
+Total Project Cost: $8,250,000
+Local / State Match: $3,250,000 (39.4%)
+Application Status: Under review (FY2024 cycle) | Same project eligible FY2026
+
+Federal Project Number: RAISE-FY24-IL-2024-0847
+Congressional District: IL-10 (Bradley Schneider)
+UEI: X7MLFBG4PNE3
+SAM.gov Status: Active
+
+=============================================================================
+SECTION 1: PROJECT DESCRIPTION
+=============================================================================
+
+1.1 Overview
+
+The Village of Buffalo Grove requests $5,000,000 in RAISE grant funding to
+reconstruct the Aptakisic Road / Illinois Route 83 intersection, the highest-
+volume and highest-crash intersection within the Village's roadway network.
+This project will deliver measurable safety improvements, reduce congestion,
+enhance pedestrian and bicycle connectivity, and improve access to the Prairie
+View Metra station (North Central Service Line) for approximately 41,000 Buffalo
+Grove residents and an estimated 28,500 regional travelers who pass through this
+intersection daily.
+
+The project transforms a substandard, signal-controlled intersection into a
+modern, multi-modal transportation hub with geometric improvements, protected
+bike lanes, enhanced pedestrian crossings, and upgraded traffic signal technology.
+Total reconstruction cost is $8.25 million, with $5 million requested from RAISE
+and $3.25 million committed from local and state sources.
+
+1.2 Problem Statement
+
+The Aptakisic Road / IL-83 intersection is the most dangerous intersection in
+Buffalo Grove and one of the highest-severity intersections in Lake County, IL.
+
+Safety Data (IDOT Crash Records, 2019-2023):
+  - Total crashes: 87 (5-year period)
+  - Injury crashes: 31 (36% of total — significantly above statewide 22% average)
+  - Fatal crashes: 2 (2021, 2022 — both involving pedestrians)
+  - Crash rate: 1.42 crashes per million entering vehicles (statewide average: 0.68)
+  - Critical Injury Rate: 0.52 (statewide average: 0.18)
+
+The intersection currently experiences:
+  - Average daily traffic (ADT): 28,400 vehicles (IDOT 2023 count)
+  - AM peak hour queuing: 14 vehicles on Aptakisic westbound approach (LOS F)
+  - PM peak hour volume: 3,840 vehicles/hour (exceeds design capacity by 22%)
+  - Turn lane deficiencies: No dedicated northbound left-turn lane on IL-83
+  - Sidewalk gaps: 0.6-mile gap on Aptakisic Road east of the intersection
+  - Bicycle facility: None — nearest protected lane is 2.1 miles away
+  - Bus stop: Pace Route 574 stops without shelter or ADA landing pad
+
+The 2022 IL-83 Corridor Safety Study (IDOT District 1) specifically identified
+this intersection as a High-Injury Network location and recommended geometric
+reconstruction as the only effective long-term countermeasure.
+
+1.3 Project Scope
+
+COMPONENT A — Geometric Reconstruction ($3.2M):
+  - Add dedicated northbound and southbound left-turn lanes on IL-83 (dual left)
+  - Extend westbound left-turn lane on Aptakisic Road from 75 feet to 250 feet
+  - Add exclusive right-turn lane on Aptakisic Road eastbound approach
+  - Restripe all approaches to 12-foot lanes per AASHTO standards
+  - Replace all four intersection radii with 35-foot radius returns (from 20-foot)
+  - Install concrete pedestrian refuge island in all four crosswalk locations
+
+COMPONENT B — Signal Modernization ($890,000):
+  - Replace 1998 signal controller with Adaptive Traffic Signal Control (ATSC)
+  - Install connected vehicle (V2I) transponders for emergency vehicle preemption
+  - Upgrade pedestrian signal heads to audible/countdown pedestrian signals (APS)
+  - Install bicycle detection loops on all approaches
+  - Connect to Lake County Traffic Signal Management System (TSMS)
+
+COMPONENT C — Pedestrian & ADA Improvements ($680,000):
+  - Reconstruct all 8 pedestrian curb ramps to 2024 PROWAG standards
+  - Install high-visibility continental crosswalk markings (4-inch thermoplastic)
+  - Construct 0.6-mile sidewalk connection to Aptakisic Road (east of intersection)
+  - Install ADA-compliant bus stop shelter and landing pad for Pace Route 574
+  - Install accessible pedestrian signal push buttons with locator tones
+
+COMPONENT D — Protected Bicycle Facility ($580,000):
+  - Install 1.8-mile protected bike lane connecting intersection to Prairie View
+    Metra station (Class I separated facility per NACTO Urban Street Design Guide)
+  - Install bike signal heads on IL-83 approaches
+  - Install bicycle detection cameras on all approaches
+  - Install "sharrow" markings on Aptakisic Road east connector to existing trail
+
+COMPONENT E — Project Development and Construction Oversight ($900,000):
+  - Final design (plans, specifications, estimates)
+  - Environmental review (Categorical Exclusion — approved December 2023)
+  - Right-of-way acquisition (2 partial takes from willing landowners — agreed in principle)
+  - Construction engineering and inspection
+  - Materials testing
+  - As-built documentation and IDOT project closeout
+
+=============================================================================
+SECTION 2: MERIT CRITERIA
+=============================================================================
+
+2.1 SAFETY
+
+This project will prevent an estimated 12 injury crashes and 0.4 fatalities
+annually based on Crash Modification Factors (CMFs) from the FHWA CMF Clearinghouse:
+  - Left-turn lane addition: CMF 0.71 (29% crash reduction for turning crashes)
+  - Adaptive signal control: CMF 0.83 (17% overall crash reduction)
+  - Continental crosswalks: CMF 0.66 (34% reduction in pedestrian-vehicle conflicts)
+  - Protected bike lane: CMF 0.44 (56% reduction in bike-vehicle crashes)
+
+Benefit-Cost Analysis (preliminary, using USDOT BCA guidance):
+  - Annualized safety benefit: $2,840,000 (VSL-based, $11.6M/fatality, $1.1M/serious injury)
+  - Congestion reduction benefit: $890,000/year (2,200 hours/day × $51 value of time)
+  - Total 20-year NPV benefit: $48.6M
+  - Benefit-Cost Ratio (BCR): 5.9:1
+
+The Aptakisic/IL-83 intersection is on Illinois's "High-Injury Network" (HIN),
+a statutory designation under Illinois P.A. 102-0176 (Vision Zero Planning Act).
+Buffalo Grove adopted its Complete Streets Policy in 2022 and committed to zero
+traffic fatalities by 2030.
+
+2.2 EQUITY
+
+  - Pace Route 574 serves a corridor with 28% transit-dependent households
+  - Project area is within CMAP's Equity Priority Community designation (EPC)
+  - Bicycle connection serves the Prairie View Metra station, enabling car-free
+    commuting for an estimated 340 additional households
+  - Construction employment: Village commits to 25% hiring from Cook County and
+    Lake County Department of Employment Security (IDES) priority zip codes
+  - Community engagement: Three open houses (June-August 2024), translated notices
+    in Spanish and Hindi (two largest non-English communities in BG)
+
+2.3 ECONOMIC COMPETITIVENESS
+
+  - The Lake-Cook Road corridor, accessible via this intersection, contains
+    Buffalo Grove's primary commercial district: 2.8 million square feet of
+    retail, office, and industrial space, supporting 8,200 jobs
+  - The Prairie View Metra station (1.4 miles from the intersection) provides
+    direct rail service to Chicago O'Hare International Airport and downtown
+    Chicago's Union Station
+  - The new protected bike lane will connect the intersection to the existing
+    Buffalo Grove/Vernon Hills trail network (47 miles of trails)
+
+2.4 SUSTAINABILITY
+
+  - Adaptive signal control reduces vehicle idling, cutting CO2 emissions by an
+    estimated 840 metric tons per year (EPA MOVES model, preliminary)
+  - Project achieves LEED for Neighborhood Development (ND) credits for
+    transportation access improvements
+  - Native plantings in the right-of-way median (project Component A) support
+    pollinators and reduce mowing maintenance by 40%
+  - The pedestrian/bicycle component eliminates an estimated 180,000 vehicle-
+    miles traveled (VMT) annually as Metra-bound commuters shift modes
+
+2.5 MULTI-MODAL AND PARTNERSHIPS
+
+Partners:
+  - Illinois Department of Transportation District 1: Project champion; has
+    committed $1,500,000 in STP-Urban funds and expedited permit review
+  - Lake County Division of Transportation: Committed $750,000 toward signal
+    communications integration with County TSMS
+  - Pace Suburban Bus: Letter of support; will upgrade Route 574 service frequency
+    after ADA improvements complete
+  - CMAP: Transportation for Illinois Coalition endorsement
+
+=============================================================================
+SECTION 3: PROJECT SCHEDULE
+=============================================================================
+Month 1-4 (Oct 2024 - Jan 2025):   Final design (IDOT let process initiated)
+Month 5-6 (Feb-Mar 2025):           Environmental clearance, ROW acquisition
+Month 7-8 (Apr-May 2025):           IDOT contract letting
+Month 9-21 (Jun 2025 - Jun 2026):  Construction phase (two construction seasons)
+Month 22 (Jul 2026):                Project completion, IDOT closeout
+
+=============================================================================
+SECTION 4: BUDGET DETAIL
+=============================================================================
+Total Project Cost: $8,250,000
+
+RAISE Grant Request:                   $5,000,000   (60.6%)
+IDOT STP-Urban (committed):            $1,500,000   (18.2%)
+Lake County DOT (committed):           $750,000     (9.1%)
+Village of Buffalo Grove local funds:  $1,000,000   (12.1%)
+
+Village local match source:
+  Capital Improvement Fund (budgeted FY2025-2026): $1,000,000
+  Board resolution #2024-38 authorizes this commitment
+
+=============================================================================
+SECTION 5: READINESS
+=============================================================================
+The Village of Buffalo Grove has completed all pre-development work:
+
+  ✓ IDOT Level I Environmental Screening: Categorical Exclusion (CE) approved
+    December 14, 2023 (IDOT Document #CE-2023-1847)
+  ✓ Preliminary Engineering (30% plans): Complete, August 2024
+  ✓ IDOT Safety Study recommendation: Reconstruction identified as preferred
+    alternative in IL-83 Corridor Safety Study (IDOT, 2022)
+  ✓ Right-of-way: Agreements in principle with both affected landowners;
+    formal appraisals underway
+  ✓ Local funding committed: Board Resolution #2024-38 (October 7, 2024)
+  ✓ IDOT coordination: District 1 has agreed to include project in FY2026 STIP
+
+Project can be under construction within 12 months of award notification.
+
+=============================================================================
+SECTION 6: CERTIFICATIONS
+=============================================================================
+The Village of Buffalo Grove hereby certifies that all information in this
+application is true and accurate. The Village has the legal authority, financial
+capacity, and technical expertise to complete this project as described.
+
+Authorized Representative: Dane Bragg, Village Manager
+Date: September 25, 2024
+EIN: 36-6005699 | UEI: X7MLFBG4PNE3 | SAM.gov Active

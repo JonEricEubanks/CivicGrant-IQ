@@ -1,0 +1,302 @@
+VILLAGE OF BUFFALO GROVE, ILLINOIS
+CAPITAL IMPROVEMENT PLAN — FY2026–FY2030
+Adopted by Village Board: December 16, 2025
+
+=============================================================================
+EXECUTIVE SUMMARY
+=============================================================================
+The Village of Buffalo Grove's 5-Year Capital Improvement Plan (CIP) for
+FY2026–FY2030 totals $89.4 million across 47 projects. This document summarizes
+the 15 highest-priority projects, their funding status, and grant opportunities
+being actively pursued. The CIP was developed under direction of Village Manager
+Dane Bragg and prepared by Public Works Director and Village Engineer Briget Schwab.
+
+Village Profile (for grant context):
+  Population: 41,496 (2020 Census)
+  Incorporated Area: 9.6 square miles
+  Median Household Income: $103,847
+  Moody's Bond Rating: Aa2 (reaffirmed January 2025)
+  General Fund Reserves: $14.6 million (18.7% of operating budget)
+  Unreserved Capital Fund Balance: $15.4 million (available for project match)
+  US News Ranking: #1 Best Place to Live in Illinois (2026-2027)
+
+=============================================================================
+PROJECT CATEGORY 1: TRANSPORTATION
+=============================================================================
+
+PROJECT T-1: Aptakisic Road / IL-83 Intersection Reconstruction
+Priority: CRITICAL | Status: Grant application submitted; ready to proceed
+Total Cost: $8,250,000 | Grant Target: $5,000,000 RAISE (USDOT)
+Local Committed: $1,000,000 | State Committed: $2,250,000 (IDOT STP-Urban + LCDOT)
+Start: FY2026 (upon award) | Complete: FY2027
+
+Problem: Highest-crash intersection in the Village (87 crashes/5 years; 2 fatalities).
+ADT: 28,400 vehicles/day. LOS F in PM peak. No pedestrian/bicycle facilities.
+Scope: Add dual left-turn lanes on IL-83, extend westbound storage, install
+adaptive traffic signal, protected bike lane to Prairie View Metra station,
+ADA pedestrian upgrades.
+Grant Notes: RAISE FY2024 application submitted September 2024. If not awarded,
+will reapply FY2026. IDOT IL-83 Corridor Safety Study recommends this project
+as highest priority statewide. Also eligible for HSIP (IDOT Highway Safety Program).
+
+---
+
+PROJECT T-2: Lake-Cook Road Corridor Improvements (Village Segment)
+Priority: HIGH | Status: Design 60% complete
+Total Cost: $5,600,000 | Grant Target: $2,800,000 CMAQ/STP
+Local Committed: $2,800,000
+Start: FY2026 | Complete: FY2027
+
+Problem: Lake-Cook Road (Village of Buffalo Grove segment, 1.2 miles) has
+deteriorating pavement (PCI 32 — "Very Poor"), no bike lanes, and inadequate
+intersection sight distance at Raupp Blvd. The corridor carries 22,400 VPD and
+serves Buffalo Grove's primary commercial district.
+Scope: Full-depth reclamation, lane restriping, new protected bike lanes (Class I),
+three intersection geometric improvements, new LED street lighting, streetscape
+improvements aligned with Village's 2024 Downtown Vision Plan.
+Grant Notes: CMAP call for projects (STP) submitted 2024; anticipated award FY2026.
+Also eligible for Illinois Transportation Enhancement Program (ITEP).
+
+---
+
+PROJECT T-3: Weiland Road Reconstruction (Phase II)
+Priority: HIGH | Status: Phase I construction complete
+Total Cost: $4,100,000 | Grant Target: $1,800,000 (STP-Urban)
+Local Committed: $2,300,000
+Start: FY2027 | Complete: FY2028
+
+Problem: Weiland Road south of Lake-Cook Road (2,300 LF) has pavement condition
+index of 28 ("Very Poor"); 12-inch water main installed 1971 is past service life;
+sanitary sewer main has infiltration/inflow exceeding IEPA limits.
+Scope: Full pavement reconstruction, water main replacement (16-inch), sewer
+lining (CIPP), new pedestrian sidewalk on east side, ADA ramp upgrades.
+
+---
+
+PROJECT T-4: Long Grove Road Trail Connection
+Priority: MEDIUM | Status: Alignment study complete
+Total Cost: $1,850,000 | Grant Target: $1,480,000 ITEP/TAP
+Local Committed: $370,000
+Start: FY2027 | Complete: FY2028
+
+Problem: 1.4-mile gap in the regional trail network between Buffalo Grove's
+existing trail network and the Long Grove Forest Preserve trail entrance.
+Scope: Construct 10-foot-wide concrete multi-use path along Long Grove Road
+right-of-way, 3 pedestrian crossing improvements, 2 new wayfinding kiosks
+integrated with regional trail map system.
+Grant Notes: ITEP call for projects — next cycle opens FY2026. Strong project
+given connectivity to preserve and proximity to Metra station.
+
+---
+
+PROJECT T-5: Prairie View Metra Station Area Improvements
+Priority: HIGH | Status: Feasibility study complete; TOD master plan underway
+Total Cost: $6,400,000 | Grant Target: $4,800,000 RAISE / BUILD / FTA
+Local Committed: $1,600,000
+Start: FY2028 | Complete: FY2030
+
+Problem: Prairie View Metra station (North Central Service) serves Buffalo Grove
+but has inadequate parking (347 spaces; avg daily occupancy 94%), no bike parking,
+dangerous pedestrian access from the east, and no real-time transit information.
+Daily Metra boardings: 1,240.
+Scope: 200-space structured parking expansion, protected pedestrian path from
+Aptakisic Road (linking to T-1 project), real-time transit information kiosks,
+bike corral (40 spaces), electric vehicle charging stations (24 ports), plaza and
+wayfinding improvements.
+Grant Notes: Eligible for FTA RAISE and BUILD. Strong synergy with T-1 (Aptakisic
+intersection) and T-4 (trail connection). Village has engaged Senator Durbin's
+office re: FY2026 RAISE earmark consideration.
+
+=============================================================================
+PROJECT CATEGORY 2: STORMWATER AND ENVIRONMENT
+=============================================================================
+
+PROJECT S-1: Northwood Neighborhood Stormwater Improvements (Phase I)
+Priority: CRITICAL | Status: AWARDED — Construction Active
+Total Cost: $13,800,000 | SMC SIIP Grant Awarded: $5,500,000
+Local Match: $8,300,000 (Village $6,500,000; Park District $700,000; Vernon Twp $300,000; Water Fund $800,000)
+Start: January 2025 | Complete: March 2026
+
+Scope: Wetland naturalization (Northwood Park), Ridgewood Pond outlet, ditch
+regrading and culvert replacement, Northwood Drive/Ridgewood Drive reconstruction.
+See past grant application on file for full project description.
+Note: Phase II (remaining 180 properties, estimated $6.2M) targeted for FY2028
+with SMC SIIP Round 2 application.
+
+---
+
+PROJECT S-2: Buffalo Creek Flood Resilience — Early Warning + Green Infrastructure
+Priority: HIGH | Status: BRIC application submitted January 2025; under review
+Total Cost: $4,250,000 | FEMA BRIC Request: $3,400,000
+Local Committed: $850,000
+Start: FY2026 (upon award) | Complete: FY2027
+
+Scope: 7 new stream gauges, 3 green infrastructure rain garden networks at
+commercial sites (42 acres impervious), Weiland Lift Station hardening to
+protect against 500-year flood.
+See past grant application on file for full project description.
+
+---
+
+PROJECT S-3: Strathmore Neighborhood Drainage Improvements
+Priority: HIGH | Status: Master plan complete; grant search active
+Total Cost: $7,200,000 | Grant Target: $3,600,000 IEPA / SMC SIIP Round 2
+Local Committed: $3,600,000
+Start: FY2027 | Complete: FY2029
+
+Problem: 189 properties in the Strathmore neighborhood (southwest Buffalo Grove)
+experience flooding in 2-year storm events. The primary cause is an undersized
+24-inch trunk main installed in 1969 that cannot convey design flows.
+Scope: Replace 3,800 LF of 24-inch trunk main with 48-inch storm sewer, construct
+2.4-acre regional detention basin on Village-owned open space, reline 5 existing
+detention basins (CIPP).
+
+---
+
+PROJECT S-4: Green Alley Program — Phase I (Historic Downtown)
+Priority: MEDIUM | Status: Pilot site identified; grant application planned
+Total Cost: $920,000 | Grant Target: $650,000 CMAP / EPA 319(h)
+Local Committed: $270,000
+Start: FY2026 | Complete: FY2027
+
+Problem: Six unimproved alleys in the historic business district generate
+significant stormwater runoff and contribute to downstream loading of Buffalo
+Creek with motor oil, heavy metals, and suspended sediment.
+Scope: Convert 6 alleys (total 4,300 LF) to permeable pavement, install
+bioretention strips, connect to municipal storm sewer system.
+
+=============================================================================
+PROJECT CATEGORY 3: PARKS AND RECREATION
+=============================================================================
+
+PROJECT P-1: Clove Park Multi-Sport Complex
+Priority: HIGH | Status: Community survey complete (78% support); design phase
+Total Cost: $8,900,000 | Grant Target: $4,000,000 OSLAD / LWCF
+Local Committed: $4,900,000
+Start: FY2026 | Complete: FY2028
+
+Scope: Conversion of outdated Clove Park athletic facilities into modern multi-
+sport complex: four new synthetic turf multi-sport fields (replace asphalt 1970s
+surfaces), two new pickleball courts, accessible playground (all-inclusive design),
+expanded parking, stormwater capture system for field irrigation, new restroom/
+concession building. Project will serve 14 youth and adult athletic leagues with
+combined 4,200 registered participants.
+Grant Notes: IL OSLAD call for projects — FY2026. Also eligible for national
+LWCF program via IDNR. Buffalo Grove has not previously received OSLAD funding.
+
+---
+
+PROJECT P-2: Veterans Park Renovation
+Priority: MEDIUM | Status: Design complete
+Total Cost: $1,200,000 | Grant Target: $720,000 CDBG / OSLAD
+Local Committed: $480,000
+Start: FY2026 | Complete: FY2027
+
+Scope: Complete renovation of Veterans Park: new ADA accessible paths, inclusive
+playground equipment, pollinator garden, veterans memorial enhancements, new
+irrigation system. Project is located in a census tract meeting HUD CDBG
+benefit area requirements (51% LMI eligible).
+
+---
+
+PROJECT P-3: North Park Tennis Center Renovation
+Priority: MEDIUM | Status: Concept design
+Total Cost: $1,600,000 | Grant Target: $800,000 USTA / CDBG
+Local Committed: $800,000
+Start: FY2028 | Complete: FY2029
+
+Scope: Replace 8 aging tennis courts (original 1982 construction), add 4 pickleball
+overlay courts, new LED lighting, ADA accessible parking expansion, clubhouse HVAC
+replacement.
+
+=============================================================================
+PROJECT CATEGORY 4: UTILITIES AND PUBLIC FACILITIES
+=============================================================================
+
+PROJECT U-1: Weiland Road Lift Station Hardening (Phase I)
+Priority: CRITICAL | Status: Included in BRIC application (Project S-2)
+See Project S-2 for details.
+
+---
+
+PROJECT U-2: Water Main Replacement — Phase I (Northwest District)
+Priority: HIGH | Status: Condition assessment complete
+Total Cost: $5,400,000 | Grant Target: $2,700,000 IEPA PWSLOAN / WIIA
+Local Committed: $2,700,000
+Start: FY2026 | Complete: FY2028
+
+Problem: 4.8 miles of water main in the northwest district (installed 1966-1974)
+have experienced 34 breaks in the past 5 years and test positive for elevated
+lead service line connections at 18 residential properties.
+Scope: Replace all 4.8 miles with 12-inch ductile iron pipe, replace 18 lead
+service lines (full line replacement under LCWR requirements), install 12 new
+fire hydrants, pressure-test and recommission.
+Grant Notes: IEPA PWSLOAN program; also WIIA (Water Infrastructure Improvements
+for the Nation Act) if lead service lines confirmed. BG has documented lead risk.
+
+---
+
+PROJECT U-3: Municipal Campus Energy Efficiency Upgrade
+Priority: MEDIUM | Status: Energy audit complete
+Total Cost: $2,100,000 | Grant Target: $1,050,000 ICLEI / IL Clean Energy
+Local Committed: $1,050,000
+Start: FY2027 | Complete: FY2028
+
+Scope: HVAC replacement at Village Hall, Public Works garage, and Police HQ;
+LED lighting conversion across all municipal buildings; solar PV installation
+on Village Hall roof (180 kW); EV charging stations at municipal campus (12 ports).
+Projected energy savings: 38% reduction in municipal energy costs ($280,000/year).
+Grant Notes: ICLEI Green Streets grant; DCEO clean energy incentives; IRA
+Section 179D deduction for government buildings (new under Inflation Reduction Act).
+
+=============================================================================
+GRANT STRATEGY SUMMARY
+=============================================================================
+The following grants are actively being pursued in FY2025-2026:
+
+| Project | Grant Program | Amount | Deadline | Status |
+|---------|--------------|--------|----------|--------|
+| S-1 (Northwood) | SMC SIIP | $5.5M | AWARDED | Construction active |
+| T-1 (Aptakisic) | USDOT RAISE | $5.0M | Sep 2024 | Under review |
+| S-2 (Buffalo Creek) | FEMA BRIC | $3.4M | Jan 2025 | Under review |
+| T-2 (Lake-Cook) | CMAP STP | $2.8M | Jan 2025 | Under review |
+| P-1 (Clove Park) | OSLAD/LWCF | $4.0M | May 2026 | Preparing application |
+| U-2 (Water Main) | IEPA PWSLOAN | $2.7M | Rolling | Preparing application |
+| T-5 (Metra Station) | FTA/RAISE | $4.8M | TBD FY2026 | Feasibility phase |
+| T-4 (Long Grove Trail) | ITEP/TAP | $1.5M | TBD FY2026 | Alignment study done |
+| U-3 (Energy) | ICLEI/IRA | $1.1M | Rolling | Energy audit done |
+| S-3 (Strathmore) | SMC SIIP R2 | $3.6M | TBD 2026 | Master plan done |
+
+TOTAL GRANT PIPELINE: $34.4 million in active pursuit
+TOTAL LOCAL MATCH COMMITTED/AVAILABLE: $15.4M in capital fund
+
+Note: The Village retains professional grant writing services and tracks grant
+opportunities through GrantStation, CMAP e-newsletter, and direct relationships
+with IDOT District 1, Lake County Planning, and IEMA.
+
+=============================================================================
+FINANCIAL SUMMARY
+=============================================================================
+Total CIP FY2026-2030: $89.4 million
+  Transportation: $28.6M (32%)
+  Stormwater/Environment: $26.2M (29%)
+  Parks & Recreation: $14.8M (17%)
+  Utilities: $19.8M (22%)
+
+Projected Funding Sources:
+  Federal/State Grants (secured or likely): $23.1M (26%)
+  Village Capital Fund: $31.7M (35%)
+  Village Utility Funds: $18.4M (21%)
+  Park District / Partner Contributions: $6.2M (7%)
+  Bonds (planned FY2027): $10.0M (11%)
+
+FY2026 Adopted Budget allocates $18.6M for capital projects.
+CIP is reviewed and updated annually each November by Village Board.
+
+=============================================================================
+DOCUMENT HISTORY
+=============================================================================
+Prepared by: Briget Schwab, P.E., Village Engineer
+Reviewed by: Dane Bragg, Village Manager
+Adopted by: Village Board Resolution #2025-89, December 16, 2025
+Next Update: November 2026

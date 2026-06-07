@@ -1,0 +1,218 @@
+BUFFALO GROVE, ILLINOIS — MUNICIPAL GRANT ELIGIBILITY PROFILE
+Fiscal Year 2026 | Prepared by Village of Buffalo Grove Finance & Community Development
+
+=============================================================================
+SECTION 1: JURISDICTION OVERVIEW
+=============================================================================
+Municipality: Village of Buffalo Grove
+State: Illinois
+County: Lake County (primary) / Cook County (secondary)
+Region: Chicago Metropolitan Statistical Area (CMSA)
+Location: Northern suburb of Chicago, approximately 35 miles northwest
+Incorporation: 1958
+Government Type: Council-Manager (Village Manager form)
+Elected Officials: Village President + 6-member Village Board of Trustees
+Address: 50 Raupp Boulevard, Buffalo Grove, IL 60089
+Phone: 847-459-2500
+Website: www.vbg.org
+
+U.S. News & World Report (2026-2027): #1 Best Place to Live in Illinois, #15 in the Nation
+
+=============================================================================
+SECTION 2: DEMOGRAPHICS (2023 ACS 5-Year Estimates)
+=============================================================================
+Total Population: 41,496
+Households: 15,623
+Median Household Income: $103,847
+Per Capita Income: $51,204
+Poverty Rate: 3.8%
+Median Age: 42.1 years
+Owner-Occupied Housing: 78.4%
+Renter-Occupied Housing: 21.6%
+Median Home Value: $345,200
+Racial/Ethnic Composition:
+  - White alone (non-Hispanic): 67.2%
+  - Asian: 18.9%
+  - Hispanic/Latino: 5.4%
+  - Black/African American: 3.1%
+  - Two or more races: 4.2%
+  - Other: 1.2%
+Seniors (65+): 17.4% of population (7,200 residents)
+School-Age Children (5-17): 18.1% (7,510 residents)
+Residents with Disabilities: 8.2% (3,403 residents)
+
+=============================================================================
+SECTION 3: FISCAL YEAR 2026 ADOPTED BUDGET
+=============================================================================
+Total 2026 Adopted Budget: $125,300,000
+General Fund: $52,800,000
+Capital Improvement Fund: $28,400,000
+Water & Sewer Enterprise Fund: $19,600,000
+Stormwater Management Fund: $8,100,000
+Debt Service Fund: $6,400,000
+Other Funds: $10,000,000
+
+Property Tax Rate: $0.4918 per $100 Equalized Assessed Valuation (EAV)
+  - Compared to state average: 40% below median for municipalities of comparable size
+Total EAV: $2.89 billion
+
+Current Outstanding Debt: $48.2 million (General Obligation Bonds)
+Debt-to-EAV Ratio: 1.67% (well below Illinois statutory 8.625% limit)
+Bond Rating: Aa2 (Moody's) — upgraded in 2023
+Reserve Fund Balance: $14.6 million (28% of General Fund — above GFOA recommended 16-25%)
+
+Federal & State Grant Revenue (FY2025 Actuals):
+  - IDOT Motor Fuel Tax Allotment: $1,840,000
+  - Lake County SMC Stormwater Grant (Northwood Phase I): $5,500,000
+  - Illinois EPA Water Loan (PWSLP): $3,200,000
+  - FEMA Hazard Mitigation (pre-disaster): $185,000
+  - CMAP Local Technical Assistance: $90,000
+  - Total Federal/State Grant Revenue: $10,815,000
+
+=============================================================================
+SECTION 4: CAPITAL IMPROVEMENT PLAN 2026-2030
+=============================================================================
+Five-Year CIP Total: $124,700,000
+
+Priority Projects by Category:
+
+TRANSPORTATION & ROADWAYS ($38.5M)
+  1. Aptakisic Road / IL-83 Intersection Reconstruction
+     Budget: $8.2M | Status: Design Complete | IDOT pre-approved
+     Federal partnership: Pursuing RAISE FY2026 ($5M ask)
+     Description: High-accident intersection serving 28,000+ vehicles/day
+
+  2. Lake-Cook Road Multimodal Corridor Improvements
+     Budget: $12.4M | Status: Feasibility study complete
+     Federal partnership: RAISE / CMAQ eligible
+     Description: 3-mile bike/pedestrian/bus corridor connecting Metra station
+
+  3. Annual Road Resurfacing Program (2026-2030)
+     Budget: $18.1M | Funded: IDOT MFT + local gas tax
+
+STORMWATER & WATER QUALITY ($24.3M)
+  4. Northwood Neighborhood Stormwater Improvements — Phase I
+     Budget: $13.8M | Status: ACTIVE CONSTRUCTION (2025-2026)
+     Funding: $5.5M Lake County SMC Grant + $8.3M Village funds
+     Description: Stormwater regrading, wetland naturalization, culvert replacement
+
+  5. Northwood Phase II (Strathmore Neighborhood)
+     Budget: $7.1M | Status: Design FY2026
+     Federal target: EPA Water Infrastructure Finance (WIFIA) or SRF
+
+  6. Buffalo Creek Flood Mitigation Study
+     Budget: $4.2M | Status: Planning
+     Federal target: FEMA BRIC Resilience Grant
+
+WATER & SEWER INFRASTRUCTURE ($28.6M)
+  7. Water Main Replacement Program (annual, 2026-2030)
+     Budget: $14.8M | Funding: Water fund + PWSLP loan program
+  8. Lift Station Modernization (Weiland Road)
+     Budget: $7.4M | Federal target: EPA Clean Water SRF
+  9. SCADA System Upgrade
+     Budget: $6.4M | Status: Procurement phase
+
+PUBLIC SAFETY ($14.8M)
+  10. Fire Station 25 Rebuild (Prairie View district)
+      Budget: $11.2M | Status: Design complete, groundbreaking FY2026
+      Federal target: FEMA AFG / BRIC Resilience
+      Description: Replace 1973 structure; LEED Silver design, generator backup
+
+  11. Police Records Management System Upgrade
+      Budget: $1.8M | Federal target: DOJ COPS Technology
+  12. Traffic Signal Modernization (ITS)
+      Budget: $1.8M | Federal target: RAISE / CMAQ
+
+PARKS & RECREATION ($12.9M)
+  13. Clove Park Master Plan Implementation (Phase I)
+      Budget: $6.4M | Status: Community engagement complete, renderings released
+      Federal target: HUD CDBG / LWCF / EPA Environmental Justice
+      Description: Underserved south corridor park with ADA accessibility
+
+  14. Long Grove Road Trail Extension (1.2 miles)
+      Budget: $4.1M | Federal target: Transportation Alternatives Program (TAP)
+  15. Lake-Cook Recreation Corridor
+      Budget: $2.4M | Federal target: LWCF
+
+=============================================================================
+SECTION 5: GRANT HISTORY & TRACK RECORD (2019-2025)
+=============================================================================
+Buffalo Grove has a strong track record of competitive grant success:
+
+2024 Awards:
+  - Lake County Stormwater Management Commission: $5,500,000 (Northwood Phase I)
+  - Illinois EPA PWSLP Water Loan: $3,200,000 (water main replacements)
+  - CMAP Local Technical Assistance: $90,000 (Prairie View Metra Station planning)
+
+2023 Awards:
+  - IDOT Surface Transportation Program (STP): $2,100,000 (Aptakisic design)
+  - FEMA HMGP Pre-Disaster: $185,000 (flood warning sensors, Buffalo Creek)
+  - Illinois DCEO: $75,000 (economic corridor study)
+
+2022 Awards:
+  - EDA CARES Act Recovery: $450,000 (business district revitalization)
+  - CDOT / CMAP CMAQ: $890,000 (signal timing optimization)
+
+2019 Awards:
+  - IDOT Transportation Alternatives Program: $1,200,000 (Buffalo Grove Road trail)
+  - HUD CDBG-CV: $340,000 (COVID-19 community services)
+
+Pending / In-Application:
+  - RAISE FY2026: $5,000,000 (Aptakisic / IL-83 intersection)
+  - FEMA BRIC FY2025: $3,400,000 (Buffalo Creek flood resilience)
+  - TAP FY2026: $1,800,000 (Long Grove Road trail)
+
+=============================================================================
+SECTION 6: COMMUNITY NEED INDICATORS
+=============================================================================
+Infrastructure Age:
+  - Average road pavement condition index: 68/100 (statewide target: 75)
+  - Miles of road with PCI < 50 (poor): 12.4 miles (18% of network)
+  - Water mains older than 50 years: 38% of system
+  - Stormwater infrastructure deficiencies: 47 documented problem areas
+
+Environmental:
+  - FEMA Special Flood Hazard Areas (SFHA): 1,240 acres (12% of village)
+  - Annual stormwater damage claims (avg 2019-2023): $2.8M
+  - Impaired waterways: Buffalo Creek (nutrient/sediment), IL EPA 303(d) listed
+
+Mobility:
+  - Zero-car households: 4.2% (1,646 households)
+  - Residents without internet access: 6.1% (2,532 residents)
+  - Metra commuter rail: Prairie View station (North Central Service line)
+  - PACE bus routes: 572, 574, 634
+  - Bicycle network gaps: 8.3 miles of missing connections to Metra
+
+Public Safety:
+  - Fire Station 25: Built 1973, exceeds service life; seismic/ADA non-compliant
+  - Average emergency response time: 5.8 minutes (NFPA target: 4 minutes)
+  - High-injury intersection network: 7 intersections with 3+ crashes/year
+
+Senior Services:
+  - Alcott Senior Center capacity: 250 members, waitlist of 40+
+  - Senior transportation demand: 30% above current capacity
+
+=============================================================================
+SECTION 7: MATCHING CAPACITY STATEMENT
+=============================================================================
+The Village of Buffalo Grove has demonstrated consistent ability to provide local
+matching funds for federal and state grants:
+
+Current matching capacity (FY2026):
+  - Capital Improvement Fund uncommitted balance: $6.2M
+  - Stormwater fund reserves: $2.1M
+  - Water/sewer fund reserves: $4.8M
+  - TIF District #1 (Dundee/Milwaukee corridor): $1.4M available
+  - TIF District #2 (Deerfield/Weiland corridor): $890,000 available
+  - Total available match: $15.4M
+
+Cost-share track record:
+  - All prior grants closed with full local match obligations met
+  - Zero instances of grant clawback or compliance findings (2000-2025)
+  - Dedicated grants administrator: Administrative Services Manager (847-459-2500)
+
+Contact for Grant Coordination:
+  Village Manager: Dane Bragg, dbragg@vbg.org
+  Finance Director: Chris Black, cblack@vbg.org
+  Public Works Director: Director of Public Works, 847-459-2545
+  Community Development: Nicole Woods, nwoods@vbg.org

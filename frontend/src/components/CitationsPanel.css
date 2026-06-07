@@ -1,0 +1,61 @@
+
+.citations-panel {
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.citations-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.citations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.citation-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.citation-header { margin-bottom: 0.4rem; }
+
+.citation-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+
+.citation-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0.25rem 0;
+}
+
+.citation-title a { color: #1a6fba; text-decoration: none; }
+.citation-title a:hover { text-decoration: underline; }
+
+.citation-excerpt {
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
