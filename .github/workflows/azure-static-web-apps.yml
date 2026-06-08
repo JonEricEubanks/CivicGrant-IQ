@@ -36,15 +36,6 @@ jobs:
         run: npx tsc --noEmit
         working-directory: frontend
 
-      - name: Build frontend
-        run: npm run build
-        working-directory: frontend
-        env:
-          # In production the SWA linked-backend proxy serves /api/* from the
-          # App Service backend — no absolute URL needed. Remove VITE_API_URL
-          # to let api.ts fall back to the relative /api path used by the proxy.
-          VITE_API_URL: ''
-
       - name: Deploy to Azure Static Web Apps
         id: deploy
         uses: Azure/static-web-apps-deploy@v1
@@ -55,7 +46,7 @@ jobs:
           app_location: 'frontend'
           api_location: ''          # Backend is a linked App Service — not deployed here
           output_location: 'dist'
-          skip_app_build: true      # We built above with type-check included
+          app_build_command: 'npm run build'
 
   # Clean up preview environments when a PR is closed
   close_pull_request:
