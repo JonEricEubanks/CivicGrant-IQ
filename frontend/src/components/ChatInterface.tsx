@@ -163,16 +163,6 @@ function ToolCallLine({ status, done }: { status: string; done: boolean }) {
   );
 }
 
-// Strip **bold** and *italic* markdown from text
-function stripMd(t: string): string {
-  return t
-    .replace(/\*\*([^*]+)\*\*/g, "$1")
-    .replace(/\*([^*]+)\*/g, "$1")
-    .replace(/^#{1,4}\s+/gm, "")
-    .replace(/ #$/gm, "")
-    .trim();
-}
-
 // ─── Answer peek — collapsible fixed-height scrollable window ───────────────
 function AnswerPeek({ children, streaming }: { children: React.ReactNode; streaming: boolean }) {
   const [open, setOpen] = useState(false);
