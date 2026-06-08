@@ -17,7 +17,7 @@
 > Local government staff spend **40+ hours per grant** searching, reading NOFOs, and writing applications.
 > CivicGrant IQ compresses that to **seconds** — grounded in your city's real documents, with cited answers.
 
-**[🚀 Live Demo →](https://your-swa-url.azurestaticapps.net)** &nbsp;|&nbsp; **[📺 Watch the 3-min demo →](#)**
+**[🚀 Live Demo →](https://proud-field-00978990f.7.azurestaticapps.net)** &nbsp;|&nbsp; **[📺 Watch the 3-min demo →](#)**
 
 <!-- TODO: update the two links above before submission -->
 

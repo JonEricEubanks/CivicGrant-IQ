@@ -8,6 +8,13 @@ backend/.env
 # TypeScript build output
 backend/dist/
 
+# Deploy artifacts (local build/deploy helpers)
+backend/deploy*.zip
+backend/deploy*.tar.gz
+backend/deploy-package.json
+backend/app-logs*
+publish_profile.xml
+
 # Logs
 *.log
 npm-debug.log*
