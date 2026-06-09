@@ -1,0 +1,271 @@
+/* WorkIqPanel — Work IQ action plan (light theme, no CSS nesting) */
+
+.workiq-panel {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+}
+
+.workiq-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+
+.workiq-head-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.workiq-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1a6fba 0%, #0e3a6e 100%);
+  border-radius: 5px;
+  padding: 0.16rem 0.42rem;
+}
+
+.workiq-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.workiq-sub {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.workiq-context {
+  margin-bottom: 0.75rem;
+  padding: 0.7rem;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.workiq-context-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.workiq-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+  flex-shrink: 0;
+}
+
+.workiq-dot--live {
+  background: #16a34a;
+}
+
+.workiq-dot--fallback {
+  background: #f59e0b;
+}
+
+.workiq-context-title {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.workiq-context-meta {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.workiq-refresh {
+  margin-left: auto;
+  border: 1px solid #bfdbfe;
+  background: #ffffff;
+  color: #1d4ed8;
+  border-radius: 7px;
+  padding: 0.22rem 0.48rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.workiq-refresh:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.workiq-pills {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 0.55rem;
+}
+
+.workiq-pill {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #075985;
+  background: #e0f2fe;
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+}
+
+.workiq-projects {
+  margin: 0.55rem 0 0;
+  padding-left: 1rem;
+  color: #334155;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.workiq-context-error {
+  margin: 0.5rem 0 0;
+  color: #92400e;
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+/* ── Task list ── */
+.workiq-tasks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.workiq-task {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.workiq-task:last-child {
+  border-bottom: none;
+}
+
+.workiq-check {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 2px solid #cbd5e1;
+  flex-shrink: 0;
+}
+
+.workiq-task--milestone .workiq-check {
+  border-color: #1a6fba;
+}
+
+.workiq-task--action .workiq-check {
+  border-color: #8b5cf6;
+}
+
+.workiq-check--deadline {
+  border-radius: 50%;
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.workiq-task-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.workiq-task-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.35;
+}
+
+.workiq-task--deadline .workiq-task-title {
+  font-weight: 800;
+  color: #b45309;
+}
+
+.workiq-task-owner {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #475569;
+  background: #eef2f7;
+  border-radius: 20px;
+  padding: 0.08rem 0.45rem;
+}
+
+.workiq-task-due {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #1a6fba;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.workiq-task-due--deadline {
+  color: #d97706;
+}
+
+/* ── Actions ── */
+.workiq-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.workiq-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.workiq-btn--primary {
+  background: #1a6fba;
+  color: #ffffff;
+  border-color: #1a6fba;
+}
+
+.workiq-btn--primary:hover {
+  background: #155a96;
+  border-color: #155a96;
+}
+
+.workiq-btn--synced {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+.workiq-btn--secondary {
+  background: #ffffff;
+  color: #0e3a6e;
+  border-color: #c8dff5;
+}
+
+.workiq-btn--secondary:hover {
+  background: #f3f8fe;
+}

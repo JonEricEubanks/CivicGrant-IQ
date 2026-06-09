@@ -5,6 +5,7 @@ initTelemetry();
 
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { chatRouter } from "./routes/chat";
 import { scanRouter } from "./routes/scan";
@@ -14,6 +15,10 @@ import { fetchUrlRouter } from "./routes/fetchUrl";
 import { grantsSearchRouter } from "./routes/grantsSearch";
 import { heroGrantsRouter } from "./routes/heroGrants";
 import { monitorRouter } from "./routes/monitor";
+import { adminChatRouter } from "./routes/adminChat";
+import { generateReportRouter } from "./routes/generateReport";
+import { grantsLiveRouter } from "./routes/grantsLive";
+import { workIqRouter } from "./routes/workIq";
 import { checkHealth } from "./agent";
 
 const app = express();
@@ -30,7 +35,20 @@ if (process.env.ALLOWED_ORIGIN) {
   allowedOrigins.push(/^https:\/\/[a-z0-9-]+\.azurestaticapps\.net$/);
 }
 app.use(cors({ origin: allowedOrigins }));
-app.use(express.json());
+
+// Security headers — sane defaults; this is a JSON API behind the SWA proxy,
+// so we disable the restrictive CSP/COEP that only apply to served HTML.
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
+// Body-size cap — grant text can be large (pasted NOFOs) but 1 MB is plenty and
+// blocks oversized-payload abuse of the AI endpoints.
+app.use(express.json({ limit: "1mb" }));
 
 // Rate limiting — prevents abuse of expensive AI-backed endpoints
 const chatLimiter = rateLimit({
@@ -57,6 +75,10 @@ app.use("/api/fetch-url", fetchUrlRouter);
 app.use("/api/grants-search", grantsSearchRouter);
 app.use("/api/hero-grants", heroGrantsRouter);
 app.use("/api/monitor", monitorRouter);
+app.use("/api/admin-chat", chatLimiter, adminChatRouter);
+app.use("/api/generate-report", chatLimiter, generateReportRouter);
+app.use("/api/grants-live", grantsLiveRouter);
+app.use("/api/work-iq", workIqRouter);
 
 app.get("/api/health", async (_req, res) => {
   const health = await checkHealth();

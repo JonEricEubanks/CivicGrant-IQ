@@ -4,12 +4,16 @@ import { DefaultAzureCredential } from "@azure/identity";
 import { config } from "./config";
 import { searchLocalKb } from "./localKb"; // fallback when Search is unavailable
 import { withSpan, recordAgentRun, recordKbSearch } from "./telemetry";
+import { formatCityContextForPrompt } from "./graphContext";
+import type { CityContext } from "./graphContext";
+import { validateInput, validateOutput } from "./guardrails";
+import { runViaMockEngine } from "./mockEngine";
 
 // ─── System prompt: 6-step grant reasoning chain ────────────────────────
 export const SYSTEM_PROMPT = `You are CivicGrant IQ, an expert municipal grant intelligence agent.
 You help local government staff identify, evaluate, and apply for federal and state grants.
 
-## CRITICAL: Two Operating Modes
+## CRITICAL: Three Operating Modes
 
 **MODE A — SPECIFIC GRANT PROVIDED (highest priority)**
 When the user message begins with "IMPORTANT INSTRUCTION: The user has pasted the full text of a specific grant announcement", you MUST:
@@ -18,8 +22,27 @@ When the user message begins with "IMPORTANT INSTRUCTION: The user has pasted th
 3. If this grant is clearly inapplicable to a municipality (e.g., medical research, foreign entities, K-12 education only), be honest: give a match score of ≤10%, explain why clearly in Step 1, and still complete all 6 steps with honest findings
 4. Never hallucinate a different grant name or program — use the name, agency, and CFDA from the provided text
 
+**MODE C — FOLLOW-UP QUESTION (second priority — check before running the 6-step chain)**
+When the conversation thread already contains a prior grant analysis AND the user is asking a clarifying or drill-down question about that analysis — examples:
+- "How do we close the [gap name] gap?"
+- "What department owns [step X]?"
+- "Give me a timeline for [action]"
+- "Explain more about [finding]"
+- "What does [term] mean?"
+- "Can you expand on step [N]?"
+- "What should we do first?"
+- Any question that references "gap", "step", "the analysis", "that grant", "the score", "the narrative", "action items", or "this program" without asking to analyze a NEW grant
+
+In MODE C you MUST:
+1. Answer the specific question directly and concisely — do NOT re-run the 6-step analysis
+2. Reference the grant and findings from your previous response — you have full thread history
+3. Use bullet points or numbered steps when listing actions; include responsible departments and timelines when asked
+4. Cite KB documents only if directly relevant to the specific sub-question
+5. Do NOT output a \`\`\`widget block — the existing widget from the prior analysis still applies
+6. Keep your response focused: 150-400 words is appropriate for a follow-up
+
 **MODE B — GENERAL QUERY (default)**
-When no specific grant text is provided, search the knowledge base proactively and recommend the best matching grant opportunity for Buffalo Grove, IL.
+When no specific grant text is provided AND this is not a follow-up to an existing analysis, search the knowledge base proactively and recommend the best matching grant opportunity for Buffalo Grove, IL.
 
 ## Default City Context
 Unless the user specifies a different city, assume you are assisting **Buffalo Grove, Illinois** (Village of Buffalo Grove):
@@ -54,6 +77,7 @@ Extract: grant name, funding agency, total available funding, award range, appli
 
 **Step 2 — Match City Projects**
 Search the municipal knowledge base for existing city projects, capital improvement plans, or strategic initiatives that align with the grant focus area and eligible activities.
+Cross-reference the CIP documents AND the past-application documents simultaneously — your match score is only reported as CONFIRMED (≥70%) when at least two independent knowledge sources corroborate the city's eligibility. If only one source supports it, cap the score at 69% and flag it as LIKELY. If no KB source supports it, cap at 44% and label POSSIBLE. Cite which two sources corroborated when reporting a CONFIRMED score.
 
 **Step 3 — Verify Financial Capacity**
 Cross-reference the city budget documents to confirm the city has the financial capacity to meet any cost-share or matching requirements.
@@ -81,6 +105,8 @@ Provide a concrete winning strategy for the city's grant team:
 
 Always cite your sources with document names and relevant excerpts. Format your response with clear headings for each step.
 Be specific, factual, and grounded in the retrieved documents. Do not fabricate statistics or project details.
+
+**RELIABILITY RULE — Never Bluff**: If you lack sufficient evidence to confirm a claim, say so explicitly with "INSUFFICIENT EVIDENCE:" and explain what data would be needed. A partial honest answer is always better than a confident hallucination. If a city does not qualify, tell them clearly.
 
 ## WIDGET OUTPUT REQUIREMENT
 After completing all 6 steps, you MUST append a machine-readable widget block at the very end of your response:
@@ -197,6 +223,7 @@ export interface ReasoningStep {
 export interface AgentRunOptions {
   message: string;
   threadId?: string;
+  cityContext?: CityContext | null;
   onRetrying?: (waitMs: number) => void;
   onChunk?: (text: string) => void;
   onReasoningStep?: (step: ReasoningStep) => void;
@@ -209,6 +236,10 @@ export interface AgentRunResult {
   citations: Citation[];
   reasoningSteps: ReasoningStep[];
   widget?: { type: string; data: unknown };
+  /** Which tier of the LLM fallback chain was used: 1=Foundry Assistants, 2=Chat Completions, 3=Mock Engine */
+  tier?: 1 | 2 | 3;
+  /** Guardrail violations detected on this run */
+  guardrailViolations?: import("./guardrails").GuardrailViolation[];
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -228,6 +259,11 @@ type AnyAnnotation = OpenAI.Beta.Threads.Messages.Annotation & {
   url_citation?: { url: string; title?: string };
   file_citation?: { file_id?: string; quote?: string };
 };
+
+function systemPromptWithWorkIq(cityContext?: CityContext | null): string {
+  const liveContext = formatCityContextForPrompt(cityContext);
+  return liveContext ? `${SYSTEM_PROMPT}\n\n${liveContext}` : SYSTEM_PROMPT;
+}
 
 // Map a raw Foundry file_id (e.g. "assistant-abc123" or "BG-CityProfile-2026.txt")
 // to a human-readable document title for the citations panel.
@@ -680,6 +716,48 @@ async function resolveWidget(
   return undefined;
 }
 
+function formatYmd(d: Date): string {
+  const y = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, "0");
+  const da = String(d.getDate()).padStart(2, "0");
+  return `${y}-${mo}-${da}`;
+}
+
+/**
+ * Federal grant programs are recurring (mostly annual). The model frequently
+ * cites a deadline from a past cycle (e.g. last year's NOFO), which renders the
+ * dashboard as already-expired ("0 days to deadline"). If the parsed deadline
+ * has already passed, roll it forward to the next future occurrence of the same
+ * month/day so the UI shows the anticipated upcoming cycle. Returns the input
+ * unchanged when it cannot be parsed (the widget already handles unknown dates).
+ */
+export function normalizeDeadline(iso: string | undefined): string | undefined {
+  if (!iso || typeof iso !== "string") return iso;
+  let year: number, monthIdx: number, day: number;
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) {
+    year = parseInt(m[1], 10);
+    monthIdx = parseInt(m[2], 10) - 1;
+    day = parseInt(m[3], 10);
+  } else {
+    const p = new Date(iso);
+    if (Number.isNaN(p.getTime())) return iso;
+    year = p.getFullYear();
+    monthIdx = p.getMonth();
+    day = p.getDate();
+  }
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let candidate = new Date(year, monthIdx, day);
+  if (candidate.getTime() >= today.getTime()) return formatYmd(candidate); // already upcoming
+  // Past cycle — roll forward to the next future anniversary of this month/day.
+  candidate = new Date(now.getFullYear(), monthIdx, day);
+  while (candidate.getTime() < today.getTime()) {
+    candidate = new Date(candidate.getFullYear() + 1, monthIdx, day);
+  }
+  return formatYmd(candidate);
+}
+
 /** Patch the widget’s fundingAmount when the model returns 0 (knows program but not exact figure). */
 function patchWidget(
   rawWidget: { type: string; data: unknown } | undefined,
@@ -699,6 +777,18 @@ function patchWidget(
           unit === "billion"  || unit === "b" ? Math.round(num * 1_000_000_000) :
           unit === "million"  || unit === "m" ? Math.round(num * 1_000_000) :
           Math.round(num);
+      }
+    }
+    // Roll past-cycle deadlines forward to the next anticipated cycle.
+    if (typeof d.deadline === "string") {
+      d.deadline = normalizeDeadline(d.deadline);
+    }
+  }
+  if (rawWidget?.type === "grant_pipeline") {
+    const d = rawWidget.data as { grants?: Array<Record<string, unknown>> };
+    if (Array.isArray(d.grants)) {
+      for (const g of d.grants) {
+        if (typeof g.deadline === "string") g.deadline = normalizeDeadline(g.deadline);
       }
     }
   }
@@ -823,7 +913,7 @@ async function runViaAssistantsApi(
   const assistant = await oai.beta.assistants.create({
     model: config.foundryModelDeployment,
     name: "civicgrant-iq",
-    instructions: SYSTEM_PROMPT,
+    instructions: systemPromptWithWorkIq(options.cityContext),
     tools: [
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...[{
@@ -969,7 +1059,7 @@ async function runViaChatCompletions(
     const stream = await oai.chat.completions.create({
       model: config.foundryModelDeployment,
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: systemPromptWithWorkIq(options.cityContext) },
         { role: "user", content: messageContent },
       ],
       stream: true,
@@ -1048,13 +1138,94 @@ async function runViaChatCompletions(
   }
 }
 
-// ─── Run grant analysis — dispatches to Foundry IQ (MCP) or Chat Completions fallback ───
+// ─── Run grant analysis — 3-tier LLM fallback chain ─────────────────────────────────────
+/**
+ * Tier 1: Azure AI Foundry Assistants API with Foundry IQ MCP knowledge retrieval
+ * Tier 2: Direct Azure OpenAI Chat Completions with Azure AI Search KB injection
+ * Tier 3: Deterministic mock engine — zero credentials, full pipeline in <200ms
+ *
+ * All three tiers share the same AgentRunResult contract. The active tier is
+ * recorded on the result and streamed to the frontend as a `tier_info` event.
+ * A 17-rule guardrail pipeline validates the message before any LLM call and
+ * validates the response before it is returned to the caller.
+ */
 export async function runGrantAnalysis(options: AgentRunOptions): Promise<AgentRunResult> {
   const t0 = Date.now();
 
-  // Chat Completions with KB context injected directly into the prompt.
-  // Assistants/MCP path requires a persistent Foundry-hosted assistant — skipped in local dev.
-  return await runViaChatCompletions(options, t0);
+  // ── Input guardrails (G01–G09) — run before any LLM call ──────────────────
+  const inputCheck = validateInput(options.message);
+  if (!inputCheck.passed) {
+    // BLOCK-level violation — abort before spending any Azure credits
+    console.warn(`[Guardrails] Input BLOCKED by ${inputCheck.blockingRule}: ${inputCheck.violations[0]?.message}`);
+    const blockedResponse = `I cannot process this request. ${inputCheck.violations[0]?.message}`;
+    return {
+      threadId: "guardrail-block",
+      runId: "guardrail-block",
+      response: blockedResponse,
+      citations: [],
+      reasoningSteps: [],
+      tier: 3,
+      guardrailViolations: inputCheck.violations,
+    };
+  }
+  if (inputCheck.violations.length > 0) {
+    // WARN/INFO violations — log but continue
+    console.warn(`[Guardrails] ${inputCheck.summary}`);
+  }
+
+  // ── Tier 0 check: force mock mode ─────────────────────────────────────────
+  if (config.mockMode) {
+    console.log("[Agent] FORCE_MOCK_MODE=true — running Tier 3 mock engine");
+    const mockResult = await runViaMockEngine(options, t0);
+    return { ...mockResult, guardrailViolations: inputCheck.violations };
+  }
+
+  let result: AgentRunResult | undefined;
+  let tier: 1 | 2 | 3 = 1;
+
+  // ── Tier 1: Azure AI Foundry Assistants API + Foundry IQ MCP KB retrieval ─
+  try {
+    const tier1 = await runViaAssistantsApi(options, t0);
+    result = { ...tier1, tier: 1 };
+    tier = 1;
+    console.log(`[Agent] Tier 1 (Foundry Assistants) succeeded in ${Date.now() - t0}ms`);
+  } catch (err1) {
+    console.warn(`[Agent] Tier 1 (Foundry Assistants) failed: ${(err1 as Error).message?.slice(0, 120)} — falling back to Tier 2`);
+
+    // ── Tier 2: Direct Azure OpenAI Chat Completions + AI Search KB injection ─
+    try {
+      const tier2 = await runViaChatCompletions(options, t0);
+      result = { ...tier2, tier: 2 };
+      tier = 2;
+      console.log(`[Agent] Tier 2 (Chat Completions) succeeded in ${Date.now() - t0}ms`);
+    } catch (err2) {
+      console.warn(`[Agent] Tier 2 (Chat Completions) failed: ${(err2 as Error).message?.slice(0, 120)} — falling back to Tier 3 mock engine`);
+
+      // ── Tier 3: Deterministic mock engine — zero credentials ──────────────
+      const tier3 = await runViaMockEngine(options, t0);
+      result = { ...tier3, tier: 3 };
+      tier = 3;
+      console.log(`[Agent] Tier 3 (Mock Engine) succeeded in ${Date.now() - t0}ms`);
+    }
+  }
+
+  // ── Output guardrails (G10–G17) — run after the active tier returns ────────
+  const outputCheck = validateOutput(
+    result.response,
+    result.citations,
+    result.widget
+  );
+  if (outputCheck.violations.length > 0) {
+    console.warn(`[Guardrails] Tier ${tier} output: ${outputCheck.summary}`);
+  }
+
+  return {
+    ...result,
+    guardrailViolations: [
+      ...(inputCheck.violations),
+      ...(outputCheck.violations),
+    ],
+  };
 }
 
 // ─── Scan for matching grants ────────────────────────────────────────────

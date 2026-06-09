@@ -2,15 +2,19 @@ const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
 type SSEHandler = {
   onStatus?: (msg: string) => void;
+  onMeta?: (data: { isFollowUp: boolean }) => void;
+  onWorkIqContext?: (data: import("./types").WorkIqCityContext) => void;
   onAgentStatus?: (data: { agent: string; message: string }) => void;
   onReasoningStep?: (step: import("./types").ReasoningStep) => void;
   onCitations?: (citations: import("./types").Citation[]) => void;
+  onDecision?: (decision: import("./types").OrchestrationDecision) => void;
   onAnswerChunk?: (content: string) => void;
   onAnswer?: (data: { threadId: string; runId: string; content: string }) => void;
   onWidget?: (widget: { type: string; data: unknown }) => void;
   onReview?: (data: import("./types").RedTeamResult) => void;
   onCompetitorIntel?: (data: import("./types").CompetitorIntelResult) => void;
   onRefinedNarrative?: (data: import("./types").RefinedNarrativeResult) => void;
+  onTierInfo?: (data: { tier: number; label: string; guardrailsPassed: boolean; violations: number }) => void;
   onDone?: (threadId: string) => void;
   onError?: (msg: string) => void;
 };
@@ -55,11 +59,15 @@ export async function streamChat(
       try {
         const parsed = JSON.parse(data);
         if (event === "status") handlers.onStatus?.(parsed.message);
+        if (event === "meta") handlers.onMeta?.(parsed);
+        if (event === "work_iq_context") handlers.onWorkIqContext?.(parsed);
         if (event === "agent_status") handlers.onAgentStatus?.(parsed);
         if (event === "reasoning_step") handlers.onReasoningStep?.(parsed);
         if (event === "citations") handlers.onCitations?.(parsed.citations);
+        if (event === "decision") handlers.onDecision?.(parsed);
         if (event === "answer_chunk") handlers.onAnswerChunk?.(parsed.content);
         if (event === "widget") handlers.onWidget?.(parsed);
+        if (event === "tier_info") handlers.onTierInfo?.(parsed);
         if (event === "review") handlers.onReview?.(parsed);
         if (event === "competitor_intel") handlers.onCompetitorIntel?.(parsed);
         if (event === "refined_narrative") handlers.onRefinedNarrative?.(parsed);
@@ -71,6 +79,18 @@ export async function streamChat(
       }
     }
   }
+}
+
+export async function fetchCityContext(): Promise<import("./types").WorkIqCityContext> {
+  const res = await fetch(`${API_BASE}/work-iq/context`);
+  if (!res.ok) throw new Error(`Work IQ context failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function refreshCityContext(): Promise<import("./types").WorkIqCityContext> {
+  const res = await fetch(`${API_BASE}/work-iq/refresh`, { method: "POST" });
+  if (!res.ok) throw new Error(`Work IQ refresh failed: ${res.statusText}`);
+  return res.json();
 }
 
 export async function streamScan(
@@ -241,11 +261,17 @@ export interface HeroGrantResult {
   awardCeiling: number | null;
   closeDate: string | null;
   prompt: string;
+  /** Real Grants.gov opportunity URL when the card is live; null for curated fallback */
+  url?: string | null;
+  /** True when this card came from the live Grants.gov API */
+  live?: boolean;
 }
 
 export interface HeroGrantsResponse {
   grants: HeroGrantResult[];
   totalMillion: number;
+  /** Number of distinct open federal programs the total is summed across */
+  programCount?: number;
   source: "live" | "fallback";
 }
 
@@ -307,4 +333,167 @@ export async function fetchMonitor(): Promise<MonitorData> {
   const res = await fetch(`${API_BASE}/monitor`);
   if (!res.ok) throw new Error(`Monitor fetch failed: ${res.statusText}`);
   return res.json() as Promise<MonitorData>;
+}
+
+// ─── Grant Administration ─────────────────────────────────────────────────────
+
+export interface AdminPortfolio {
+  grants: import("./types").AdminGrant[];
+  stats: import("./types").AdminPortfolioStats;
+}
+
+/**
+ * Load the full grant portfolio (static, no AI).
+ */
+export async function fetchAdminPortfolio(): Promise<AdminPortfolio> {
+  const res = await fetch(`${API_BASE}/admin-chat/portfolio`);
+  if (!res.ok) throw new Error(`Portfolio fetch failed: ${res.statusText}`);
+  return res.json() as Promise<AdminPortfolio>;
+}
+
+/**
+ * Fetch live open grant opportunities from the grants.gov public API.
+ * Returns actual current postings — no AI involved, low latency.
+ */
+export async function fetchLiveGrants(
+  keywords: string,
+  rows = 10
+): Promise<import("./types").LiveGrantsResponse> {
+  const params = new URLSearchParams({ keywords, rows: String(rows) });
+  const res = await fetch(`${API_BASE}/grants-live?${params.toString()}`);
+  if (!res.ok) throw new Error(`grants-live fetch failed: ${res.statusText}`);
+  return res.json() as Promise<import("./types").LiveGrantsResponse>;
+}
+
+type AdminSSEHandlers = {
+  onStatus?: (msg: string) => void;
+  onAnswerChunk?: (content: string) => void;
+  onAnswer?: (content: string) => void;
+  onWidget?: (widget: { type: string; data: import("./types").AdminWidgetData }) => void;
+  onDone?: () => void;
+  onError?: (msg: string) => void;
+};
+
+/**
+ * Stream a grant administration question to the AI agent.
+ * Optionally scoped to a specific grant (grantId) or portfolio-wide.
+ */
+export async function streamAdminChat(
+  message: string,
+  grantId: string | undefined,
+  history: Array<{ role: "user" | "assistant"; content: string }>,
+  handlers: AdminSSEHandlers
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/admin-chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, grantId, history }),
+  });
+
+  if (!res.ok || !res.body) {
+    handlers.onError?.(`Request failed: ${res.statusText}`);
+    return;
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+
+    const parts = buffer.split("\n\n");
+    buffer = parts.pop() ?? "";
+
+    for (const part of parts) {
+      const lines = part.split("\n");
+      let event = "message";
+      let data = "";
+      for (const line of lines) {
+        if (line.startsWith("event: ")) event = line.slice(7);
+        if (line.startsWith("data: ")) data = line.slice(6);
+      }
+      if (!data) continue;
+      try {
+        const parsed = JSON.parse(data) as Record<string, unknown>;
+        if (event === "status") handlers.onStatus?.(parsed.message as string);
+        if (event === "answer_chunk") handlers.onAnswerChunk?.(parsed.content as string);
+        if (event === "widget") handlers.onWidget?.(parsed as { type: string; data: import("./types").AdminWidgetData });
+        if (event === "answer") handlers.onAnswer?.(parsed.content as string);
+        if (event === "done") handlers.onDone?.();
+        if (event === "error") handlers.onError?.(parsed.message as string);
+      } catch {
+        // ignore parse errors on incomplete chunks
+      }
+    }
+  }
+}
+
+// ─── Report Generation ────────────────────────────────────────────────────────
+
+export type ReportType = "quarterly" | "sf425" | "closeout";
+
+type ReportSSEHandlers = {
+  onStatus?: (msg: string) => void;
+  onHtmlChunk?: (content: string) => void;
+  onHtmlDone?: (data: { html: string; title: string; grantName: string }) => void;
+  onDone?: () => void;
+  onError?: (msg: string) => void;
+};
+
+/**
+ * Stream generation of a federal compliance report (SF-PPR quarterly, SF-425, or closeout).
+ * The agent writes a complete, submission-ready HTML document using real grant data.
+ */
+export async function streamGenerateReport(
+  grantId: string,
+  reportType: ReportType,
+  handlers: ReportSSEHandlers
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/generate-report`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ grantId, reportType }),
+  });
+
+  if (!res.ok || !res.body) {
+    handlers.onError?.(`Request failed: ${res.statusText}`);
+    return;
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+
+    const parts = buffer.split("\n\n");
+    buffer = parts.pop() ?? "";
+
+    for (const part of parts) {
+      const lines = part.split("\n");
+      let event = "message";
+      let data = "";
+      for (const line of lines) {
+        if (line.startsWith("event: ")) event = line.slice(7);
+        if (line.startsWith("data: ")) data = line.slice(6);
+      }
+      if (!data) continue;
+      try {
+        const parsed = JSON.parse(data) as Record<string, unknown>;
+        if (event === "status") handlers.onStatus?.(parsed.message as string);
+        if (event === "html_chunk") handlers.onHtmlChunk?.(parsed.content as string);
+        if (event === "html_done") handlers.onHtmlDone?.(parsed as { html: string; title: string; grantName: string });
+        if (event === "done") handlers.onDone?.();
+        if (event === "error") handlers.onError?.(parsed.message as string);
+      } catch {
+        // ignore
+      }
+    }
+  }
 }

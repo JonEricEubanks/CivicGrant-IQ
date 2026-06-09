@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import type { ReactNode } from "react";
 import { streamChat, generatePackage, draftApplication, fetchGrantUrl, fetchMonitor, fetchHeroGrants } from "../api";
 import type { FetchedUrl, MonitorData, HeroGrantResult } from "../api";
-import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult } from "../types";
+import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext } from "../types";
 import { GrantMatchWidget } from "./GrantMatchWidget";
 import type { GrantMatchData } from "./GrantMatchWidget";
 import { GrantPipelineWidget } from "./GrantPipelineWidget";
@@ -11,11 +12,14 @@ import { AgentDrawer } from "./AgentDrawer";
 import { ReportPreviewModal } from "./ReportPreviewModal";
 import type { ReportPayload } from "./ReportPreviewModal";
 import { GrantRadarSkeleton } from "./GrantRadarSkeleton";
+import { AgentOrchestraBar } from "./AgentOrchestraBar";
+import { AppHeader } from "./AppHeader";
+import { TierBadge } from "./TierBadge";
 import {
-  IconBuilding, IconChat, IconSearch, IconSettings, IconNewChat,
-  IconCopy, IconCheck,
+  IconBuilding, IconSearch, IconSettings, IconNewChat,
+  IconCopy, IconCheck, IconBolt,
   IconChart, IconFilePdf, IconFileText, IconGlobe,
-  IconLink, IconScales, IconTarget,
+  IconLink, IconScales, IconTarget, IconSparkle, IconAward,
 } from "./Icons";
 import "./ChatInterface.css";
 
@@ -30,14 +34,20 @@ interface Message {
   reasoningSteps?: ReasoningStep[];
   citations?: Citation[];
   widget?: WidgetPayload;
+  decisions?: OrchestrationDecision[];
   redTeamReview?: RedTeamResult;
   competitorIntel?: CompetitorIntelResult;
   refinedNarrative?: RefinedNarrativeResult;
+  workIqContext?: WorkIqCityContext;
+  tierInfo?: { tier: 1 | 2 | 3; label: string; guardrailsPassed: boolean; violations: number };
   reviewStreaming?: boolean;
   competitorStreaming?: boolean;
   refinementStreaming?: boolean;
   streaming?: boolean;
   statusLog?: string[];
+  startedAt?: number;
+  completedAt?: number;
+  isFollowUp?: boolean;
 }
 
 const HERO_GRANTS_DEFAULT: HeroGrantResult[] = [
@@ -82,6 +92,13 @@ const FULL_CIP_CARD = {
   prompt: "What federal and Illinois state grants overlap Buffalo Grove IL capital improvement plan this fiscal year? Include IDOT, CMAP, DCEO, FEMA BRIC, and EPA programs.",
 };
 
+/** Format a dollar amount given in millions as a compact "$X.XB+" / "$X.XM+" string. */
+function formatHeroAmount(millions: number): string {
+  if (millions >= 1000) return `$${(millions / 1000).toFixed(2)}B+`;
+  if (millions >= 100) return `$${Math.round(millions)}M+`;
+  return `$${millions.toFixed(1)}M+`;
+}
+
 const STEP_LABELS = [
   "Parse the Grant",
   "Match City Projects",
@@ -96,15 +113,35 @@ function renderMarkdown(text: string) {
   const lines = text.split("\n");
   const out: React.ReactNode[] = [];
   let i = 0;
+
+  // Helper: is line[j] the start of a list (bullet or numbered)?
+  const isListStart = (j: number) => {
+    if (j >= lines.length) return false;
+    const t = lines[j].trim();
+    return t.startsWith("- ") || t.startsWith("* ") || /^\d+\.\s/.test(t);
+  };
+
+  // Helper: is a plain text line acting as an implicit section heading?
+  // Criteria: non-empty, no markdown prefix, short (<= 70 chars), no sentence-ending punct,
+  //           and the NEXT non-empty line starts a list.
+  const isImplicitHeading = (j: number) => {
+    const t = lines[j].trim();
+    if (!t || t.length > 70) return false;
+    if (/^[#\-*>]|^\d+\./.test(t)) return false;  // has markdown prefix
+    if (/^\*\*/.test(t)) return false;              // bold line (handled separately)
+    if (/[.!?]$/.test(t)) return false;             // ends like a sentence
+    // Look ahead for next non-empty line
+    let k = j + 1;
+    while (k < lines.length && lines[k].trim() === "") k++;
+    return isListStart(k);
+  };
+
   while (i < lines.length) {
     const line = lines[i];
     const trimmed = line.trim();
     if (/^(?:#{1,4}\s*|\*\*)?\s*Step\s+\d+\s*[\u2014\-]/i.test(trimmed)) {
-      // Reasoning step heading — e.g. "Step 1 — Parse the Grant", "## Step 1 — …", "**Step 1 — …**"
-      const clean = trimmed
-        .replace(/^#{1,4}\s*/, "")
-        .replace(/^\*\*|\*\*$/g, "")
-        .trim();
+      // Reasoning step heading — e.g. "Step 1 — Parse the Grant"
+      const clean = trimmed.replace(/^#{1,4}\s*/, "").replace(/^\*\*|\*\*$/g, "").trim();
       out.push(<p key={i} className="md-step-heading">{clean}</p>);
     } else if (line.startsWith("### ")) {
       out.push(<h4 key={i} className="md-h4">{line.slice(4)}</h4>);
@@ -112,10 +149,34 @@ function renderMarkdown(text: string) {
       out.push(<h3 key={i} className="md-h3">{line.slice(3)}</h3>);
     } else if (line.startsWith("# ")) {
       out.push(<h2 key={i} className="md-h2">{line.slice(2)}</h2>);
-    } else if (line.startsWith("- ") || line.startsWith("* ")) {
-      out.push(<li key={i} className="md-li">{renderInline(line.slice(2))}</li>);
+    } else if (/^\*\*[^*]+\*\*$/.test(trimmed) && trimmed.length > 4) {
+      // Standalone bold-only line → section heading
+      out.push(<h3 key={i} className="md-h3">{trimmed.slice(2, -2)}</h3>);
+    } else if (isImplicitHeading(i)) {
+      // Plain-text line immediately before a list → treat as section heading
+      out.push(<h3 key={i} className="md-h3">{renderInline(trimmed)}</h3>);
+    } else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+      // Group consecutive bullet items into a <ul> (handles indented bullets too)
+      const items: React.ReactNode[] = [];
+      const startIdx = i;
+      while (i < lines.length) {
+        const t = lines[i].trim();
+        if (!t.startsWith("- ") && !t.startsWith("* ")) break;
+        items.push(<li key={i} className="md-li">{renderInline(t.slice(2))}</li>);
+        i++;
+      }
+      out.push(<ul key={`ul-${startIdx}`} className="md-ul">{items}</ul>);
+      continue;
     } else if (/^\d+\.\s/.test(line)) {
-      out.push(<li key={i} className="md-li md-oli">{renderInline(line.replace(/^\d+\.\s/, ""))}</li>);
+      // Group consecutive numbered items into an <ol>
+      const items: React.ReactNode[] = [];
+      const startIdx = i;
+      while (i < lines.length && /^\d+\.\s/.test(lines[i])) {
+        items.push(<li key={i} className="md-oli">{renderInline(lines[i].replace(/^\d+\.\s/, ""))}</li>);
+        i++;
+      }
+      out.push(<ol key={`ol-${startIdx}`} className="md-ol">{items}</ol>);
+      continue;
     } else if (line.trim() === "") {
       out.push(<div key={i} className="md-spacer" />);
     } else {
@@ -145,6 +206,298 @@ function cleanAnswerText(text: string): string {
     .trim();
 }
 
+// ─── Sectioned markdown renderer — used in reply card body ───────────────────
+// Parses text into [intro paragraphs] + [section: heading + items]
+// Renders each section as a `.rs-section` block matching the widget's design system.
+function renderSectionedMarkdown(text: string): React.ReactNode {
+  if (!text) return null;
+  type Block =
+    | { kind: "intro"; lines: string[] }
+    | { kind: "section"; heading: string; lines: string[] };
+
+  const rawLines = text.split("\n");
+  const blocks: Block[] = [];
+  let current: Block = { kind: "intro", lines: [] };
+
+  const isHeadingLine = (line: string): string | null => {
+    const t = line.trim();
+    if (!t) return null;
+    if (line.startsWith("### ")) return line.slice(4).trim();
+    if (line.startsWith("## ")) return line.slice(3).trim();
+    if (line.startsWith("# ")) return line.slice(2).trim();
+    if (/^\*\*[^*]+\*\*$/.test(t) && t.length > 4) return t.slice(2, -2);
+    // Implicit heading: short, no punct, followed by a list
+    if (t.length <= 70 && !/^[#\-*>]|^\d+\./.test(t) && !/^\*\*/.test(t) && !/[.!?]$/.test(t)) {
+      const nextNonEmpty = rawLines.slice(rawLines.indexOf(line) + 1).find(l => l.trim());
+      if (nextNonEmpty) {
+        const n = nextNonEmpty.trim();
+        if (n.startsWith("- ") || n.startsWith("* ") || /^\d+\.\s/.test(n)) return t;
+      }
+    }
+    return null;
+  };
+
+  for (const line of rawLines) {
+    const heading = isHeadingLine(line);
+    if (heading) {
+      blocks.push(current);
+      current = { kind: "section", heading, lines: [] };
+    } else {
+      current.lines.push(line);
+    }
+  }
+  blocks.push(current);
+
+  // Collect items from a block's lines into typed entries
+  type ItemEntry =
+    | { type: "card"; title: string; body: string }
+    | { type: "chip"; text: string }
+    | { type: "para"; text: string };
+
+  const parseLines = (lines: string[]): ItemEntry[] => {
+    const entries: ItemEntry[] = [];
+    let i = 0;
+    while (i < lines.length) {
+      const t = lines[i].trim();
+      if (!t) { i++; continue; }
+
+      // Bullet or numbered item
+      const isBullet = t.startsWith("- ") || t.startsWith("* ");
+      const isNum = /^\d+\.\s/.test(t);
+      if (isBullet || isNum) {
+        const raw = isBullet ? t.slice(2) : t.replace(/^\d+\.\s/, "");
+        // Collect any indented continuation lines
+        let full = raw;
+        while (i + 1 < lines.length) {
+          const next = lines[i + 1];
+          if (next.trim() && !next.trim().startsWith("- ") && !next.trim().startsWith("* ") && !/^\d+\.\s/.test(next.trim()) && (next.startsWith("   ") || next.startsWith("\t"))) {
+            full += " " + next.trim();
+            i++;
+          } else break;
+        }
+        // "**Title**: description" → card; short or no colon → chip
+        const cardMatch = full.match(/^\*\*([^*]+)\*\*\s*[:\-–—]\s*(.+)/);
+        if (cardMatch) {
+          entries.push({ type: "card", title: cardMatch[1], body: cardMatch[2] });
+        } else if (full.length <= 60 && !full.includes(":")) {
+          entries.push({ type: "chip", text: full.replace(/\*\*/g, "") });
+        } else {
+          // Treat like a card: bold part before colon is title, rest is body
+          const splitColon = full.match(/^([^:]{4,50}):\s*(.{10,})/);
+          if (splitColon) {
+            entries.push({ type: "card", title: splitColon[1].replace(/\*\*/g, ""), body: splitColon[2] });
+          } else {
+            entries.push({ type: "chip", text: full.replace(/\*\*/g, "") });
+          }
+        }
+      } else {
+        entries.push({ type: "para", text: t });
+      }
+      i++;
+    }
+    return entries;
+  };
+
+  const renderEntries = (entries: ItemEntry[], sectionKey: string): React.ReactNode => {
+    // All chips (short, no colon) → pill row (e.g. city strengths)
+    const allChips = entries.every(e => e.type === "chip");
+    if (allChips && entries.length > 0) {
+      return (
+        <div className="rs-chip-row">
+          {entries.map((e, j) => (
+            <span key={`${sectionKey}-c${j}`} className="rs-chip">{(e as { type: "chip"; text: string }).text}</span>
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div className="rs-items">
+        {entries.map((e, j) => {
+          if (e.type === "card") {
+            return (
+              <div key={`${sectionKey}-item${j}`} className="rs-item-card">
+                <span className="rs-item-title">{e.title}</span>
+                <span className="rs-item-body">{renderInline(e.body)}</span>
+              </div>
+            );
+          }
+          if (e.type === "chip") {
+            return <div key={`${sectionKey}-chip${j}`} className="rs-item-card rs-item-card--chip">{e.text}</div>;
+          }
+          // para
+          return <p key={`${sectionKey}-p${j}`} className="rs-para">{renderInline(e.text)}</p>;
+        })}
+      </div>
+    );
+  };
+
+  // Section icon heuristic based on heading text
+  const sectionIcon = (heading: string): string => {
+    const h = heading.toLowerCase();
+    if (/compet|municip|who else|cities/.test(h)) return "🏙";
+    if (/strength|advantage|edge|past|track record/.test(h)) return "✓";
+    if (/gap|weakness|missing|risk|challenge/.test(h)) return "⚠";
+    if (/strategy|next step|action|recommend|improve|boost/.test(h)) return "→";
+    if (/comparison|compare|profile|buffalo/.test(h)) return "◈";
+    if (/conclusion|summary|overall/.test(h)) return "◎";
+    if (/timeline|deadline|schedule/.test(h)) return "📅";
+    return "•";
+  };
+
+  return (
+    <div className="rs-body">
+      {blocks.map((block, bi) => {
+        if (block.kind === "intro") {
+          const paras = block.lines.filter(l => l.trim());
+          if (!paras.length) return null;
+          return (
+            <div key={`intro-${bi}`} className="rs-intro">
+              {paras.map((l, j) => <p key={j} className="rs-intro-para">{renderInline(l.trim())}</p>)}
+            </div>
+          );
+        }
+        const entries = parseLines(block.lines);
+        if (!entries.length) return null;
+        return (
+          <div key={`sec-${bi}`} className="rs-section">
+            <div className="rs-section-header">
+              <span className="rs-section-icon">{sectionIcon(block.heading)}</span>
+              <span className="rs-section-title">{block.heading.toUpperCase()}</span>
+            </div>
+            {renderEntries(entries, `sec-${bi}`)}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Contextual follow-up chips — generated from the widget data
+function getFollowUpChips(data: import("./GrantMatchWidget").GrantMatchData): Array<{ label: string; prompt: string }> {
+  const chips: Array<{ label: string; prompt: string }> = [];
+  const topGap = data.gaps?.find(g => g.severity === "critical") ?? data.gaps?.find(g => g.severity === "moderate");
+  if (topGap) {
+    const title = topGap.title.length > 28 ? topGap.title.slice(0, 28) + "…" : topGap.title;
+    chips.push({
+      label: `Fix: ${title}`,
+      prompt: `How can Buffalo Grove specifically close the "${topGap.title}" gap for ${data.grantName}? Give concrete steps, responsible departments, and timeline.`,
+    });
+  }
+  chips.push({
+    label: "Who else is competing?",
+    prompt: `Which Illinois municipalities typically compete for ${data.grantName} and how does Buffalo Grove's profile compare to past winning applicants?`,
+  });
+  if (data.matchScore < 85) {
+    chips.push({
+      label: "Boost match score",
+      prompt: `What 3 targeted improvements would raise Buffalo Grove's match score for ${data.grantName} above 85%? Focus on quick wins we can execute this quarter.`,
+    });
+  }
+  chips.push({
+    label: "Scan full CIP for grants",
+    prompt: "What federal and Illinois state grants overlap Buffalo Grove IL capital improvement plan this fiscal year? Include IDOT, CMAP, DCEO, FEMA BRIC, and EPA programs.",
+  });
+  return chips.slice(0, 4);
+}
+
+// Generate a downloadable Grant Readiness Certificate HTML file
+function generateCertificate(data: import("./GrantMatchWidget").GrantMatchData): void {
+  const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const tier = data.matchScore >= 70 ? "CONFIRMED ELIGIBLE" : data.matchScore >= 45 ? "LIKELY ELIGIBLE" : "POTENTIAL MATCH";
+  const tierColor = data.matchScore >= 70 ? "#16a34a" : data.matchScore >= 45 ? "#b45309" : "#6b7280";
+  const fmtAmount = data.fundingAmount >= 1_000_000_000
+    ? `$${(data.fundingAmount / 1_000_000_000).toFixed(1)}B`
+    : data.fundingAmount >= 1_000_000
+    ? `$${(data.fundingAmount / 1_000_000).toFixed(1)}M`
+    : data.fundingAmount > 0 ? `$${(data.fundingAmount / 1000).toFixed(0)}K` : "Varies";
+  const topStrengths = (data.strengths ?? []).slice(0, 3);
+  const criticalGaps = (data.gaps ?? []).filter(g => g.severity === "critical").length;
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grant Readiness Certificate — ${data.grantName.replace(/</g, "&lt;")}</title><style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #eef2f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.cert { background: #fff; border-radius: 20px; max-width: 700px; width: 100%; overflow: hidden; box-shadow: 0 20px 60px rgba(14,58,110,0.15); }
+.cert-header { background: linear-gradient(135deg, #0e3a6e 0%, #1a6fba 60%, #0e3a6e 100%); padding: 2.75rem 3rem 2.25rem; text-align: center; position: relative; overflow: hidden; }
+.cert-header::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 8px); }
+.cert-watermark { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.28em; color: rgba(255,255,255,0.45); text-transform: uppercase; margin-bottom: 1.5rem; position: relative; }
+.cert-seal { width: 68px; height: 68px; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; font-size: 1.8rem; position: relative; }
+.cert-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; color: rgba(255,255,255,0.6); text-transform: uppercase; margin-bottom: 0.45rem; position: relative; }
+.cert-org { font-size: 1.9rem; font-weight: 900; color: #fff; letter-spacing: -0.02em; line-height: 1.15; position: relative; }
+.cert-sub { font-size: 0.8rem; color: rgba(255,255,255,0.65); margin-top: 0.35rem; position: relative; }
+.cert-body { padding: 2.25rem 3rem 0; }
+.cert-intro { text-align: center; font-size: 0.82rem; color: #6b7280; margin-bottom: 1.75rem; line-height: 1.65; }
+.cert-grant-name { font-size: 1.35rem; font-weight: 800; color: #0e3a6e; text-align: center; margin-bottom: 0.25rem; letter-spacing: -0.01em; }
+.cert-agency { font-size: 0.8rem; color: #6b7280; text-align: center; margin-bottom: 1.75rem; }
+.cert-score-row { display: flex; gap: 0.85rem; margin-bottom: 1.75rem; }
+.cert-score-card { flex: 1; background: #f8faff; border: 1px solid #dbeafe; border-radius: 14px; padding: 1.1rem 0.75rem; text-align: center; }
+.cert-score-val { font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+.cert-score-lbl { font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin-top: 5px; }
+.cert-tier-badge { display: inline-flex; align-items: center; padding: 3px 12px; border-radius: 100px; font-size: 0.63rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 6px; border: 1px solid; }
+.cert-strengths { margin-bottom: 1.75rem; }
+.cert-section-title { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #9ca3af; margin-bottom: 0.65rem; padding-bottom: 0.4rem; border-bottom: 1px solid #f3f4f6; }
+.cert-strength-item { display: flex; align-items: flex-start; gap: 8px; padding: 0.45rem 0; font-size: 0.8rem; color: #374151; line-height: 1.45; }
+.cert-check { width: 17px; height: 17px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #16a34a; font-size: 0.55rem; font-weight: 900; margin-top: 2px; }
+.cert-footer { background: #f8faff; border-top: 1px solid #e8f1ff; padding: 1.25rem 3rem; display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; }
+.cert-footer-brand { font-size: 0.78rem; font-weight: 800; color: #0e3a6e; }
+.cert-footer-sub { font-size: 0.62rem; color: #9ca3af; margin-top: 2px; }
+.cert-grounded { display: inline-flex; align-items: center; gap: 5px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 20px; padding: 3px 9px; font-size: 0.6rem; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 5px; }
+.cert-footer-date { font-size: 0.68rem; color: #6b7280; text-align: right; line-height: 1.5; }
+@media print { body { background: white; padding: 0; } .cert { box-shadow: none; border-radius: 0; max-width: 100%; } }
+</style></head>
+<body><div class="cert">
+  <div class="cert-header">
+    <div class="cert-watermark">CivicGrant IQ &middot; Official Assessment</div>
+    <div class="cert-seal">&#127963;</div>
+    <div class="cert-eyebrow">Grant Readiness Certificate</div>
+    <div class="cert-org">City of Buffalo Grove, IL</div>
+    <div class="cert-sub">Population 41,496 &nbsp;&middot;&nbsp; Lake County &nbsp;&middot;&nbsp; Moody&#8217;s Aa2</div>
+  </div>
+  <div class="cert-body">
+    <p class="cert-intro">This certificate confirms that the City of Buffalo Grove, Illinois has been evaluated for eligibility and readiness against the following federal grant opportunity:</p>
+    <div class="cert-grant-name">${data.grantName.replace(/</g, "&lt;")}</div>
+    <div class="cert-agency">${data.agency.replace(/</g, "&lt;")}</div>
+    <div class="cert-score-row">
+      <div class="cert-score-card">
+        <div class="cert-score-val" style="color:${tierColor}">${data.matchScore}%</div>
+        <div class="cert-score-lbl">Readiness Score</div>
+        <div class="cert-tier-badge" style="color:${tierColor};background:${tierColor}18;border-color:${tierColor}44">${tier}</div>
+      </div>
+      <div class="cert-score-card">
+        <div class="cert-score-val" style="color:#1a6fba">${fmtAmount}</div>
+        <div class="cert-score-lbl">Max Award</div>
+      </div>
+      <div class="cert-score-card">
+        <div class="cert-score-val" style="color:#7c3aed;font-size:1.8rem">${criticalGaps}</div>
+        <div class="cert-score-lbl">Critical Gaps</div>
+      </div>
+    </div>
+    ${topStrengths.length > 0 ? `<div class="cert-strengths"><div class="cert-section-title">Verified City Strengths</div>${topStrengths.map(s => `<div class="cert-strength-item"><div class="cert-check">&#10003;</div><span>${s.replace(/\*\*/g, "").replace(/</g, "&lt;")}</span></div>`).join("")}</div>` : ""}
+  </div>
+  <div class="cert-footer">
+    <div>
+      <div class="cert-footer-brand">CivicGrant IQ</div>
+      <div class="cert-footer-sub">Powered by Microsoft Azure Foundry IQ</div>
+      <div class="cert-grounded">&#11042; Foundry IQ Grounded &middot; Evidence-Based</div>
+    </div>
+    <div class="cert-footer-date">
+      <div>Generated ${today}</div>
+      <div style="font-size:0.6rem;color:#9ca3af;margin-top:2px">CivicGrant IQ Assessment Engine</div>
+    </div>
+  </div>
+</div></body></html>`;
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${data.grantName.replace(/[^a-z0-9 ]/gi, "_").replace(/\s+/g, "_")}_Readiness_Certificate.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
+
 // ─── Tool call status line ───────────────────────────────────────────────
 function ToolCallLine({ status, done }: { status: string; done: boolean }) {
   const lc = status.toLowerCase();
@@ -163,14 +516,14 @@ function ToolCallLine({ status, done }: { status: string; done: boolean }) {
   );
 }
 
-// ─── Answer peek — collapsible fixed-height scrollable window ───────────────
-function AnswerPeek({ children, streaming }: { children: React.ReactNode; streaming: boolean }) {
+// ─── Answer peek — collapsed scrollable window for streaming / full text ───────
+function AnswerPeek({ children, streaming, label }: { children: React.ReactNode; streaming: boolean; label?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="answer-peek-wrap">
       <button className="answer-peek-toggle" onClick={() => setOpen(o => !o)}>
         <span className="answer-peek-toggle-label">
-          {streaming ? "Agent reasoning…" : "View agent reasoning"}
+          {label ?? (streaming ? "View live reasoning…" : "View reasoning")}
         </span>
         <span className="answer-peek-toggle-chevron">{open ? "▲" : "▼"}</span>
       </button>
@@ -185,15 +538,41 @@ function AnswerPeek({ children, streaming }: { children: React.ReactNode; stream
   );
 }
 
+// ─── Reply card — same visual family as GrantMatchWidget
+// isFollowUp=true → "↩ FOLLOW-UP" badge; isFollowUp=false → "◈ AI ANALYSIS" badge
+// streaming=true → plain renderMarkdown (partial text); done → renderSectionedMarkdown
+function FollowUpCard({ content = "", streaming, isFollowUp = true }: { content: string; streaming: boolean; isFollowUp?: boolean }) {
+  return (
+    <div className={`followup-card${streaming ? " followup-card--streaming" : ""}`}>
+      <div className="followup-card-tag">
+        <span className="followup-tag-badge">
+          <span className="followup-tag-icon">{isFollowUp ? "↩" : "◈"}</span>
+          {isFollowUp ? "Follow-up Reply" : "AI Analysis"}
+        </span>
+        {streaming && (
+          <span className="followup-tag-live">
+            <span className="followup-live-dot" />Thinking…
+          </span>
+        )}
+      </div>
+      <div className="followup-card-body">
+        {streaming ? (
+          <div className="assistant-text">
+            {renderMarkdown(content)}
+            <span className="streaming-cursor" />
+          </div>
+        ) : (
+          renderSectionedMarkdown(content)
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Thought Process — vertical timeline ────────────────────────────────────
 function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStreaming: boolean }) {
-  const [open, setOpen] = useState(false);
-  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
-
-  // Auto-open when the agent starts producing steps
-  useEffect(() => {
-    if (isStreaming && steps.length > 0) setOpen(true);
-  }, [isStreaming, steps.length]);
+  const [open, setOpen] = useState(true);   // step list always visible by default
+  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set()); // each step's reasoning text collapsed until clicked
 
   if (!steps.length) return null;
   const completedCount = steps.filter(s => s.completed).length;
@@ -249,6 +628,10 @@ function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStre
                         : <span className="tp-num">{stepNum}</span>}
                     </div>
                     <span className="tp-acc-label">{label}</span>
+                    {/* Show corroboration badge for the verification step when done */}
+                    {done && !isLastCompleted && stepNum === 2 && (
+                      <span className="tp-corroborated-badge">≥2 agents agreed</span>
+                    )}
                     <span className="tp-acc-chevron">{isStepOpen ? "▲" : "▶"}</span>
                   </button>
                 ) : (
@@ -667,7 +1050,7 @@ function WorkspacePanel({ steps, citations, widget, analysisText, isLoading, has
   );
 }
 
-export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void }) {
+export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: { onSwitchToScan?: () => void; onSwitchToAdmin?: () => void; tourButton?: ReactNode }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [threadId, setThreadId] = useState<string | undefined>();
@@ -679,8 +1062,10 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
   const [heroAmt, setHeroAmt] = useState(0);
   const [heroGrants, setHeroGrants] = useState<HeroGrantResult[]>(HERO_GRANTS_DEFAULT);
   const [heroTotal, setHeroTotal] = useState(8.7);
+  const [heroProgramCount, setHeroProgramCount] = useState(3);
   const [generatingPackage, setGeneratingPackage] = useState<string | null>(null);
   const [draftingApp, setDraftingApp] = useState<string | null>(null);
+  const [certifying, setCertifying] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [monitorData, setMonitorData] = useState<MonitorData | null>(null);
   const [monitorTab, setMonitorTab] = useState<"health" | "evals">("health");
@@ -700,6 +1085,7 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
       if (!data) return;
       setHeroGrants(data.grants);
       setHeroTotal(data.totalMillion);
+      if (typeof data.programCount === "number") setHeroProgramCount(data.programCount);
     });
   }, []);
 
@@ -772,6 +1158,7 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
       competitorStreaming: false,
       refinementStreaming: false,
       statusLog: [],
+      startedAt: Date.now(),
     };
 
     // Clear any orphaned streaming messages before adding new ones
@@ -791,6 +1178,16 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
                 ? { ...m, statusLog: [...(m.statusLog ?? []), status] }
                 : m
             )
+          );
+        },
+        onMeta: ({ isFollowUp }) => {
+          setMessages((prev) =>
+            prev.map((m) => (m.id === assistantId ? { ...m, isFollowUp } : m))
+          );
+        },
+        onWorkIqContext: (context) => {
+          setMessages((prev) =>
+            prev.map((m) => (m.id === assistantId ? { ...m, workIqContext: context } : m))
           );
         },
         onAgentStatus: ({ agent }) => {
@@ -825,6 +1222,19 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
         onCitations: (citations) => {
           setMessages((prev) =>
             prev.map((m) => m.id === assistantId ? { ...m, citations } : m)
+          );
+        },
+        onDecision: (decision) => {
+          setMessages((prev) =>
+            prev.map((m) => {
+              if (m.id !== assistantId) return m;
+              const existing = m.decisions ?? [];
+              const idx = existing.findIndex((d) => d.id === decision.id);
+              const updated = idx >= 0
+                ? existing.map((d) => d.id === decision.id ? decision : d)
+                : [...existing, decision];
+              return { ...m, decisions: updated };
+            })
           );
         },
         onWidget: (widget) => {
@@ -867,6 +1277,15 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
             })
           );
         },
+        onTierInfo: (info) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? { ...m, tierInfo: info as Message["tierInfo"] }
+                : m
+            )
+          );
+        },
         onAnswerChunk: (chunk) => {
           setMessages((prev) =>
             prev.map((m) =>
@@ -888,7 +1307,7 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
         },
         onDone: () => {
           setMessages((prev) =>
-            prev.map((m) => m.id === assistantId ? { ...m, streaming: false, reviewStreaming: false, competitorStreaming: false, refinementStreaming: false } : m)
+            prev.map((m) => m.id === assistantId ? { ...m, streaming: false, reviewStreaming: false, competitorStreaming: false, refinementStreaming: false, completedAt: m.completedAt ?? Date.now() } : m)
           );
           setIsLoading(false);
           isSendingRef.current = false;
@@ -1009,18 +1428,34 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
     }
   };
 
+  const handleGenerateCertificate = (msg: Message) => {
+    if (!msg.widget || msg.widget.type !== "grant_match" || certifying) return;
+    setCertifying(msg.id);
+    generateCertificate(msg.widget.data as import("./GrantMatchWidget").GrantMatchData);
+    setTimeout(() => setCertifying(null), 1200);
+  };
+
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="chat-interface">
-      {/* Icon-only left nav */}
-      <nav className="cowork-leftnav">
-        <div className="leftnav-logo"><IconBuilding size={20} color="#3b82f6" /></div>
-        <button className="leftnav-icon leftnav-icon--active" title="Chat"><IconChat size={18} /></button>
-        <button className="leftnav-icon" title="Scan" onClick={onSwitchToScan}><IconSearch size={18} /></button>
-        <div className="leftnav-spacer" />
-        <button className={`leftnav-icon${showSettings ? " leftnav-icon--active" : ""}`} title="Settings" onClick={() => setShowSettings(s => !s)}><IconSettings size={18} /></button>
-      </nav>
+    <div className="chat-interface chat-interface--col">
+      <AppHeader
+        active="chat"
+        onNavigate={(t) => { if (t === "scan") onSwitchToScan?.(); else if (t === "admin") onSwitchToAdmin?.(); }}
+        actions={
+          <>
+            {tourButton}
+            <button className="cowork-header-icon-btn" title="New chat" onClick={handleNewChat}><IconNewChat size={16} /></button>
+            <button
+              className={`cowork-header-icon-btn${showSettings ? " cowork-header-icon-btn--active" : ""}`}
+              title="Intelligence Hub"
+              onClick={() => setShowSettings(s => !s)}
+            ><IconSettings size={16} /></button>
+          </>
+        }
+      />
+
+      <div className="chat-body-row">
 
       {/* Intelligence Hub panel (Settings icon) */}
       {showSettings && (
@@ -1190,24 +1625,6 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
 
       {/* Main column */}
       <div className="cowork-main-col">
-        {/* Cowork-style header */}
-        <header className="cowork-header">
-          <div className="cowork-breadcrumb">
-            <span className="cowork-app-name">CivicGrant IQ</span>
-            {hasMessages && (
-              <>
-                <span className="cowork-breadcrumb-sep">›</span>
-                <span className="cowork-thread-name">Grant Analysis</span>
-              </>
-            )}
-          </div>
-          <div className="cowork-header-actions">
-            <button className="cowork-header-icon-btn" title="New chat" onClick={handleNewChat}>
-              <IconNewChat size={16} />
-            </button>
-          </div>
-        </header>
-
         {/* Chat messages */}
         <main className="chat-main">
           <div
@@ -1228,25 +1645,43 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
                     Live Grant Intelligence
                   </div>
                   <div className="hero-pipeline">
-                    <div className="hero-pipeline-amount">${heroAmt.toFixed(1)}M+</div>
-                    <div className="hero-pipeline-sub">in federal grants available for cities like yours this month</div>
+                    <div className="hero-pipeline-amount">{formatHeroAmount(heroAmt)}</div>
+                    <div className="hero-pipeline-sub">
+                      in live federal grant funding open right now, across {heroProgramCount} program{heroProgramCount === 1 ? "" : "s"} your projects qualify for
+                    </div>
                   </div>
                   <div className="hero-grant-cards">
                     {heroGrants.map((g) => (
                       <button key={g.name} className="hero-grant-card" onClick={() => handleSend(g.prompt)}>
+                        {g.live && (
+                          <div className="hero-grant-live">
+                            <span className="hero-grant-live-dot" />LIVE · Grants.gov
+                          </div>
+                        )}
                         <div className="hero-grant-name">{g.name}</div>
                         <div className="hero-grant-agency">{g.agency}</div>
                         <div className="hero-grant-bar-outer">
                           <div className="hero-grant-bar-inner" style={{ width: `${g.match}%` }} />
                         </div>
                         <div className="hero-grant-meta">
-                          <span>{g.match}% match</span>
+                          <span>{g.match}% {g.live ? "relevance" : "match"}</span>
                           <span>{g.funding ?? "—"}</span>
                         </div>
                         {g.daysLeft !== null && (
                           <div className="hero-grant-urgency" style={{ color: g.daysLeft < 50 ? "#f59e0b" : "#475569" }}>
                             {g.daysLeft}d to deadline
                           </div>
+                        )}
+                        {g.url && (
+                          <span
+                            className="hero-grant-verify"
+                            role="link"
+                            tabIndex={0}
+                            onClick={(e) => { e.stopPropagation(); window.open(g.url!, "_blank", "noopener,noreferrer"); }}
+                            onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); window.open(g.url!, "_blank", "noopener,noreferrer"); } }}
+                          >
+                            Verify on Grants.gov ↗
+                          </span>
                         )}
                       </button>
                     ))}
@@ -1256,13 +1691,26 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
                       <div className="hero-grant-agency">{FULL_CIP_CARD.agency}</div>
                       <div className="hero-grant-meta hero-grant-meta--scan">
                         <span>Full CIP scan</span>
-                        <span>${heroTotal.toFixed(1)}M+</span>
+                        <span>{formatHeroAmount(heroTotal)}</span>
                       </div>
                     </button>
                   </div>
                   <p className="hero-desc">
                     Analyzes your eligibility in 6 steps, scores the match, closes gaps, and generates a complete application package — powered by Microsoft Azure Foundry.
                   </p>
+                  <div className="hero-safety-notice">
+                    <span className="hero-safety-icon">🛡</span>
+                    <span>Architecturally never auto-submits. If evidence is insufficient, we tell you — we never bluff.</span>
+                  </div>
+                  <div className="hero-trust-strip">
+                    <span className="hero-trust-item"><IconSparkle size={13} /> 5 specialist agents</span>
+                    <span className="hero-trust-dot" />
+                    <span className="hero-trust-item"><IconSearch size={13} /> Grounded in Foundry IQ</span>
+                    <span className="hero-trust-dot" />
+                    <span className="hero-trust-item"><IconCheck size={13} /> Every claim cited to source</span>
+                    <span className="hero-trust-dot" />
+                    <span className="hero-trust-item"><IconScales size={13} /> Self-critique loop</span>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -1302,6 +1750,47 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
                           />
                         )}
 
+                        {/* Dynamic routing — the agent's autonomous branch decisions */}
+                        {(msg.decisions?.length ?? 0) > 0 && (
+                          <div className="decision-trail">
+                            <div className="decision-trail-head">
+                              <IconBolt size={13} />
+                              Dynamic routing · {msg.decisions!.length} decision{msg.decisions!.length === 1 ? "" : "s"}
+                            </div>
+                            {msg.decisions!.map((d) => (
+                              <div
+                                key={d.id}
+                                className={`decision-row decision-row--${d.kind}${d.branch === "red_team:skip" ? " decision-row--skip" : ""}`}
+                              >
+                                <span className="decision-badge">{d.kind === "requery" ? "RE-QUERY" : "ROUTE"}</span>
+                                <div className="decision-body">
+                                  <span className="decision-label">{d.label}</span>
+                                  <span className="decision-detail">{d.detail}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Multi-agent orchestration strip — live mission control */}
+                        {(msg.reasoningSteps?.length ?? 0) > 0 && (
+                          <AgentOrchestraBar
+                            steps={msg.reasoningSteps ?? []}
+                            citationCount={msg.citations?.length ?? 0}
+                            redTeamReview={msg.redTeamReview}
+                            redTeamSkipped={msg.decisions?.some((d) => d.branch === "red_team:skip") ?? false}
+                            competitorIntel={msg.competitorIntel}
+                            refinedNarrative={msg.refinedNarrative}
+                            reviewStreaming={msg.reviewStreaming}
+                            competitorStreaming={msg.competitorStreaming}
+                            refinementStreaming={msg.refinementStreaming}
+                            streaming={msg.streaming}
+                            startedAt={msg.startedAt}
+                            completedAt={msg.completedAt}
+                            refinementDelta={msg.refinedNarrative?.estimatedScoreDelta}
+                          />
+                        )}
+
                         {/* Inline Widget */}
                         {msg.widget?.type === "grant_match" && (
                           <GrantMatchWidget
@@ -1309,6 +1798,7 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
                             isRefined={!!msg.refinedNarrative}
                             refinementImprovements={msg.refinedNarrative?.improvements}
                             refinementDelta={msg.refinedNarrative?.estimatedScoreDelta}
+                            cityContext={msg.workIqContext}
                           />
                         )}
                         {msg.widget?.type === "grant_pipeline" && (
@@ -1354,21 +1844,63 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
                               <IconFileText size={13} />
                               {draftingApp === msg.id ? "Drafting…" : "Draft Application"}
                             </button>
+                            <button
+                              className={`qa-btn qa-btn--cert ${certifying === msg.id ? "qa-btn--loading" : ""}`}
+                              onClick={() => handleGenerateCertificate(msg)}
+                              disabled={certifying !== null}
+                              title="Download a Grant Readiness Certificate — shareable proof of eligibility"
+                            >
+                              <IconAward size={13} />
+                              {certifying === msg.id ? "Generating…" : "Readiness Certificate"}
+                            </button>
                           </div>
                         )}
 
-                        {/* Answer text — scrollable peek window while streaming and after; hidden once widget renders */}
-                        {msg.content && !msg.widget && (
-                          <AnswerPeek streaming={msg.streaming ?? false}>
-                            {renderMarkdown(cleanAnswerText(msg.content))}
-                            {msg.streaming && <span className="streaming-cursor" />}
-                          </AnswerPeek>
-                        )}
-                        {/* If widget failed to parse but content exists, always show it */}
-                        {msg.content && !msg.streaming && msg.widget && !msg.widget.type && (
-                          <div className="assistant-text">
-                            {renderMarkdown(cleanAnswerText(msg.content))}
+                        {/* Follow-up suggestion chips */}
+                        {msg.widget?.type === "grant_match" && !msg.streaming && (
+                          <div className="followup-chips">
+                            <span className="followup-chips-label">Ask a follow-up</span>
+                            {getFollowUpChips(msg.widget.data as import("./GrantMatchWidget").GrantMatchData).map((chip, i) => (
+                              <button key={i} className="followup-chip" onClick={() => handleSend(chip.prompt)}>
+                                {chip.label}
+                              </button>
+                            ))}
                           </div>
+                        )}
+
+                        {/* LLM Fallback Chain — tier badge shown after analysis completes */}
+                        {msg.tierInfo && !msg.streaming && (
+                          <div style={{ marginTop: "0.5rem" }}>
+                            <TierBadge
+                              tier={msg.tierInfo.tier}
+                              label={msg.tierInfo.label}
+                              guardrailsPassed={msg.tierInfo.guardrailsPassed}
+                              violations={msg.tierInfo.violations}
+                            />
+                          </div>
+                        )}
+
+                        {/* Any text-only response (no widget) — streaming: peek or card; done: sectioned reply card */}
+                        {msg.content && !msg.widget && (
+                          msg.streaming ? (
+                            msg.isFollowUp ? (
+                              /* Follow-up streaming → card with live tag + plain markdown */
+                              <FollowUpCard content={cleanAnswerText(msg.content)} streaming={true} isFollowUp={true} />
+                            ) : (
+                              /* Full analysis streaming → collapsible peek */
+                              <AnswerPeek streaming={true}>
+                                {renderMarkdown(cleanAnswerText(msg.content))}
+                                <span className="streaming-cursor" />
+                              </AnswerPeek>
+                            )
+                          ) : (
+                            /* Done → sectioned reply card */
+                            <FollowUpCard content={cleanAnswerText(msg.content)} streaming={false} isFollowUp={msg.isFollowUp ?? false} />
+                          )
+                        )}
+                        {/* Fallback: widget present but malformed */}
+                        {msg.content && !msg.streaming && msg.widget && !msg.widget.type && (
+                          <FollowUpCard content={cleanAnswerText(msg.content)} streaming={false} isFollowUp={false} />
                         )}
 
                         {/* Message actions — copy only */}
@@ -1462,6 +1994,7 @@ export function ChatInterface({ onSwitchToScan }: { onSwitchToScan?: () => void 
         onOpenPreview={setPreviewData}
         onOpenDrawer={setAgentDrawer}
       />
+      </div>
 
       {/* Agent Intel Drawer — slides in from right, sits above workspace panel */}
       <AgentDrawer view={agentDrawer} onClose={() => setAgentDrawer(null)} />

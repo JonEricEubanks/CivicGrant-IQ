@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { IconChart, IconAlert, IconCheck, IconDocument, IconCopy } from "./Icons";
+import { WorkIqPanel } from "./WorkIqPanel";
+import type { WorkIqCityContext } from "../types";
 import "./GrantMatchWidget.css";
 
 export interface GrantMatchData {
@@ -25,6 +27,7 @@ interface Props {
   isRefined?: boolean;
   refinementImprovements?: string[];
   refinementDelta?: number;
+  cityContext?: WorkIqCityContext;
 }
 
 function AnimatedNumber({ target, prefix = "", suffix = "" }: { target: number; prefix?: string; suffix?: string }) {
@@ -88,7 +91,7 @@ function MatchGauge({ score }: { score: number }) {
 
 const SEVERITY_COLORS = { critical: "#ef4444", moderate: "#f59e0b", minor: "#3b82f6" };
 
-export function GrantMatchWidget({ data, isRefined, refinementImprovements, refinementDelta }: Props) {
+export function GrantMatchWidget({ data, isRefined, refinementImprovements, refinementDelta, cityContext }: Props) {
   const deadlineTime = new Date(data.deadline).getTime();
   const hasDeadline = !Number.isNaN(deadlineTime);
   const daysLeft = hasDeadline
@@ -110,6 +113,9 @@ export function GrantMatchWidget({ data, isRefined, refinementImprovements, refi
       <div className="hero-stats">
         <div className="stat-hero stat-hero--gauge">
           <MatchGauge score={data.matchScore} />
+          <div className={`confidence-badge confidence-badge--${data.matchScore >= 70 ? "confirmed" : data.matchScore >= 45 ? "likely" : "possible"}`}>
+            {data.matchScore >= 70 ? "✦ CONFIRMED" : data.matchScore >= 45 ? "◈ LIKELY" : "◌ POSSIBLE"}
+          </div>
         </div>
 
         <div className="stat-hero stat-hero--money">
@@ -141,6 +147,25 @@ export function GrantMatchWidget({ data, isRefined, refinementImprovements, refi
           </div>
         </div>
       </div>
+
+      {/* Evidence Quality Bar — shows KB grounding level */}
+      {(() => {
+        const tier = data.matchScore >= 70 ? "confirmed" : data.matchScore >= 45 ? "likely" : "possible";
+        const srcLabel = tier === "confirmed" ? "≥2 KB sources corroborated" : tier === "likely" ? "1 KB source found" : "No direct KB match";
+        const qualLabel = tier === "confirmed" ? "Strong" : tier === "likely" ? "Moderate" : "Tentative";
+        const qualColor = tier === "confirmed" ? "#16a34a" : tier === "likely" ? "#b45309" : "#64748b";
+        const barPct = tier === "confirmed" ? 100 : tier === "likely" ? 60 : 30;
+        return (
+          <div className="evidence-quality-row">
+            <span className="eq-label">Evidence Quality</span>
+            <div className="eq-bar-track">
+              <div className="eq-bar-fill" style={{ width: `${barPct}%`, background: qualColor }} />
+            </div>
+            <span className="eq-tier" style={{ color: qualColor }}>{qualLabel}</span>
+            <span className="eq-src">{srcLabel}</span>
+          </div>
+        );
+      })()}
 
       {/* Gaps */}
       {data.gaps.length > 0 && (
@@ -236,6 +261,16 @@ export function GrantMatchWidget({ data, isRefined, refinementImprovements, refi
           )}
         </div>
       )}
+
+      {/* Work IQ — turn deadline + milestones into a synced action plan */}
+      <WorkIqPanel
+        grantName={data.grantName}
+        agency={data.agency}
+        deadline={data.deadline}
+        milestones={data.strategy?.weeklyMilestones}
+        actionItems={data.strategy?.actionItems}
+        cityContext={cityContext}
+      />
     </div>
   );
 }

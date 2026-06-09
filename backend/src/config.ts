@@ -1,12 +1,22 @@
 import "dotenv/config";
 
+/**
+ * When FORCE_MOCK_MODE=true, all Azure credential env vars become optional.
+ * The Tier 3 mock engine runs the full pipeline in <200ms with zero credentials,
+ * enabling reliable live demos even without Azure access.
+ */
+const mockMode = process.env.FORCE_MOCK_MODE === "true";
+
 function require_env(name: string): string {
   const val = process.env[name];
-  if (!val) throw new Error(`Missing required environment variable: ${name}`);
-  return val;
+  if (!val && !mockMode) throw new Error(`Missing required environment variable: ${name}`);
+  return val ?? "";
 }
 
 export const config = {
+  // Mock mode — set FORCE_MOCK_MODE=true to run the full pipeline without Azure credentials
+  mockMode,
+
   // Azure AI Search Free tier (civicgrant-srch) — $0/month
   searchEndpoint: require_env("SEARCH_ENDPOINT"),
   searchApiKey: require_env("SEARCH_API_KEY"),
@@ -31,6 +41,14 @@ export const config = {
   // Azure Blob Storage (municipal docs corpus)
   blobConnectionString: process.env.BLOB_CONNECTION_STRING ?? "",
   blobContainerName: process.env.BLOB_CONTAINER_NAME ?? "civicgrant-docs",
+
+  // Microsoft Graph / SharePoint Work IQ context
+  graphTenantId: process.env.GRAPH_TENANT_ID ?? "",
+  graphClientId: process.env.GRAPH_CLIENT_ID ?? "",
+  graphClientSecret: process.env.GRAPH_CLIENT_SECRET ?? "",
+  graphSiteHostname: process.env.GRAPH_SITE_HOSTNAME ?? "communityessentials.sharepoint.com",
+  graphSitePath: process.env.GRAPH_SITE_PATH ?? "/sites/Clerk",
+  graphLibraryName: process.env.GRAPH_LIBRARY_NAME ?? "City Grant Intelligence",
 
   // Azure Resource details (for reference — set in .env, never hardcode)
   subscriptionId: process.env.AZURE_SUBSCRIPTION_ID ?? "",
