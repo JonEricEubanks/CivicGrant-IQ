@@ -12,7 +12,7 @@
  * returns low confidence, a backup (simpler prompt) steps in automatically.
  */
 
-import { getOpenAIClient } from "../agent";
+import { getOpenAIClient, normalizeDeadline } from "../agent";
 import { config } from "../config";
 import { withSpan, recordSubAgent } from "../telemetry";
 
@@ -364,6 +364,10 @@ export interface PortfolioItem {
   focusArea: string;
   topStrength: string;
   topGap: string;
+  /** Direct Grants.gov link when sourced from the live API */
+  grantsGovUrl?: string;
+  /** True when fundingAmount is the real published program funding (not an AI estimate) */
+  fundingVerified?: boolean;
 }
 
 function parsePortfolioItem(raw: string, fallbackName: string): PortfolioItem | null {
@@ -378,7 +382,7 @@ function parsePortfolioItem(raw: string, fallbackName: string): PortfolioItem | 
       matchScore: Number(obj.matchScore ?? 60),
       fundingAmount: Number(obj.fundingAmount ?? 0),
       awardRange: String(obj.awardRange ?? "Varies"),
-      deadline: String(obj.deadline ?? "2026-12-31"),
+      deadline: normalizeDeadline(String(obj.deadline ?? "2026-12-31")) ?? "2026-12-31",
       focusArea: String(obj.focusArea ?? "Infrastructure"),
       topStrength: String(obj.topStrength ?? "Strong CIP and financial capacity"),
       topGap: String(obj.topGap ?? "Review documentation requirements"),
@@ -412,8 +416,12 @@ export const PORTFOLIO_GRANT_DEFS = [
 ];
 
 /**
- * Runs all 5 grant screenings in parallel. Calls onItem as each completes
+/**
+ * Runs all grant screenings in parallel. Calls onItem as each completes
  * so the frontend can render progressively.
+ *
+ * Strategy: fetch live grants from grants.gov that match the city's focus areas,
+ * use up to 8 of them. Fall back to PORTFOLIO_GRANT_DEFS if the live call fails.
  */
 export async function runPortfolioScan(
   cityProfile: {
@@ -432,26 +440,99 @@ Priority Focus Areas: ${focusList}
 Current Active Projects: ${cityProfile.currentProjects}
 Financial: Aa2 Moody's, $14.6M reserves, 100% prior grant compliance`;
 
-  const screenGrant = async (def: { name: string; focus: string }): Promise<PortfolioItem | null> => {
-    const userContent = `${cityContext}\n\nGrant Program: ${def.name}\nGrant Focus: ${def.focus}`;
+  // ── 1. Fetch live grant candidates from grants.gov ────────────────────────
+  // Build a keyword string from focus areas (trim to 120 chars to stay within API limits)
+  const keyword = cityProfile.focusAreas
+    .join(" ")
+    .replace(/[<>"'`;]/g, "")
+    .trim()
+    .slice(0, 120);
+
+  let grantDefs: Array<{ name: string; focus: string; deadline?: string; grantsGovUrl?: string; funding?: number | null }> = [];
+  let usedLiveData = false;
+
+  try {
+    const apiBase = `http://localhost:${process.env.PORT ?? 3001}`;
+    const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keyword)}&rows=8&withFunding=1`;
+    const resp = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+    if (resp.ok) {
+      const data = (await resp.json()) as {
+        grants: Array<{
+          title: string;
+          agency: string;
+          closeDate: string;
+          cfda: string[];
+          grantsGovUrl: string;
+          id: string;
+          estimatedFunding?: number | null;
+        }>;
+      };
+      if (Array.isArray(data.grants) && data.grants.length >= 3) {
+        grantDefs = data.grants.map((g) => ({
+          name: g.title,
+          focus: `${g.agency}${g.cfda.length ? ` · CFDA ${g.cfda.join(", ")}` : ""}`,
+          deadline: g.closeDate,
+          grantsGovUrl: g.grantsGovUrl,
+          funding: g.estimatedFunding ?? null,
+        }));
+        usedLiveData = true;
+        console.log(
+          `[Portfolio] Using ${grantDefs.length} live grants.gov results for "${keyword}"`
+        );
+      }
+    }
+  } catch (liveErr) {
+    console.warn("[Portfolio] grants.gov live fetch failed, falling back to static defs:", (liveErr as Error).message);
+  }
+
+  // ── 2. Fall back to static defs if live call failed or returned too few ───
+  if (!usedLiveData) {
+    grantDefs = PORTFOLIO_GRANT_DEFS.map((d) => ({ name: d.name, focus: d.focus }));
+    console.log("[Portfolio] Using static PORTFOLIO_GRANT_DEFS (live API unavailable)");
+  }
+
+  // ── 3. Screen each grant with the AI agent in parallel ────────────────────
+  const screenGrant = async (def: {
+    name: string;
+    focus: string;
+    deadline?: string;
+    grantsGovUrl?: string;
+    funding?: number | null;
+  }): Promise<PortfolioItem | null> => {
+    const deadlineHint = def.deadline ? `\nApplication Deadline: ${def.deadline}` : "";
+    const userContent = `${cityContext}\n\nGrant Program: ${def.name}\nGrant Focus: ${def.focus}${deadlineHint}`;
     return withFallback(
       async () => {
         const text = await quickChat(PORTFOLIO_SCREEN_SYSTEM, userContent, 400);
         const item = parsePortfolioItem(text, def.name);
         if (!item) throw new Error("JSON parse failed");
+        // Inject real deadline and URL when available
+        if (def.deadline && item.deadline === "2026-12-31") item.deadline = def.deadline;
+        if (def.grantsGovUrl) (item as PortfolioItem & { grantsGovUrl?: string }).grantsGovUrl = def.grantsGovUrl;
+        // Override the LLM-guessed funding with the REAL program funding when published.
+        if (typeof def.funding === "number" && def.funding > 0) {
+          item.fundingAmount = def.funding;
+          item.fundingVerified = true;
+        }
         return item;
       },
       async () => {
         const text = await quickChat(PORTFOLIO_SCREEN_BACKUP, userContent, 300);
-        return parsePortfolioItem(text, def.name);
+        const item = parsePortfolioItem(text, def.name);
+        if (item && typeof def.funding === "number" && def.funding > 0) {
+          item.fundingAmount = def.funding;
+          item.fundingVerified = true;
+          if (def.grantsGovUrl) item.grantsGovUrl = def.grantsGovUrl;
+        }
+        return item;
       },
       (r) => r !== null && (r as PortfolioItem).matchScore > 0,
-      `Portfolio:${def.name.split(" ")[0]}`
+      `Portfolio:${def.name.slice(0, 20)}`
     );
   };
 
-  // Fire all 5 in parallel; call onItem as each resolves
-  const promises = PORTFOLIO_GRANT_DEFS.map((def) =>
+  // Fire all in parallel; call onItem as each resolves
+  const promises = grantDefs.map((def) =>
     screenGrant(def).then((item) => {
       if (item) onItem(item);
       return item;

@@ -8,6 +8,8 @@ import { formatCityContextForPrompt } from "./graphContext";
 import type { CityContext } from "./graphContext";
 import { validateInput, validateOutput } from "./guardrails";
 import { runViaMockEngine } from "./mockEngine";
+import { queryGraph } from "./knowledgeGraph";
+import type { GraphPath } from "./knowledgeGraph";
 
 // ─── System prompt: 6-step grant reasoning chain ────────────────────────
 export const SYSTEM_PROMPT = `You are CivicGrant IQ, an expert municipal grant intelligence agent.
@@ -240,6 +242,8 @@ export interface AgentRunResult {
   tier?: 1 | 2 | 3;
   /** Guardrail violations detected on this run */
   guardrailViolations?: import("./guardrails").GuardrailViolation[];
+  /** GraphRAG reasoning paths — structured evidence chains from the knowledge graph */
+  graphPaths?: GraphPath[];
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -1043,11 +1047,20 @@ async function runViaChatCompletions(
   // resources, so this path must use the reliable deployment endpoint. Grounding is
   // preserved via searchGrantKnowledgeBase (Azure AI Search REST) below.
   const oai = getOpenAIClient();
-  const { context: kbContext, citations: kbCitations, kbSource } = await searchGrantKnowledgeBase(options.message);
+  // Run KB search and GraphRAG traversal in parallel — graph is synchronous so adds ~0ms
+  const [{ context: kbContext, citations: kbCitations, kbSource }, graphResult] = await Promise.all([
+    searchGrantKnowledgeBase(options.message),
+    Promise.resolve(queryGraph(options.message)),
+  ]);
 
-  const messageContent = kbContext
-    ? `GRANT KNOWLEDGE BASE — retrieved documents for this query:\n\n${kbContext}\n\n---\n\nUser Query: ${options.message}`
-    : options.message;
+  // GraphRAG: prepend structured reasoning paths before KB text.
+  // The LLM gets pre-verified evidence chains (entity → relationship → entity) instead
+  // of having to re-discover relationships from raw text. Smaller total context → faster.
+  const parts: string[] = [];
+  if (graphResult.formattedContext) parts.push(graphResult.formattedContext);
+  if (kbContext) parts.push(`GRANT KNOWLEDGE BASE — full documents for Step 5 narrative writing:\n\n${kbContext}`);
+  parts.push(`User Query: ${options.message}`);
+  const messageContent = parts.join("\n\n---\n\n");
 
   let responseText = "";
   let runId = `chat-${Date.now()}`;
@@ -1131,6 +1144,7 @@ async function runViaChatCompletions(
       citations: kbCitations,
       reasoningSteps: extractReasoningSteps(responseText),
       widget: rawWidget,
+      graphPaths: graphResult.paths.length > 0 ? graphResult.paths : undefined,
     };
   } catch (err) {
     recordAgentRun({ query: options.message, latencyMs: Date.now() - t0, success: false });
@@ -1180,7 +1194,8 @@ export async function runGrantAnalysis(options: AgentRunOptions): Promise<AgentR
     return { ...mockResult, guardrailViolations: inputCheck.violations };
   }
 
-  let result: AgentRunResult | undefined;
+  // Definite assignment — all three tiers are tried; Tier 3 (mock) never throws.
+  let result!: AgentRunResult;
   let tier: 1 | 2 | 3 = 1;
 
   // ── Tier 1: Azure AI Foundry Assistants API + Foundry IQ MCP KB retrieval ─

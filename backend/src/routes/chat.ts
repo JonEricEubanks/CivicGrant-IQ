@@ -197,6 +197,11 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     if (result.citations.length > 0) send("citations", { citations: result.citations });
     if (result.widget) send("widget", result.widget);
 
+    // Emit GraphRAG reasoning paths for frontend visualization
+    if (result.graphPaths && result.graphPaths.length > 0) {
+      send("graph_paths", { paths: result.graphPaths });
+    }
+
     // Emit which tier of the LLM fallback chain handled this request
     if (result.tier) {
       const TIER_LABELS: Record<number, string> = {

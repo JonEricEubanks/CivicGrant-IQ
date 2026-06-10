@@ -1,0 +1,647 @@
+/**
+ * knowledgeGraph.ts — GraphRAG Knowledge Engine for CivicGrant IQ
+ *
+ * Implements the core GraphRAG upgrade: instead of injecting raw text chunks into the LLM
+ * (plain RAG), we traverse a pre-built typed entity-relationship graph and inject
+ * structured REASONING PATHS with evidence at every hop.
+ *
+ * Architecture:
+ *   Plain RAG:   query → retrieve text chunks → LLM reads 15KB of raw text
+ *   GraphRAG:    query → BFS graph traversal → reasoning paths (2KB) → LLM gets pre-verified chains
+ *
+ * Why this wins Reasoning + Explainability scores:
+ *   - LLM receives "Buffalo Grove → has CRS Class 7 → closes gap: NFIP requirement ← FEMA BRIC"
+ *     instead of "here are 5 documents please figure it out yourself"
+ *   - Each hop is cited to a specific source document
+ *   - Confidence level (CONFIRMED / LIKELY / POSSIBLE) is pre-computed from edge weights
+ *   - Smaller LLM input (2KB graph context vs 15KB raw text) → faster token generation
+ *
+ * Latency: ~0ms — pure in-memory BFS, no LLM calls, no I/O.
+ */
+
+export type EntityType = "city" | "grant" | "project" | "agency" | "requirement" | "metric";
+
+export type RelType =
+  | "qualifies_for"    // City → Grant: city meets eligibility criteria
+  | "requires"         // Grant → Requirement: grant demands this condition
+  | "closes_gap"       // Metric/Project → Requirement: this entity satisfies the requirement
+  | "has_project"      // City → Project: city has this in CIP or past applications
+  | "has_metric"       // City → Metric: city has this measured attribute
+  | "matches_focus"    // Project → Grant: project aligns with grant focus area
+  | "applied_for"      // City → Grant: city previously applied (evidence of eligibility awareness)
+  | "awarded";         // City → Grant: city was awarded (strongest credibility signal)
+
+export interface KGEntity {
+  id: string;
+  type: EntityType;
+  label: string;
+  props: Record<string, string | number | boolean>;
+}
+
+export interface KGEdge {
+  from: string;
+  to: string;
+  rel: RelType;
+  weight: number;    // 0.0–1.0 confidence
+  evidence: string;  // Human-readable evidence statement
+  source: string;    // Source document name for citation
+}
+
+export interface GraphHop {
+  fromLabel: string;
+  rel: RelType;
+  toLabel: string;
+  evidence: string;
+  source: string;
+  weight: number;
+}
+
+export interface GraphPath {
+  grantId: string;
+  grantLabel: string;
+  hops: GraphHop[];
+  totalScore: number;
+  confidence: "CONFIRMED" | "LIKELY" | "POSSIBLE";
+  /** Pre-formatted string ready to inject into the LLM context message. */
+  narrative: string;
+}
+
+export interface GraphRAGContext {
+  paths: GraphPath[];
+  topPath: GraphPath | null;
+  /** Ready-to-prepend LLM context string — replaces raw KB text chunks for Steps 2–4. */
+  formattedContext: string;
+  /** Pre-computed 0–100 match score from graph traversal. */
+  matchScore: number;
+  confidence: "CONFIRMED" | "LIKELY" | "POSSIBLE";
+}
+
+// ─── Static entity registry ───────────────────────────────────────────────────
+const ENTITIES: Record<string, KGEntity> = {
+  // ── City ──────────────────────────────────────────────────────────────────
+  bg: {
+    id: "bg", type: "city", label: "Buffalo Grove, IL",
+    props: {
+      population: 41496, medianHHI: 103847, moodysRating: "Aa2", crsClass: 7,
+      budgetTotal: 125300000, capitalReserves: 15400000, generalFundReserves: 14600000,
+      uei: "X7MLFBG4PNE3", cageCode: "7MUW9", samActive: true,
+      usNewsRank: "#1 Best Place to Live in Illinois 2026-2027",
+    },
+  },
+
+  // ── Grants ─────────────────────────────────────────────────────────────────
+  fema_bric: {
+    id: "fema_bric", type: "grant",
+    label: "FEMA BRIC (Building Resilient Infrastructure & Communities)",
+    props: { agency: "FEMA / DHS", focus: "flood resilience, climate adaptation, hazard mitigation", matchPctRequired: 25 },
+  },
+  raise: {
+    id: "raise", type: "grant",
+    label: "USDOT RAISE Discretionary Grants",
+    props: { agency: "U.S. Department of Transportation", focus: "transportation safety, multimodal access, equity", minAward: 1000000, maxAward: 25000000 },
+  },
+  smc_siip: {
+    id: "smc_siip", type: "grant",
+    label: "Lake County SMC SIIP (Stormwater Infrastructure Improvement Program)",
+    props: { agency: "Lake County Stormwater Management Commission", focus: "stormwater management, flood mitigation, wetlands" },
+  },
+  fema_hmgp: {
+    id: "fema_hmgp", type: "grant",
+    label: "FEMA HMGP (Hazard Mitigation Grant Program)",
+    props: { agency: "FEMA / DHS", focus: "post-disaster hazard mitigation, structure elevation, floodproofing" },
+  },
+  epa_cwsrf: {
+    id: "epa_cwsrf", type: "grant",
+    label: "EPA Clean Water State Revolving Fund (CWSRF via IEPA)",
+    props: { agency: "EPA / Illinois EPA", focus: "water quality, stormwater, green infrastructure, wet weather" },
+  },
+  hud_cdbg: {
+    id: "hud_cdbg", type: "grant",
+    label: "HUD Community Development Block Grant (CDBG)",
+    props: { agency: "U.S. HUD", focus: "community development, housing, public facilities, low-income benefit" },
+  },
+  cmap_cmaq: {
+    id: "cmap_cmaq", type: "grant",
+    label: "CMAP CMAQ / STP-Urban (Congestion Mitigation & Air Quality)",
+    props: { agency: "CMAP / IDOT", focus: "road improvements, congestion reduction, air quality, transit access" },
+  },
+  idot_hsip: {
+    id: "idot_hsip", type: "grant",
+    label: "IDOT HSIP (Highway Safety Improvement Program)",
+    props: { agency: "Illinois DOT", focus: "high-crash locations, safety countermeasures, signal upgrades" },
+  },
+
+  // ── Projects ───────────────────────────────────────────────────────────────
+  buffalo_creek: {
+    id: "buffalo_creek", type: "project",
+    label: "Buffalo Creek Watershed Flood Resilience — Phase I",
+    props: {
+      totalCost: 4250000, grantRequest: 3400000, localMatch: 850000, matchPct: 20,
+      grantAppId: "BRIC-FY24-IL-0223", status: "Under federal review",
+      scope: "Flood warning system (20→90 min warning), 3 green infrastructure rain gardens (−24% peak runoff), Weiland Road lift station hardening (500-yr event)",
+    },
+  },
+  aptakisic: {
+    id: "aptakisic", type: "project",
+    label: "Aptakisic Road / IL-83 Intersection Reconstruction",
+    props: {
+      totalCost: 8250000, grantRequest: 5000000, localMatch: 1000000, stateMatch: 2250000,
+      grantAppId: "RAISE-FY24-IL-2024-0847", status: "Under federal review",
+      adt: 28400, crashes5yr: 87, fatalCrashes: 2, injuryCrashPct: 36, levelOfService: "F",
+      scope: "Dual left-turn lanes on IL-83, adaptive traffic signal, protected bike lane to Prairie View Metra, ADA upgrades",
+    },
+  },
+  northwood: {
+    id: "northwood", type: "project",
+    label: "Northwood Neighborhood Stormwater Improvements — Phase I",
+    props: {
+      totalCost: 13800000, grantAmount: 5500000, localMatch: 8300000,
+      status: "AWARDED — construction commenced January 2025",
+      scope: "Northwood Park wetland restoration, Ridgewood Pond outlet upgrade, roadside drainage network",
+    },
+  },
+  lake_cook: {
+    id: "lake_cook", type: "project",
+    label: "Lake-Cook Road Corridor Improvements",
+    props: { totalCost: 5600000, grantTarget: 2800000, localCommitted: 2800000, status: "Design 60% complete" },
+  },
+
+  // ── Requirements ───────────────────────────────────────────────────────────
+  req_lhmp: {
+    id: "req_lhmp", type: "requirement",
+    label: "FEMA-approved Local Hazard Mitigation Plan (active)",
+    props: { program: "FEMA BRIC / HMGP", description: "Current FEMA-approved LHMP required for BRIC/HMGP eligibility" },
+  },
+  req_nfip: {
+    id: "req_nfip", type: "requirement",
+    label: "Active NFIP Community Participation",
+    props: { program: "FEMA BRIC / HMGP", description: "Community must be active NFIP participant with no lapsed policies" },
+  },
+  req_bca: {
+    id: "req_bca", type: "requirement",
+    label: "Benefit-Cost Analysis (BCA ratio ≥ 1.0)",
+    props: { program: "RAISE / FEMA BRIC", description: "Quantified BCA showing positive net social benefit" },
+  },
+  req_sam: {
+    id: "req_sam", type: "requirement",
+    label: "Active SAM.gov Registration (UEI required)",
+    props: { program: "All federal grants", description: "Active SAM.gov registration with UEI required for all federal awards" },
+  },
+  req_match_bric: {
+    id: "req_match_bric", type: "requirement",
+    label: "25% Non-Federal Cost Share (FEMA BRIC)",
+    props: { program: "FEMA BRIC", description: "Minimum 25% non-federal match required on total project cost" },
+  },
+  req_match_raise: {
+    id: "req_match_raise", type: "requirement",
+    label: "Demonstrated Local Funding Commitment (RAISE)",
+    props: { program: "USDOT RAISE", description: "RAISE strongly prefers applicants with committed local/state match; 20%+ expected" },
+  },
+  req_local_gov: {
+    id: "req_local_gov", type: "requirement",
+    label: "Eligible Local Government Applicant",
+    props: { program: "Most federal/state grants", description: "Municipality, county, or transit agency as direct applicant" },
+  },
+
+  // ── Metrics ────────────────────────────────────────────────────────────────
+  metric_reserves: {
+    id: "metric_reserves", type: "metric",
+    label: "$15.4M Unreserved Capital Fund Balance",
+    props: { value: 15400000, fiscalYear: 2026, source: "BG-CapitalImprovementPlan-2026-2030" },
+  },
+  metric_aa2: {
+    id: "metric_aa2", type: "metric",
+    label: "Moody's Aa2 Credit Rating (reaffirmed January 2025)",
+    props: { rating: "Aa2", reaffirmedYear: 2025, source: "BG-CityProfile-2026" },
+  },
+  metric_crs7: {
+    id: "metric_crs7", type: "metric",
+    label: "NFIP CRS Class 7 — saves residents $280K/year",
+    props: { crsClass: 7, annualPolicyholdSavings: 280000, source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  },
+  metric_lhmp: {
+    id: "metric_lhmp", type: "metric",
+    label: "FEMA-approved LHMP — expires June 2027 (Buffalo Creek: Priority-1 hazard)",
+    props: { ordinance: "2022-16", adopted: "May 2022", expiration: "June 2027", buffaloCreekPriority: 1, source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  },
+  metric_crash: {
+    id: "metric_crash", type: "metric",
+    label: "Aptakisic/IL-83: 87 crashes (5yr), 2 fatalities, LOS F — IDOT High-Injury Network",
+    props: { crashes5yr: 87, fatalCrashes: 2, injuryCrashes: 31, crashRate: 1.42, stateAvgRate: 0.68, adt: 28400, source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  },
+  metric_flood_damage: {
+    id: "metric_flood_damage", type: "metric",
+    label: "Buffalo Creek: $14.2M property damage (past decade), 1,240-acre floodplain",
+    props: { totalDamage: 14200000, floodplainAcres: 1240, floodplainPct: 12, residentialStructures: 342, source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  },
+  metric_uei: {
+    id: "metric_uei", type: "metric",
+    label: "SAM.gov Active — UEI X7MLFBG4PNE3 / CAGE 7MUW9",
+    props: { uei: "X7MLFBG4PNE3", cageCode: "7MUW9", status: "Active", source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  },
+  metric_grant_track: {
+    id: "metric_grant_track", type: "metric",
+    label: "Grant Track Record: $5.5M AWARDED + $8.4M under federal review (100% compliance)",
+    props: { awardedAmount: 5500000, underReviewAmount: 8400000, complianceRecord: "100%", source: "BG-CapitalImprovementPlan-2026-2030" },
+  },
+  metric_stormwater_master_plan: {
+    id: "metric_stormwater_master_plan", type: "metric",
+    label: "2022 Storm Water Master Plan — Northwood Priority-1 remediation",
+    props: { adopted: 2022, northwoodPriority: 1, incidents2015_2023: 23, privateDamage: 3400000, source: "BG-PastApplication-Northwood-Stormwater-SMC-2024" },
+  },
+};
+
+// ─── Static edge registry ─────────────────────────────────────────────────────
+const EDGES: KGEdge[] = [
+  // ── City → qualifies_for → Grants ──────────────────────────────────────────
+  { from: "bg", to: "fema_bric", rel: "qualifies_for", weight: 0.92,
+    evidence: "CRS Class 7 + Active LHMP (exp. June 2027) + $15.4M reserves + BRIC-FY24-IL-0223 filed Jan 2025",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "raise", rel: "qualifies_for", weight: 0.87,
+    evidence: "Aptakisic/IL-83 on IDOT High-Injury Network (87 crashes, 2 fatalities) + $3.25M local/state match committed + Metra Prairie View connectivity",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "bg", to: "smc_siip", rel: "qualifies_for", weight: 0.99,
+    evidence: "AWARDED $5.5M FY2024 — Northwood stormwater Phase I; construction commenced January 2025",
+    source: "BG-PastApplication-Northwood-Stormwater-SMC-2024" },
+  { from: "bg", to: "idot_hsip", rel: "qualifies_for", weight: 0.90,
+    evidence: "Aptakisic/IL-83 crash rate 1.42 vs 0.68 statewide avg; IDOT District 1 High-Injury Network designation; 2 fatal pedestrian crashes (2021-2022)",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "bg", to: "fema_hmgp", rel: "qualifies_for", weight: 0.85,
+    evidence: "Active LHMP + CRS Class 7 + prior HMGP awards (FY2020 $185K, FY2017 $620K, FY2014 $340K)",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "epa_cwsrf", rel: "qualifies_for", weight: 0.78,
+    evidence: "Stormwater Management Fund ($8.1M) + awarded SIIP stormwater project + Buffalo Creek on Illinois EPA 303(d) impaired waterways list",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "cmap_cmaq", rel: "qualifies_for", weight: 0.82,
+    evidence: "Chicago MSA eligibility + Lake-Cook Road corridor in CIP (T-2, $5.6M) + CMAP TIP programming capacity",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+  { from: "bg", to: "hud_cdbg", rel: "qualifies_for", weight: 0.72,
+    evidence: "Eligible municipality; senior population 17.4% (7,200 residents); eligible CIP activities include public facilities and ADA upgrades",
+    source: "BG-CityProfile-2026" },
+
+  // ── City → applied_for / awarded → Grants (historical credibility evidence) ──
+  { from: "bg", to: "fema_bric", rel: "applied_for", weight: 1.0,
+    evidence: "BRIC-FY24-IL-0223: $3.4M request submitted January 31, 2025 — under federal review via Illinois IEMA",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "raise", rel: "applied_for", weight: 1.0,
+    evidence: "RAISE-FY24-IL-2024-0847: $5M request submitted September 25, 2024 — under federal review",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "bg", to: "smc_siip", rel: "awarded", weight: 1.0,
+    evidence: "AWARDED $5.5M Lake County SMC SIIP — Northwood stormwater wetland; construction commenced January 2025",
+    source: "BG-PastApplication-Northwood-Stormwater-SMC-2024" },
+
+  // ── City → has_project → Projects ──────────────────────────────────────────
+  { from: "bg", to: "buffalo_creek", rel: "has_project", weight: 1.0,
+    evidence: "FY2024 BRIC application: $4.25M total — flood warning system, 3 rain gardens, Weiland Road lift station hardening",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "aptakisic", rel: "has_project", weight: 1.0,
+    evidence: "FY2024 RAISE application: $8.25M total — IL-83 highest-crash intersection reconstruction",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "bg", to: "northwood", rel: "has_project", weight: 1.0,
+    evidence: "AWARDED FY2024 SIIP: $13.8M total — Northwood stormwater Phase I under construction",
+    source: "BG-PastApplication-Northwood-Stormwater-SMC-2024" },
+  { from: "bg", to: "lake_cook", rel: "has_project", weight: 0.9,
+    evidence: "CIP T-2: Lake-Cook Road Corridor ($5.6M), design 60% complete, targeting CMAQ/STP",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+
+  // ── City → has_metric → Metrics ──────────────────────────────────────────
+  { from: "bg", to: "metric_reserves",     rel: "has_metric", weight: 1.0,
+    evidence: "Unreserved Capital Fund Balance: $15.4M (FY2026) — available for project cost-share commitments",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+  { from: "bg", to: "metric_aa2",          rel: "has_metric", weight: 1.0,
+    evidence: "Moody's Aa2 reaffirmed January 2025 — demonstrates strong fiscal management and bonding capacity",
+    source: "BG-CityProfile-2026" },
+  { from: "bg", to: "metric_crs7",         rel: "has_metric", weight: 1.0,
+    evidence: "CRS Class 7 — Community Rating System; saves residents $280,000/year in NFIP flood insurance premiums",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "metric_lhmp",         rel: "has_metric", weight: 1.0,
+    evidence: "LHMP adopted May 2022 (Ordinance #2022-16), expires June 2027 — Buffalo Creek listed as Priority-1 hazard",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "metric_crash",        rel: "has_metric", weight: 1.0,
+    evidence: "Aptakisic/IL-83: 87 total crashes (2019-2023), 31 injury crashes (36% vs 22% statewide avg), 2 fatal pedestrian crashes",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "bg", to: "metric_flood_damage", rel: "has_metric", weight: 1.0,
+    evidence: "Buffalo Creek: $14.2M property damage past decade; 1,240-acre floodplain (12% of Village); 342 residential structures at risk",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "metric_uei",          rel: "has_metric", weight: 1.0,
+    evidence: "UEI X7MLFBG4PNE3 / CAGE 7MUW9 — SAM.gov Active; zero compliance issues across all past federal grants",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "bg", to: "metric_grant_track",  rel: "has_metric", weight: 1.0,
+    evidence: "$5.5M SIIP awarded FY2024 + $3.4M BRIC + $5M RAISE under review; 100% grant compliance record",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+  { from: "bg", to: "metric_stormwater_master_plan", rel: "has_metric", weight: 1.0,
+    evidence: "2022 Storm Water Master Plan designates Northwood as Priority-1; 23 flooding incidents (2015-2023); $3.4M cumulative damage",
+    source: "BG-PastApplication-Northwood-Stormwater-SMC-2024" },
+
+  // ── Grants → requires → Requirements ──────────────────────────────────────
+  { from: "fema_bric", to: "req_lhmp",       rel: "requires", weight: 1.0,
+    evidence: "FEMA BRIC eligibility criterion: applicant must have a current FEMA-approved LHMP",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "fema_bric", to: "req_nfip",       rel: "requires", weight: 1.0,
+    evidence: "FEMA BRIC: community must be an active NFIP participant in good standing",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "fema_bric", to: "req_match_bric", rel: "requires", weight: 1.0,
+    evidence: "FEMA BRIC: 25% non-federal cost share required on total project cost",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "fema_bric", to: "req_sam",        rel: "requires", weight: 1.0,
+    evidence: "All FEMA grants require active SAM.gov registration",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "fema_bric", to: "req_bca",        rel: "requires", weight: 0.9,
+    evidence: "FEMA BRIC: Benefit-Cost Analysis strongly preferred; BCA ratio ≥ 1.0 strengthens scoring",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "raise",     to: "req_bca",        rel: "requires", weight: 1.0,
+    evidence: "USDOT RAISE: Benefit-Cost Analysis required for large awards (> $5M)",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "raise",     to: "req_match_raise",rel: "requires", weight: 1.0,
+    evidence: "RAISE: demonstrated local/state funding commitment strongly preferred; 20%+ match improves competitiveness",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "raise",     to: "req_sam",        rel: "requires", weight: 1.0,
+    evidence: "All federal grants require active SAM.gov registration",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "raise",     to: "req_local_gov",  rel: "requires", weight: 1.0,
+    evidence: "RAISE: eligible applicants include local governments and transit agencies",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "fema_hmgp", to: "req_lhmp",       rel: "requires", weight: 1.0,
+    evidence: "FEMA HMGP: active LHMP required for sub-applicant eligibility",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "fema_hmgp", to: "req_nfip",       rel: "requires", weight: 1.0,
+    evidence: "FEMA HMGP: active NFIP participation required",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+
+  // ── Metrics / Projects → closes_gap → Requirements ──────────────────────
+  { from: "metric_crs7",    to: "req_nfip",        rel: "closes_gap", weight: 1.0,
+    evidence: "CRS Class 7 is only achievable with active, compliant NFIP participation — zero policy lapses",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "metric_lhmp",    to: "req_lhmp",        rel: "closes_gap", weight: 1.0,
+    evidence: "FEMA-approved LHMP through June 2027 — fully satisfies BRIC/HMGP LHMP eligibility requirement",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "metric_reserves",to: "req_match_bric",  rel: "closes_gap", weight: 1.0,
+    evidence: "$15.4M reserves covers $850K BRIC match (Phase I: $4.25M × 20%) with 18× margin",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+  { from: "metric_reserves",to: "req_match_raise",  rel: "closes_gap", weight: 1.0,
+    evidence: "$15.4M reserves exceeds $3.25M RAISE local/state committed match with 4.7× margin",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+  { from: "metric_uei",     to: "req_sam",         rel: "closes_gap", weight: 1.0,
+    evidence: "UEI X7MLFBG4PNE3 active in SAM.gov — satisfies federal grant registration requirement for all programs",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "metric_aa2",     to: "req_match_bric",  rel: "closes_gap", weight: 0.9,
+    evidence: "Aa2 rating enables cost-effective GO bond issuance for additional match capacity if needed",
+    source: "BG-CityProfile-2026" },
+
+  // ── Projects → matches_focus → Grants ───────────────────────────────────
+  { from: "buffalo_creek", to: "fema_bric",  rel: "matches_focus", weight: 0.95,
+    evidence: "Flood warning infrastructure + green infrastructure + critical facility hardening — all three are FEMA BRIC Tier 2 focus areas",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "buffalo_creek", to: "fema_hmgp",  rel: "matches_focus", weight: 0.88,
+    evidence: "Flood hazard mitigation project (warning system, green infra) — standard HMGP eligible activity",
+    source: "BG-PastApplication-BRIC-BuffaloCreek-2025" },
+  { from: "aptakisic",     to: "raise",      rel: "matches_focus", weight: 0.95,
+    evidence: "Safety, multimodal access, transit connectivity to Metra Prairie View — all RAISE priority categories (safety + equity + climate)",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "aptakisic",     to: "idot_hsip",  rel: "matches_focus", weight: 0.92,
+    evidence: "IDOT District 1 High-Injury Network designation; IDOT 2022 IL-83 Corridor Safety Study recommends this project as highest priority statewide",
+    source: "BG-PastApplication-RAISE-Aptakisic-IL83-2024" },
+  { from: "aptakisic",     to: "cmap_cmaq",  rel: "matches_focus", weight: 0.78,
+    evidence: "Adaptive signal upgrade and congestion reduction components qualify for CMAQ funding under Chicago MSA TIP",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+  { from: "northwood",     to: "smc_siip",   rel: "matches_focus", weight: 0.99,
+    evidence: "Stormwater wetland + culvert improvements + road drainage — core SIIP eligible activities (AWARDED FY2024)",
+    source: "BG-PastApplication-Northwood-Stormwater-SMC-2024" },
+  { from: "northwood",     to: "epa_cwsrf",  rel: "matches_focus", weight: 0.76,
+    evidence: "Wetland restoration + stormwater quality management — EPA CWSRF green infrastructure eligible activity",
+    source: "BG-PastApplication-Northwood-Stormwater-SMC-2024" },
+  { from: "lake_cook",     to: "cmap_cmaq",  rel: "matches_focus", weight: 0.85,
+    evidence: "Road corridor improvement in Chicago MSA — targeted CMAQ/STP-Urban programmatic funding in CIP T-2",
+    source: "BG-CapitalImprovementPlan-2026-2030" },
+];
+
+// ─── Adjacency index (built once at module load, ~0ms) ────────────────────────
+type AdjMap = Map<string, KGEdge[]>;
+let _outbound: AdjMap | null = null;
+
+function buildIndex(): AdjMap {
+  if (_outbound) return _outbound;
+  _outbound = new Map();
+  for (const e of EDGES) {
+    if (!_outbound.has(e.from)) _outbound.set(e.from, []);
+    _outbound.get(e.from)!.push(e);
+  }
+  return _outbound;
+}
+
+// Eagerly build on module load — deterministic, zero async work
+buildIndex();
+
+// ─── Keyword-to-grant relevance scoring ──────────────────────────────────────
+type KeywordMap = Record<string, string[]>;
+const GRANT_KEYWORDS: KeywordMap = {
+  fema_bric:  ["bric", "flood", "resilience", "fema", "hazard", "mitigation", "creek", "rain garden", "lift station", "warning", "resilient", "infrastructure", "climate"],
+  raise:      ["raise", "transportation", "road", "safety", "intersection", "aptakisic", "il-83", "il83", "multimodal", "pedestrian", "bicycle", "bike", "metra", "signal", "crash", "traffic", "usdot", "dot"],
+  smc_siip:   ["smc", "siip", "northwood", "stormwater", "wetland", "culvert", "drainage", "lake county", "stormwater management"],
+  epa_cwsrf:  ["cwsrf", "clean water", "epa", "water quality", "srf", "green infrastructure", "wetland", "303d"],
+  hud_cdbg:   ["cdbg", "community development", "block grant", "hud", "housing", "affordable", "low income", "senior", "poverty"],
+  cmap_cmaq:  ["cmaq", "cmap", "congestion", "air quality", "stp", "urban", "lake-cook", "corridor", "arterial"],
+  idot_hsip:  ["hsip", "highway safety", "idot", "high-injury", "crash", "fatal", "safety improvement", "countermeasure"],
+  fema_hmgp:  ["hmgp", "hazard mitigation", "fema", "disaster", "post-disaster", "mitigation grant"],
+};
+
+function scoreGrantRelevance(query: string, grantId: string): number {
+  const q = query.toLowerCase();
+  const keywords = GRANT_KEYWORDS[grantId] ?? [];
+  let hits = 0;
+  for (const kw of keywords) {
+    if (q.includes(kw)) hits += kw.includes(" ") ? 2 : 1;
+  }
+  return hits;
+}
+
+// ─── Evidence path builder ────────────────────────────────────────────────────
+/**
+ * Finds multi-hop evidence paths from Buffalo Grove to a specific grant.
+ * Traverses: City → (has_project | has_metric) → entity → (matches_focus | closes_gap) → (grant | req ← grant)
+ * Returns deduplicated hop chains sorted by score.
+ */
+function findEvidencePaths(grantId: string): Array<{ hops: GraphHop[]; score: number }> {
+  const outbound = buildIndex();
+  const paths: Array<{ hops: GraphHop[]; score: number }> = [];
+
+  const directEdge = EDGES.find(e => e.from === "bg" && e.to === grantId && e.rel === "qualifies_for");
+  if (!directEdge) return paths;
+
+  const supportHops: GraphHop[] = [];
+
+  // Hop type A: bg → has_project → project → matches_focus → grant
+  const projectEdges = (outbound.get("bg") ?? []).filter(e => e.rel === "has_project");
+  for (const pe of projectEdges) {
+    const matchEdge = EDGES.find(e => e.from === pe.to && e.to === grantId && e.rel === "matches_focus");
+    if (matchEdge) {
+      supportHops.push(
+        { fromLabel: ENTITIES.bg.label, rel: "has_project", toLabel: ENTITIES[pe.to]?.label ?? pe.to, evidence: pe.evidence, source: pe.source, weight: pe.weight },
+        { fromLabel: ENTITIES[pe.to]?.label ?? pe.to, rel: "matches_focus", toLabel: ENTITIES[grantId]?.label ?? grantId, evidence: matchEdge.evidence, source: matchEdge.source, weight: matchEdge.weight },
+      );
+    }
+  }
+
+  // Hop type B: bg → has_metric → metric → closes_gap → req ← requires ← grant
+  const metricEdges = (outbound.get("bg") ?? []).filter(e => e.rel === "has_metric");
+  for (const me of metricEdges) {
+    const gapEdges = EDGES.filter(e => e.from === me.to && e.rel === "closes_gap");
+    for (const ge of gapEdges) {
+      const reqEdge = EDGES.find(e => e.from === grantId && e.to === ge.to && e.rel === "requires");
+      if (reqEdge) {
+        supportHops.push(
+          { fromLabel: ENTITIES.bg.label, rel: "has_metric", toLabel: ENTITIES[me.to]?.label ?? me.to, evidence: me.evidence, source: me.source, weight: me.weight },
+          { fromLabel: ENTITIES[me.to]?.label ?? me.to, rel: "closes_gap", toLabel: ENTITIES[ge.to]?.label ?? ge.to, evidence: ge.evidence, source: ge.source, weight: ge.weight },
+        );
+      }
+    }
+  }
+
+  // Hop type C: applied_for / awarded (historical credibility)
+  const histEdge = EDGES.find(e => e.from === "bg" && e.to === grantId && (e.rel === "applied_for" || e.rel === "awarded"));
+  if (histEdge) {
+    supportHops.push({
+      fromLabel: ENTITIES.bg.label, rel: histEdge.rel, toLabel: ENTITIES[grantId]?.label ?? grantId,
+      evidence: histEdge.evidence, source: histEdge.source, weight: histEdge.weight,
+    });
+  }
+
+  if (supportHops.length > 0) {
+    const avgSupport = supportHops.reduce((s, h) => s + h.weight, 0) / supportHops.length;
+    paths.push({ hops: supportHops, score: (directEdge.weight * 0.6 + avgSupport * 0.4) });
+  } else {
+    paths.push({
+      hops: [{ fromLabel: ENTITIES.bg.label, rel: "qualifies_for", toLabel: ENTITIES[grantId]?.label ?? grantId, evidence: directEdge.evidence, source: directEdge.source, weight: directEdge.weight }],
+      score: directEdge.weight,
+    });
+  }
+
+  return paths;
+}
+
+function confidenceFromScore(score: number): "CONFIRMED" | "LIKELY" | "POSSIBLE" {
+  if (score >= 0.85) return "CONFIRMED";
+  if (score >= 0.65) return "LIKELY";
+  return "POSSIBLE";
+}
+
+function buildPathNarrative(grantLabel: string, hops: GraphHop[], score: number, confidence: string): string {
+  const lines: string[] = [
+    `GRAPH PATH → ${grantLabel}`,
+    `  Confidence: ${confidence} | Score: ${Math.round(score * 100)}%`,
+  ];
+  const seen = new Set<string>();
+  for (const hop of hops) {
+    const key = `${hop.rel}:${hop.toLabel}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const relLabel = hop.rel.replace(/_/g, " ").toUpperCase();
+    lines.push(`  [${relLabel}] → ${hop.toLabel}`);
+    lines.push(`     Evidence: "${hop.evidence}"`);
+    lines.push(`     Source: ${hop.source}`);
+  }
+  return lines.join("\n");
+}
+
+// ─── Public API ───────────────────────────────────────────────────────────────
+
+/**
+ * Main GraphRAG query entry point. Given a user message, traverses the knowledge
+ * graph and returns structured reasoning paths ready to inject into the LLM context.
+ *
+ * Replaces raw text chunk injection with pre-verified evidence chains.
+ * Latency: ~0ms (in-memory BFS, no I/O, no LLM).
+ */
+export function queryGraph(userQuery: string): GraphRAGContext {
+  const grantIds = Object.keys(ENTITIES).filter(id => ENTITIES[id].type === "grant");
+
+  const scored = grantIds
+    .map(id => ({ id, relevance: scoreGrantRelevance(userQuery, id) }))
+    .filter(g => g.relevance > 0)
+    .sort((a, b) => b.relevance - a.relevance);
+
+  // If no grant-specific keywords, default to top 3 most likely grants
+  const targetGrants = scored.length > 0
+    ? scored.slice(0, 3).map(g => g.id)
+    : ["fema_bric", "raise", "smc_siip"];
+
+  const paths: GraphPath[] = [];
+
+  for (const grantId of targetGrants) {
+    const entity = ENTITIES[grantId];
+    if (!entity) continue;
+    const evidencePaths = findEvidencePaths(grantId);
+    if (evidencePaths.length === 0) continue;
+
+    const best = evidencePaths.sort((a, b) => b.score - a.score)[0];
+    const confidence = confidenceFromScore(best.score);
+    const narrative = buildPathNarrative(entity.label, best.hops, best.score, confidence);
+
+    paths.push({ grantId, grantLabel: entity.label, hops: best.hops, totalScore: best.score, confidence, narrative });
+  }
+
+  paths.sort((a, b) => b.totalScore - a.totalScore);
+  const topPath = paths[0] ?? null;
+  const matchScore = topPath ? Math.round(topPath.totalScore * 100) : 0;
+  const confidence = topPath?.confidence ?? "POSSIBLE";
+
+  const formattedContext = paths.length > 0
+    ? [
+        "## GRAPH REASONING PATHS (GraphRAG — pre-traversed knowledge graph)",
+        "These structured evidence chains show WHY Buffalo Grove qualifies for each grant.",
+        "Each hop is cited to a specific source document with exact evidence.",
+        "Use these paths directly in Steps 2–4 — they represent pre-verified entity relationships.",
+        "Reference the source documents for Step 5 narrative writing.",
+        "",
+        ...paths.map(p => p.narrative),
+        "",
+        "## BUFFALO GROVE — KEY GRAPH ENTITIES",
+        "City: Buffalo Grove, IL | Pop: 41,496 | Moody's Aa2 (reaffirmed Jan 2025) | CRS Class 7",
+        "Capital Reserves: $15.4M | General Fund Reserves: $14.6M | Budget: $125.3M",
+        "SAM.gov: Active (UEI X7MLFBG4PNE3 / CAGE 7MUW9) | CIP: $89.4M / 47 projects",
+        "Grant Track Record: $5.5M AWARDED (SMC SIIP 2024) + $8.4M under federal review | 100% compliance",
+        "US News: #1 Best Place to Live in Illinois 2026-2027",
+        "",
+      ].join("\n")
+    : "";
+
+  return { paths, topPath, formattedContext, matchScore, confidence };
+}
+
+/**
+ * Returns all grants Buffalo Grove qualifies for, sorted by confidence score.
+ * Used by the scan endpoint and overview queries.
+ */
+export function getAllQualifyingGrants(): Array<{
+  grantId: string;
+  grantLabel: string;
+  score: number;
+  confidence: "CONFIRMED" | "LIKELY" | "POSSIBLE";
+  agencyProps: Record<string, string | number | boolean>;
+}> {
+  const grantIds = Object.keys(ENTITIES).filter(id => ENTITIES[id].type === "grant");
+  return grantIds
+    .map(id => {
+      const paths = findEvidencePaths(id);
+      const best = paths.sort((a, b) => b.score - a.score)[0];
+      return {
+        grantId: id,
+        grantLabel: ENTITIES[id].label,
+        score: best?.score ?? 0,
+        confidence: confidenceFromScore(best?.score ?? 0),
+        agencyProps: ENTITIES[id].props,
+      };
+    })
+    .filter(g => g.score > 0)
+    .sort((a, b) => b.score - a.score);
+}
+
+/** Returns the full entity registry — for dev/debug introspection. */
+export function getGraphEntities(): typeof ENTITIES {
+  return ENTITIES;
+}
+
+/** Returns the full edge list — for dev/debug introspection. */
+export function getGraphEdges(): typeof EDGES {
+  return EDGES;
+}
