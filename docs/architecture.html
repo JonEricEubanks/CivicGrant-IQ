@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicGrant IQ — Architecture</title>
+    <style>
+      :root {
+        --azure: #0078d4;
+        --azure-deep: #004e8c;
+        --foundry: #6e40c9;
+        --teal: #00b7c3;
+        --green: #107c10;
+        --amber: #c19c00;
+        --red: #d13438;
+        --ink: #1b1a19;
+        --muted: #605e5c;
+        --card: #ffffff;
+        --bg: #f3f2f1;
+        --line: #e1dfdd;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          "Segoe UI",
+          -apple-system,
+          BlinkMacSystemFont,
+          Roboto,
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── Header ─────────────────────────────────────── */
+      header {
+        background: linear-gradient(
+          135deg,
+          var(--azure-deep) 0%,
+          var(--azure) 55%,
+          var(--foundry) 100%
+        );
+        color: #fff;
+        padding: 40px 24px 32px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 255, 255, 0.12),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 15% 85%,
+            rgba(255, 255, 255, 0.07),
+            transparent 40%
+          );
+      }
+      header h1 {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+        position: relative;
+      }
+      header h1 .badge {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        font-size: 26px;
+      }
+      header p {
+        margin-top: 8px;
+        font-size: 15px;
+        opacity: 0.92;
+        position: relative;
+      }
+      header .sub {
+        margin-top: 4px;
+        font-size: 13px;
+        opacity: 0.75;
+        position: relative;
+      }
+
+      /* ── Stats strip ────────────────────────────────── */
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+      .stat {
+        flex: 1 1 130px;
+        max-width: 190px;
+        text-align: center;
+        padding: 22px 12px;
+        border-right: 1px solid var(--line);
+      }
+      .stat:last-child {
+        border-right: none;
+      }
+      .stat .num {
+        font-size: 34px;
+        font-weight: 700;
+        color: var(--azure);
+        font-variant-numeric: tabular-nums;
+      }
+      .stat:nth-child(2) .num {
+        color: var(--foundry);
+      }
+      .stat:nth-child(3) .num {
+        color: var(--teal);
+      }
+      .stat:nth-child(4) .num {
+        color: var(--green);
+      }
+      .stat:nth-child(5) .num {
+        color: var(--amber);
+      }
+      .stat:nth-child(6) .num {
+        color: var(--red);
+      }
+      .stat .lbl {
+        font-size: 12.5px;
+        color: var(--muted);
+        margin-top: 4px;
+        line-height: 1.35;
+      }
+
+      /* ── Legend ─────────────────────────────────────── */
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        padding: 18px 16px 4px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ink);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+      .chip .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .chip .dash {
+        width: 22px;
+        height: 0;
+        border-top: 3px dashed currentColor;
+        border-radius: 2px;
+      }
+
+      /* ── Diagram ────────────────────────────────────── */
+      .diagram-wrap {
+        max-width: 1240px;
+        margin: 8px auto 0;
+        padding: 12px 16px 8px;
+      }
+      svg#arch {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      svg text {
+        font-family: "Segoe UI", sans-serif;
+      }
+      .card-rect {
+        fill: var(--card);
+        stroke: var(--line);
+        stroke-width: 1.5;
+        filter: drop-shadow(0 3px 7px rgba(0, 0, 0, 0.1));
+        transition:
+          filter 0.2s ease,
+          transform 0.2s ease;
+      }
+      g.card {
+        cursor: default;
+      }
+      g.card:hover .card-rect {
+        filter: drop-shadow(0 7px 16px rgba(0, 0, 0, 0.18));
+      }
+      g.card:hover {
+        transform: translateY(-2px);
+      }
+      g.card {
+        transition: transform 0.2s ease;
+      }
+      .card-accent {
+        rx: 3;
+      }
+      .card-title {
+        font-size: 14.5px;
+        font-weight: 700;
+        fill: var(--ink);
+      }
+      .card-sub {
+        font-size: 11.5px;
+        fill: var(--muted);
+      }
+      .card-item {
+        font-size: 11.5px;
+        fill: #3b3a39;
+      }
+      .card-tag {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+      }
+      .zone-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.6px;
+        fill: var(--muted);
+      }
+
+      /* hub */
+      .hub-outer {
+        fill: none;
+        stroke: var(--azure);
+        stroke-width: 1.5;
+        opacity: 0.35;
+      }
+      .hub-core {
+        fill: url(#hubGrad);
+        filter: drop-shadow(0 6px 18px rgba(0, 90, 180, 0.35));
+      }
+      .hub-title {
+        fill: #fff;
+        font-size: 17px;
+        font-weight: 700;
+      }
+      .hub-sub {
+        fill: rgba(255, 255, 255, 0.85);
+        font-size: 11px;
+      }
+      .pulse {
+        fill: none;
+        stroke: var(--azure);
+        stroke-width: 2;
+        opacity: 0;
+        animation: pulse 3s ease-out infinite;
+        transform-origin: center;
+        transform-box: fill-box;
+      }
+      .pulse.p2 {
+        animation-delay: 1.5s;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 0.55;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.55);
+        }
+      }
+
+      /* flows */
+      .flow {
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 7 7;
+        animation: dashflow 1.1s linear infinite;
+      }
+      .flow.rev {
+        animation: dashflow-rev 1.1s linear infinite;
+      }
+      @keyframes dashflow {
+        to {
+          stroke-dashoffset: -14;
+        }
+      }
+      @keyframes dashflow-rev {
+        to {
+          stroke-dashoffset: 14;
+        }
+      }
+      .flow.analyze {
+        stroke: var(--azure);
+      }
+      .flow.spawn {
+        stroke: var(--foundry);
+      }
+      .flow.ground {
+        stroke: var(--teal);
+      }
+      .flow.fallback {
+        stroke: var(--amber);
+        stroke-dasharray: 3 8;
+      }
+      .flow.guard {
+        stroke: var(--green);
+      }
+
+      .flow-dot {
+        r: 4.2;
+        opacity: 0.95;
+      }
+      .fd-analyze {
+        fill: var(--azure);
+      }
+      .fd-spawn {
+        fill: var(--foundry);
+      }
+      .fd-ground {
+        fill: var(--teal);
+      }
+      .fd-fallback {
+        fill: var(--amber);
+      }
+      .fd-guard {
+        fill: var(--green);
+      }
+
+      /* agent pips */
+      .pip {
+        animation: pipblink 2.4s ease-in-out infinite;
+      }
+      .pip:nth-of-type(2) {
+        animation-delay: 0.4s;
+      }
+      @keyframes pipblink {
+        0%,
+        100% {
+          opacity: 0.35;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* tier badge blink */
+      .tier-ok {
+        animation: tierglow 2.8s ease-in-out infinite;
+      }
+      @keyframes tierglow {
+        0%,
+        100% {
+          opacity: 0.75;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* ── Loop strip ─────────────────────────────────── */
+      .loop {
+        max-width: 1240px;
+        margin: 10px auto 0;
+        padding: 0 16px 8px;
+      }
+      .loop h2 {
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .loop-steps {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+      .lstep {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 9px 13px;
+        font-size: 12px;
+        color: #3b3a39;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        opacity: 0.55;
+        transition:
+          opacity 0.3s,
+          box-shadow 0.3s,
+          border-color 0.3s;
+      }
+      .lstep.active {
+        opacity: 1;
+        border-color: var(--azure);
+        box-shadow: 0 3px 10px rgba(0, 120, 212, 0.22);
+      }
+      .lstep .n {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--azure);
+        color: #fff;
+        font-weight: 700;
+        font-size: 11px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+      }
+
+      /* ── Footer ─────────────────────────────────────── */
+      footer {
+        margin-top: 26px;
+        background: var(--ink);
+        color: #c8c6c4;
+        text-align: center;
+        padding: 22px 16px;
+        font-size: 12.5px;
+        line-height: 1.7;
+      }
+      footer b {
+        color: #fff;
+      }
+      footer a {
+        color: #6cb8f6;
+        text-decoration: none;
+      }
+
+      @media (max-width: 760px) {
+        .stat {
+          flex-basis: 33%;
+          border-right: none;
+        }
+        header h1 {
+          font-size: 23px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1><span class="badge">🏛️</span>CivicGrant IQ — System Architecture</h1>
+      <p>
+        An AI grant analyst for municipal governments · grounded retrieval,
+        cited at every reasoning hop
+      </p>
+      <div class="sub">
+        Agents League @ AI Skills Fest 2026 · Reasoning Agents Track · Microsoft
+        Foundry
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num" data-count="5">0</div>
+        <div class="lbl">specialist agents</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-count="6">0</div>
+        <div class="lbl">reasoning steps</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-count="17">0</div>
+        <div class="lbl">SSE event types</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-count="17">0</div>
+        <div class="lbl">guardrail rules</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-count="3">0</div>
+        <div class="lbl">fallback tiers<br />(never down)</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-count="49">0</div>
+        <div class="lbl">typed graph edges<br />(29 entities)</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="chip" style="color: var(--azure)"
+        ><span class="dash"></span
+        ><span style="color: var(--ink)"
+          >Analyze — NOFO in, SSE stream out</span
+        ></span
+      >
+      <span class="chip" style="color: var(--foundry)"
+        ><span class="dash"></span
+        ><span style="color: var(--ink)"
+          >Spawn — parallel agent fleet</span
+        ></span
+      >
+      <span class="chip" style="color: var(--teal)"
+        ><span class="dash"></span
+        ><span style="color: var(--ink)"
+          >Ground — Foundry IQ + Work IQ</span
+        ></span
+      >
+      <span class="chip" style="color: var(--amber)"
+        ><span class="dash"></span
+        ><span style="color: var(--ink)">Fallback — Tier 2 / Tier 3</span></span
+      >
+      <span class="chip" style="color: var(--green)"
+        ><span class="dash"></span
+        ><span style="color: var(--ink)"
+          >Guard &amp; Trace — G01–G17 + OpenTelemetry</span
+        ></span
+      >
+    </div>
+
+    <div class="diagram-wrap">
+      <svg
+        id="arch"
+        viewBox="0 0 1200 760"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="CivicGrant IQ architecture diagram"
+      >
+        <defs>
+          <linearGradient id="hubGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0078D4" />
+            <stop offset="100%" stop-color="#6E40C9" />
+          </linearGradient>
+        </defs>
+
+        <!-- zone labels -->
+        <text class="zone-label" x="160" y="30">
+          EXPERIENCE · AZURE STATIC WEB APPS
+        </text>
+        <text class="zone-label" x="880" y="30">
+          AZURE EASTUS2 · INTELLIGENCE
+        </text>
+        <text class="zone-label" x="60" y="585">RELIABILITY</text>
+        <text class="zone-label" x="900" y="585">KNOWLEDGE SOURCES</text>
+
+        <!-- ════════ FLOW PATHS (under cards) ════════ -->
+        <!-- Analyze: Frontend -> Hub -->
+        <path
+          id="f-analyze"
+          class="flow analyze"
+          d="M 310 150 C 420 180, 470 250, 520 320"
+        />
+        <!-- Hub -> Fleet (spawn) -->
+        <path
+          id="f-spawn"
+          class="flow spawn"
+          d="M 600 470 C 600 510, 600 530, 600 552"
+        />
+        <!-- Hub -> Azure services (ground) -->
+        <path
+          id="f-ground"
+          class="flow ground"
+          d="M 690 350 C 780 320, 820 250, 880 180"
+        />
+        <!-- Azure -> Knowledge sources (ground, vertical right) -->
+        <path
+          id="f-ground2"
+          class="flow ground"
+          d="M 1000 260 C 1000 380, 1000 480, 1000 552"
+        />
+        <!-- Hub -> Reliability (fallback) -->
+        <path
+          id="f-fallback"
+          class="flow fallback"
+          d="M 510 350 C 400 380, 290 470, 215 552"
+        />
+        <!-- Guardrails wrap: Frontend <- Hub trace back -->
+        <path
+          id="f-guard"
+          class="flow guard rev"
+          d="M 520 400 C 430 430, 330 350, 250 210"
+        />
+
+        <!-- travelling dots -->
+        <circle class="flow-dot fd-analyze">
+          <animateMotion dur="2.6s" repeatCount="indefinite">
+            <mpath href="#f-analyze" />
+          </animateMotion>
+        </circle>
+        <circle class="flow-dot fd-spawn">
+          <animateMotion dur="2.2s" repeatCount="indefinite" begin="0.5s">
+            <mpath href="#f-spawn" />
+          </animateMotion>
+        </circle>
+        <circle class="flow-dot fd-ground">
+          <animateMotion dur="2.6s" repeatCount="indefinite" begin="0.9s">
+            <mpath href="#f-ground" />
+          </animateMotion>
+        </circle>
+        <circle class="flow-dot fd-ground">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="1.4s">
+            <mpath href="#f-ground2" />
+          </animateMotion>
+        </circle>
+        <circle class="flow-dot fd-fallback">
+          <animateMotion dur="3.2s" repeatCount="indefinite" begin="0.7s">
+            <mpath href="#f-fallback" />
+          </animateMotion>
+        </circle>
+        <circle class="flow-dot fd-guard">
+          <animateMotion
+            dur="3s"
+            repeatCount="indefinite"
+            begin="1.1s"
+            keyPoints="1;0"
+            keyTimes="0;1"
+            calcMode="linear"
+          >
+            <mpath href="#f-guard" />
+          </animateMotion>
+        </circle>
+
+        <!-- ════════ CENTRAL HUB ════════ -->
+        <g class="card">
+          <circle class="pulse" cx="600" cy="380" r="98" />
+          <circle class="pulse p2" cx="600" cy="380" r="98" />
+          <circle class="hub-outer" cx="600" cy="380" r="112" />
+          <circle class="hub-core" cx="600" cy="380" r="95" />
+          <text class="hub-title" x="600" y="358" text-anchor="middle">
+            CivicGrant IQ
+          </text>
+          <text class="hub-sub" x="600" y="378" text-anchor="middle">
+            Express + TypeScript
+          </text>
+          <text class="hub-sub" x="600" y="394" text-anchor="middle">
+            POST /api/chat · SSE
+          </text>
+          <text class="hub-sub" x="600" y="412" text-anchor="middle">
+            6-step reasoning chain
+          </text>
+          <text class="hub-sub" x="600" y="428" text-anchor="middle">
+            GraphRAG evidence paths
+          </text>
+        </g>
+
+        <!-- ════════ FRONTEND CARD (top-left) ════════ -->
+        <g class="card">
+          <rect
+            class="card-rect"
+            x="60"
+            y="48"
+            width="280"
+            height="130"
+            rx="10"
+          />
+          <rect
+            class="card-accent"
+            x="60"
+            y="48"
+            width="6"
+            height="130"
+            fill="#61DAFB"
+          />
+          <text class="card-title" x="84" y="76">🖥️ React 18 Frontend</text>
+          <text class="card-sub" x="84" y="94">
+            Vite · Azure Static Web Apps
+          </text>
+          <text class="card-item" x="84" y="118">
+            • ChatInterface — 17 SSE event types
+          </text>
+          <text class="card-item" x="84" y="136">
+            • GraphPaths panel (hero artifact)
+          </text>
+          <text class="card-item" x="84" y="154">
+            • Match / RedTeam / Competitor widgets
+          </text>
+          <text class="card-item" x="84" y="172">
+            • Agent Orchestra bar · Demo tour
+          </text>
+        </g>
+
+        <!-- ════════ AZURE SERVICES CARD (top-right) ════════ -->
+        <g class="card">
+          <rect
+            class="card-rect"
+            x="860"
+            y="48"
+            width="290"
+            height="148"
+            rx="10"
+          />
+          <rect
+            class="card-accent"
+            x="860"
+            y="48"
+            width="6"
+            height="148"
+            fill="#0078D4"
+          />
+          <text class="card-title" x="884" y="76">☁️ Azure AI Services</text>
+          <text class="card-sub" x="884" y="94">eastus2 region</text>
+          <text class="card-item" x="884" y="118">
+            • Microsoft Foundry + Foundry IQ
+          </text>
+          <text class="card-item" x="884" y="136">
+            • Azure OpenAI — gpt-4o-mini
+          </text>
+          <text class="card-item" x="884" y="154">
+            • Azure AI Search (KB fallback)
+          </text>
+          <text class="card-item" x="884" y="172">
+            • Microsoft Graph (Work IQ)
+          </text>
+          <text class="card-item" x="884" y="190">
+            • App Insights + OpenTelemetry
+          </text>
+        </g>
+
+        <!-- ════════ GUARDRAILS CARD (mid-left) ════════ -->
+        <g class="card">
+          <rect
+            class="card-rect"
+            x="60"
+            y="240"
+            width="250"
+            height="118"
+            rx="10"
+          />
+          <rect
+            class="card-accent"
+            x="60"
+            y="240"
+            width="6"
+            height="118"
+            fill="#107C10"
+          />
+          <text class="card-title" x="84" y="268">🛡️ 17-Rule Guardrails</text>
+          <text class="card-sub" x="84" y="286">every agent boundary</text>
+          <text class="card-item" x="84" y="310">
+            • G01–G09 input — BLOCK pre-LLM
+          </text>
+          <text class="card-item" x="84" y="328">
+            • G10–G17 output — grounding checks
+          </text>
+          <text class="card-item" x="84" y="346">
+            • Verdicts traced to App Insights
+          </text>
+        </g>
+
+        <!-- ════════ GRAPHRAG CARD (mid-right) ════════ -->
+        <g class="card">
+          <rect
+            class="card-rect"
+            x="860"
+            y="290"
+            width="290"
+            height="118"
+            rx="10"
+          />
+          <rect
+            class="card-accent"
+            x="860"
+            y="290"
+            width="6"
+            height="118"
+            fill="#6E40C9"
+          />
+          <text class="card-title" x="884" y="318">🔗 GraphRAG Engine</text>
+          <text class="card-sub" x="884" y="336">
+            knowledgeGraph.ts · multi-hop BFS
+          </text>
+          <text class="card-item" x="884" y="360">
+            • 29 typed entities · 49 weighted edges
+          </text>
+          <text class="card-item" x="884" y="378">
+            • Per-hop citation to source docs
+          </text>
+          <text class="card-item" x="884" y="396">
+            • CONFIRMED ≥0.85 · LIKELY ≥0.65
+          </text>
+        </g>
+
+        <!-- ════════ RELIABILITY CARD (bottom-left) ════════ -->
+        <g class="card">
+          <rect
+            class="card-rect"
+            x="60"
+            y="552"
+            width="310"
+            height="150"
+            rx="10"
+          />
+          <rect
+            class="card-accent"
+            x="60"
+            y="552"
+            width="6"
+            height="150"
+            fill="#C19C00"
+          />
+          <text class="card-title" x="84" y="580">
+            ♻️ 3-Tier Never-Down Fallback
+          </text>
+          <g class="tier-ok">
+            <circle cx="92" cy="604" r="5" fill="#107C10" />
+          </g>
+          <text class="card-item" x="106" y="608">
+            Tier 1 — Foundry Assistants (full reasoning)
+          </text>
+          <g class="tier-ok">
+            <circle cx="92" cy="628" r="5" fill="#C19C00" />
+          </g>
+          <text class="card-item" x="106" y="632">
+            Tier 2 — Chat Completions + AI Search
+          </text>
+          <g class="tier-ok">
+            <circle cx="92" cy="652" r="5" fill="#D13438" />
+          </g>
+          <text class="card-item" x="106" y="656">
+            Tier 3 — deterministic mock (zero creds)
+          </text>
+          <text class="card-sub" x="84" y="684">
+            demo cannot fail — every transition traced
+          </text>
+        </g>
+
+        <!-- ════════ AGENT FLEET CARD (bottom-center) ════════ -->
+        <g class="card">
+          <rect
+            class="card-rect"
+            x="430"
+            y="552"
+            width="340"
+            height="150"
+            rx="10"
+          />
+          <rect
+            class="card-accent"
+            x="430"
+            y="552"
+            width="6"
+            height="150"
+            fill="#6E40C9"
+          />
+          <text class="card-title" x="454" y="580">🤖 Five-Agent Fleet</text>
+          <text class="card-sub" x="454" y="598">
+            spawned in parallel · Promise.allSettled
+          </text>
+          <circle class="pip" cx="462" cy="620" r="4" fill="#6E40C9" />
+          <text class="card-item" x="474" y="624">
+            Main 6-step analyst + GraphRAG
+          </text>
+          <circle class="pip" cx="462" cy="640" r="4" fill="#D13438" />
+          <text class="card-item" x="474" y="644">
+            Red Team GS-14 · gate: score &gt; 55%
+          </text>
+          <circle class="pip" cx="462" cy="660" r="4" fill="#0078D4" />
+          <text class="card-item" x="474" y="664">
+            Competitive Intel · peer-city analysis
+          </text>
+          <circle class="pip" cx="462" cy="680" r="4" fill="#00B7C3" />
+          <text class="card-item" x="474" y="684">
+            Portfolio Scan (grants.gov) · Refinement
+          </text>
+        </g>
+
+        <!-- ════════ KNOWLEDGE CARD (bottom-right) ════════ -->
+        <g class="card">
+          <rect
+            class="card-rect"
+            x="860"
+            y="552"
+            width="290"
+            height="150"
+            rx="10"
+          />
+          <rect
+            class="card-accent"
+            x="860"
+            y="552"
+            width="6"
+            height="150"
+            fill="#00B7C3"
+          />
+          <text class="card-title" x="884" y="580">📂 Knowledge Sources</text>
+          <text class="card-sub" x="884" y="598">
+            grounding is required, not optional
+          </text>
+          <text class="card-item" x="884" y="622">
+            • SharePoint library — Work IQ auto-load
+          </text>
+          <text class="card-item" x="884" y="642">
+            • PDF / DOCX extraction + LLM distill
+          </text>
+          <text class="card-item" x="884" y="662">
+            • Local Buffalo Grove KB (infra/docs)
+          </text>
+          <text class="card-item" x="884" y="682">
+            • Live grants.gov feed, ranked daily
+          </text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="loop">
+      <h2>THE LOOP — ONE REQUEST, END TO END</h2>
+      <div class="loop-steps" id="loopSteps">
+        <span class="lstep"><span class="n">1</span>Paste NOFO</span>
+        <span class="lstep"><span class="n">2</span>Guardrails G01–G09</span>
+        <span class="lstep"
+          ><span class="n">3</span>6-step chain + GraphRAG + Work IQ</span
+        >
+        <span class="lstep"
+          ><span class="n">4</span>Re-query KB if &lt; 2 sources</span
+        >
+        <span class="lstep"
+          ><span class="n">5</span>Spawn Red Team + Intel (&gt;55%)</span
+        >
+        <span class="lstep"><span class="n">6</span>Refine narrative</span>
+        <span class="lstep"
+          ><span class="n">7</span>Stream 17 SSE event types</span
+        >
+        <span class="lstep"
+          ><span class="n">8</span>Output guardrails G10–G17</span
+        >
+        <span class="lstep"><span class="n">9</span>Trace to App Insights</span>
+      </div>
+    </div>
+
+    <footer>
+      <b>CivicGrant IQ</b> · Microsoft Foundry · Foundry IQ + Work IQ · GraphRAG
+      cited evidence chains<br />
+      Every number traced. Every claim cited. No hallucination. ·
+      <a href="https://proud-field-00978990f.7.azurestaticapps.net"
+        >Live demo</a
+      >
+      ·
+      <a href="https://github.com/JonEricEubanks/CivicGrant-IQ">Source</a>
+    </footer>
+
+    <script>
+      // animated stat counters
+      document.querySelectorAll(".num").forEach((el) => {
+        const target = +el.dataset.count;
+        const dur = 1100,
+          t0 = performance.now();
+        function tick(t) {
+          const p = Math.min((t - t0) / dur, 1);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+
+      // loop step highlighter
+      const steps = document.querySelectorAll("#loopSteps .lstep");
+      let i = 0;
+      setInterval(() => {
+        steps.forEach((s) => s.classList.remove("active"));
+        steps[i].classList.add("active");
+        i = (i + 1) % steps.length;
+      }, 1400);
+      steps[0].classList.add("active");
+    </script>
+  </body>
+</html>

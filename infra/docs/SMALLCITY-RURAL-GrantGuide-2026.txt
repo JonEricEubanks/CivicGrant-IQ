@@ -1,0 +1,405 @@
+SMALL CITY & RURAL COMMUNITY GRANT GUIDE
+CivicGrant IQ Knowledge Base | FY2026 Edition
+Applicable to: Cities < 50,000 population, Rural Towns, Unincorporated Communities
+
+=============================================================================
+SECTION 1: DEFINING SMALL AND RURAL — WHY IT MATTERS
+=============================================================================
+
+Grant program eligibility hinges on how "rural" and "small" are defined by each
+funding agency. There is NO single universal definition — each agency uses its own:
+
+USDA RURAL DEVELOPMENT DEFINITIONS:
+  - Water/Wastewater programs: ≤ 10,000 population (must also be outside MSA core)
+  - Community Facilities: ≤ 20,000 population in a rural area
+  - Rural Business/RBDG: ≤ 50,000 population
+  - ReConnect Broadband: Areas lacking 100/20 Mbps service; primarily rural
+  Eligibility check: rurdev.usda.gov/eligibility (enter address for any program)
+
+CENSUS BUREAU DEFINITIONS (used by HUD, FHWA, many others):
+  - Urban Area: Census-defined area with ≥ 2,500 population
+  - Urbanized Area: 50,000+ population; UA cluster: 2,500–50,000
+  - Rural: Everything outside urbanized areas and clusters
+  Note: A city can be "urban" by Census but still qualify for some USDA programs
+
+FTA/FHWA DEFINITIONS:
+  - Urban: UZA ≥ 50,000 (uses Section 5307 formula funds)
+  - Rural: < 50,000 UZA (uses Section 5311 formula funds)
+
+IMPLICATION: A city of 18,000 outside a major metro may qualify for:
+  - USDA Community Facilities (≤ 20,000) ✓
+  - USDA Rural Business (≤ 50,000) ✓
+  - Non-entitlement CDBG (via state) ✓
+  - FTA Section 5311 rural transit ✓
+  - RAISE (no population limit) ✓
+  - FEMA BRIC (no population limit) ✓
+  — while simultaneously NOT qualifying for USDA Water/Wastewater (> 10,000) ✗
+
+=============================================================================
+SECTION 2: USDA RURAL DEVELOPMENT — COMPLETE PROGRAM GUIDE
+=============================================================================
+
+USDA RD is the single most important federal resource for small and rural cities.
+Unlike most federal competitive grants, many RD programs accept applications
+year-round with no competitive NOFO — first-come, first-served within each fiscal year.
+
+─────────────────────────────────────────────────────────────────────────────
+WATER & ENVIRONMENTAL PROGRAMS (WEP)
+─────────────────────────────────────────────────────────────────────────────
+
+Water & Waste Disposal Loans & Grants (Section 306):
+  Eligible: Communities ≤ 10,000 population in rural areas
+  Available Funding: ~$1.2B/year (loan) + up to $50M/year (grant); IIJA adds $500M
+  Loan Terms: 40-year term; interest rate tied to poverty level (low: ~1.5%, moderate: ~2.5%)
+  Grant Availability: Only for lowest-income communities (MHI ≤ 80% of state nonmetro median)
+  Grant Percentage: Up to 75% of project cost for most distressed communities
+  Eligible Projects:
+    - New water treatment plant or upgrades
+    - Water distribution system construction/replacement
+    - Well drilling and pump stations
+    - Wastewater collection system construction
+    - Sewage treatment plant upgrades
+    - Sludge handling facilities
+  Application Process:
+    1. Contact local USDA RD State Office (usda.gov/rural-development)
+    2. Complete pre-application SF-424; no competitive deadline (rolling)
+    3. Project must demonstrate technical, financial, legal feasibility
+    4. Environmental review required (NEPA)
+    5. DUNS/UEI and SAM.gov registration required
+
+Household Water Well System Grant Program:
+  Eligible: Very low-income rural households (MHI ≤ 60% area median)
+  Award: Up to $15,000/household for new or repaired private well
+  Purpose: Safe drinking water for individual low-income households (not utilities)
+
+Emergency Community Water Assistance Grants (ECWAG):
+  Trigger: Declared emergency or disaster causing water supply failure
+  Award: Up to $150K (emergency); $500K (source development)
+  Response Time: Expedited processing; critical for disaster situations
+
+─────────────────────────────────────────────────────────────────────────────
+COMMUNITY FACILITIES DIRECT LOANS & GRANTS
+─────────────────────────────────────────────────────────────────────────────
+
+CF Direct Loan Program (Section 306C):
+  Eligible: Rural areas and towns ≤ 20,000 population
+  Loan Terms: Up to 40 years; interest rates: 4.5% (mod), 3.5% (intermediate), 2.5% (low)
+  Income criteria for rate:
+    - Low Rate (2.5%): MHI ≤ 80% of state nonmetro median
+    - Intermediate Rate (3.5%): MHI 81–100% of state nonmetro median
+    - Moderate Rate (4.5%): MHI > 100%
+
+CF Grant Program:
+  Grant percentage: Based on MHI and state nonmetro median income
+    - ≤ 60% of state nonmetro median: Up to 75% grant
+    - 61–70%: Up to 55% grant
+    - 71–80%: Up to 35% grant
+    - 81–90%: Up to 15% grant
+    - > 90%: No grant (loans only)
+  Eligible Facilities:
+    - Municipal buildings (city halls, courthouses)
+    - Fire stations and fire equipment
+    - Police stations
+    - Community centers and meeting halls
+    - Healthcare facilities, hospitals, medical clinics
+    - Libraries
+    - Schools and childcare centers
+    - Food banks and homeless shelters
+    - Assisted living and nursing homes
+    - Rural telecommunications infrastructure
+  Application: Rolling; through local USDA RD State Office
+
+CF Guaranteed Loan Program:
+  Eligible: Same as direct, but loan through approved commercial lender
+  Benefit: USDA guarantee enables communities to obtain private financing
+  Award: Up to 90% guarantee on loan; max $25M
+
+─────────────────────────────────────────────────────────────────────────────
+RURAL ENERGY FOR AMERICA PROGRAM (REAP)
+─────────────────────────────────────────────────────────────────────────────
+Eligibility: Agricultural producers OR rural small businesses/utilities in areas ≤ 50,000 population
+Grant: Up to 50% of eligible project costs (renewable energy); 25% (energy efficiency)
+Loan: Up to 75% of eligible project costs
+Eligible Activities:
+  - Solar panels on municipal/agricultural facilities
+  - Wind energy systems
+  - Biomass systems
+  - Geothermal systems
+  - Energy efficiency upgrades (HVAC, insulation, lighting)
+  - Feasibility studies for RE/EE projects
+Application: Annual NOFO; semi-annual application periods (April and October deadlines typical)
+
+─────────────────────────────────────────────────────────────────────────────
+RURAL COOPERATIVE DEVELOPMENT GRANTS (RCDG)
+─────────────────────────────────────────────────────────────────────────────
+Purpose: Fund centers that provide technical assistance to rural cooperatives
+Award: Up to $200K per center per year
+Eligible: Non-profit entities operating cooperative development centers
+Relevance for cities: Can support rural electric cooperative formation, food co-ops
+
+─────────────────────────────────────────────────────────────────────────────
+DELTA HEALTH CARE SERVICES GRANT (Delta region only)
+─────────────────────────────────────────────────────────────────────────────
+For Delta Regional Authority states (MS, AR, LA, TN, KY, MO, IL, AL):
+Award: Up to $3M for healthcare facilities in delta communities
+
+=============================================================================
+SECTION 3: COMMUNITY DEVELOPMENT BLOCK GRANT — NON-ENTITLEMENT (STATE CDBG)
+=============================================================================
+
+Cities under 50,000 that are NOT HUD entitlement cities receive CDBG through
+their STATE CDBG program. Each state runs its own competitive NOFO.
+
+KEY DIFFERENCES FROM ENTITLEMENT CDBG:
+  - Competitive: Must compete with other small cities in the state
+  - One-time funding: Most state programs fund a single project per application
+  - Lower amounts: Typically $200K–$2M vs. entitlement's larger annual allocation
+  - Annual cycles: Most states have one NOFO per year
+
+STATE CDBG PROGRAM CONTACTS:
+  Illinois: DCEO — dceo.illinois.gov/cdbg
+    Award range: $250K–$750K (infrastructure); $500K–$2M (economic development)
+    Cycle: Annual NOFO each fall; applications due January–February
+    Priorities: Housing rehab, water/sewer infrastructure, downtown revitalization
+  
+  Texas: GLO — glo.texas.gov/community-development
+    Award range: $100K–$3M
+    Categories: Housing, public facility, economic development, planning
+  
+  California: HCD — hcd.ca.gov/grants-funding/active-funding/cdbg
+    Award range: $500K–$2M
+    Special: Native American Indian Village set-aside
+  
+  Florida: DEO — floridajobs.org/community-planning-and-development
+    Award range: $300K–$1.5M
+    Categories: Housing, commercial revitalization, economic development
+  
+  Ohio: ODSA — development.ohio.gov/businessdevelopment/cdbg
+    Award range: $250K–$500K
+    Annual cycle: Summer applications
+
+LMI DOCUMENTATION STRATEGIES FOR SMALL CITIES:
+  Option A — Area Benefit (easiest): Identify census tract(s) where ≥ 51% of residents
+    are LMI (income ≤ 80% AMI). Use HUD's LMISD dataset (hud.gov/program_offices/comm_planning/maps)
+  Option B — Limited Clientele: Project serves exclusively LMI persons (seniors, homeless,
+    disabled, food bank clients). Document income surveys.
+  Option C — Income Survey: Commission an income survey of project area residents
+    (expensive but useful if census tracts don't qualify)
+
+=============================================================================
+SECTION 4: TRANSPORTATION GRANTS FOR SMALL CITIES
+=============================================================================
+
+RURAL SURFACE TRANSPORTATION GRANT PROGRAM (RSTS):
+  CFDA: 20.938
+  Authorization: IIJA Section 11204
+  IIJA Funding: $2.0B over 5 years
+  Award Range: No minimum; $2M–$50M typical
+  Eligibility: Areas ≤ 200,000 population
+  Eligible Activities: Paving, bridge replacement, ADA upgrades on local roads,
+    safety improvements, congestion relief
+  Match: 20% local required
+  Application: Through state DOT; most states have annual calls for rural projects
+
+LOCAL AND TRIBAL ASSISTANCE (LTA):
+  Formula funds allocated to local road owners through state DOT
+  Most states have a "local roads" or "local agency program" for city streets
+  Typical process: Apply to state DOT Regional Engineer; annual call for projects
+
+TRANSPORTATION ALTERNATIVES PROGRAM (TAP) FOR RURAL AREAS:
+  ≥ 50% of TAP funds are set aside for areas with populations < 200,000
+  Rural TAP funds are less competitive — 10–20 applicants vs. 50+ in urban areas
+  Eligible: Shared-use paths, sidewalks, safe routes to school, historic preservation
+
+FTA SECTION 5311 — RURAL TRANSIT:
+  For cities/areas with < 50,000 population
+  Formula funding for rural transit operations and capital
+  Access: Through state DOT transit office (e.g., IDOT, TxDOT, Caltrans)
+  Eligible: Rural transit operators, small city transit agencies
+
+SMALL CITY BUS REPLACEMENT / PARA-TRANSIT:
+  FTA 5310 (Seniors/Disabled): For non-profits and transit agencies in small cities
+  Award: 80% federal for vehicles and technology; 20% local match
+  Eligible: ADA accessible vehicles, mobility management technology
+
+=============================================================================
+SECTION 5: BROADBAND FUNDING FOR RURAL & SMALL CITIES
+=============================================================================
+
+BEAD PROGRAM (Broadband Equity, Access & Deployment):
+  Total Funding: $42.45B (IIJA); distributed to states, then subgrant to providers
+  Eligible Areas: "Unserved" (< 25/3 Mbps) and "underserved" (< 100/20 Mbps) locations
+  City Role: Partner with ISPs to identify unserved areas; advocate for inclusion in state map
+  Application: Indirect — cities cannot apply directly. Must engage:
+    1. State broadband office (accepts initial proposals)
+    2. Work with qualified providers to submit subgrant applications
+    3. Participate in the state's challenge process to correct coverage maps
+  Key Dates: Most states targeting FY2025–2026 for subgrant award decisions
+
+USDA RECONNECT:
+  CFDA: 10.886
+  Funding: $2.0B total (IIJA)
+  Eligible: Rural areas where 90%+ of households lack 100/20 Mbps service
+  Award: $100K–$25M
+  Match: 25% minimum
+  Eligible Entities: Utilities, co-ops, municipalities, tribal governments, ISPs
+  Application: Annual NOFO; competitive (score based on need + technology + project quality)
+
+NTIA MIDDLE MILE GRANT PROGRAM:
+  Funding: $1.0B (IIJA)
+  Purpose: Middle-mile backbone infrastructure connecting rural communities to internet exchange
+  Eligible: State/local governments, non-profits, utilities, tribal governments
+  Note: Best for regional collaborative projects (county or multi-county level)
+
+=============================================================================
+SECTION 6: APPALACHIAN REGIONAL COMMISSION (ARC)
+=============================================================================
+
+ARC serves 420 counties in 13 Appalachian states:
+  Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina,
+  Ohio, Pennsylvania, South Carolina, Tennessee, Virginia, West Virginia
+
+ARC AREA DEVELOPMENT GRANTS:
+  Award Range: $250K–$5M per project
+  Match: Varies by distress designation:
+    - Distressed Counties: 50% federal / 50% local minimum (sometimes 80% federal for critical)
+    - At-Risk: 70% federal
+    - Transitional/Competitive/Attainment: 50% federal / 50% local
+  Eligible Activities: Water/wastewater, transportation, broadband, tourism,
+    economic development, healthcare, workforce development
+  Application: Through state ARC office; annual cycle with state pre-application review
+
+ARC POWER GRANT PROGRAM (Coal Community Transitions):
+  Purpose: Economic diversification for communities affected by coal decline
+  Award: Up to $1M–$5M per project
+  Eligible: Counties with significant coal employment decline since 2005
+
+ARC LEADERSHIP DEVELOPMENT PROGRAM:
+  Awards leadership/workforce training for Appalachian communities
+  Award: $100K–$500K
+
+=============================================================================
+SECTION 7: DELTA REGIONAL AUTHORITY (DRA)
+=============================================================================
+
+DRA serves 252 counties and parishes across 8 states:
+  Alabama, Arkansas, Illinois, Kentucky, Louisiana, Mississippi, Missouri, Tennessee
+  (Delta counties adjacent to the Mississippi River corridor)
+
+DRA ACCESS TO CAPITAL PROGRAM:
+  Award Range: $25K–$500K
+  Purpose: Business development loans/grants through regional lenders
+  Eligible Activities: Small business lending, micro-enterprise, entrepreneurship
+
+DRA PUBLIC INFRASTRUCTURE GRANTS:
+  Award Range: $100K–$1M
+  Purpose: Basic infrastructure (water, sewer, roads) in distressed Delta communities
+  Application: Annual NOFO through state DRA coordinators
+
+DRA WORKFORCE DEVELOPMENT:
+  Award: $50K–$500K for job training, apprenticeships, career pathways
+
+=============================================================================
+SECTION 8: STATE REVOLVING FUND (SRF) STRATEGIES FOR SMALL CITIES
+=============================================================================
+
+Small cities have a significant advantage in the SRF process because:
+1. Principal Forgiveness: IIJA requires states to offer principal forgiveness to
+   "disadvantaged communities." Many small rural communities qualify.
+2. No Competitive NOFO: Projects are placed on a priority list, not a competitive grant
+3. Interest Rates: Small city rates can be 1–2% vs. market 5.5–6%
+
+CWSRF PRINCIPAL FORGIVENESS THRESHOLDS (examples):
+  Illinois (IEPA): MHI ≤ 80% of Illinois MHI OR population ≤ 10,000 → up to 100% forgiveness
+  Texas (TWDB): Economically distressed + population ≤ 10,000 → 100% forgiveness
+  Florida (FDEP): Population ≤ 10,000 OR MHI ≤ 70% state median → up to 75% forgiveness
+  Note: Each state sets own criteria; check state SRF program annually
+
+HOW TO GET ON THE STATE SRF PRIORITY LIST:
+  1. Submit project to state environmental agency by annual deadline (typically Jan–March)
+  2. Document water quality need or permit compliance issue
+  3. Provide engineering design (30% or better for CWSRF)
+  4. Show financial capacity analysis
+  5. Complete environmental review (NEPA categorical exclusion usually sufficient)
+
+=============================================================================
+SECTION 9: SMALL CITY GRANT STRATEGY — QUICK WIN MATRIX
+=============================================================================
+
+Below is a prioritized action plan for any small city (< 50,000) seeking grants:
+
+IMMEDIATE ACTIONS (Week 1–2):
+  ☐ Verify SAM.gov active registration; note UEI number
+  ☐ Check USDA eligibility at: rurdev.usda.gov/eligibility
+  ☐ Contact local USDA Rural Development State Office to schedule intake meeting
+  ☐ Confirm FEMA NFIP active participation (if any floodplain exists)
+  ☐ Check if current Local Hazard Mitigation Plan is in effect (LHMP)
+  ☐ Pull ACS 2020 5-year MHI data for city to understand income-based eligibility
+
+30-DAY PRIORITY ACTIONS:
+  ☐ Compile Capital Improvement Plan (or 5-year project list) with cost estimates
+  ☐ Obtain letter of support from county commissioner, state legislator, US Rep
+  ☐ Contact state DOT regional engineer re: local road improvement opportunities
+  ☐ Contact state environmental agency re: SRF project priority list deadline
+  ☐ Research state CDBG program NOFOs and upcoming cycles
+
+90-DAY GRANT PURSUIT TARGETS:
+  For water/wastewater needs: USDA Water & Waste Disposal (rolling applications)
+  For public buildings/facilities: USDA Community Facilities (rolling applications)
+  For road safety: State HSIP call for projects (typically June–September deadline)
+  For trails/bike/ped: State TAP/ITEP call for projects (annual cycle)
+  For broadband: USDA ReConnect (annual NOFO — watch for FY2026 opening)
+  For flood resilience: FEMA BRIC (subapplication via state HSEMD; January deadline)
+
+=============================================================================
+SECTION 10: RURAL GRANT CASE STUDIES — COMPARABLE EXAMPLES
+=============================================================================
+
+SMALL SUBURBAN CITY PROFILE (like Buffalo Grove, IL):
+  Population: ~40,000 | MHI: ~$100,000 | Bond Rating: Aa2 | In Chicago MSA
+  Best Grant Fits:
+    - RAISE (transportation projects > $1M): High eligibility, strong match capacity
+    - FEMA BRIC (flood resilience): Excellent — CRS participation, LHMP active
+    - EPA CWSRF/SRF (stormwater): Good — may qualify for moderate rates
+    - HSIP/STP via state DOT: Good — crash data, project readiness
+  Strategy: Lead with financial credibility (Moody's rating, reserves) + project readiness
+
+SMALL RURAL CITY PROFILE:
+  Population: ~8,000 | MHI: ~$42,000 | In agricultural county | Outside MSA
+  Best Grant Fits:
+    - USDA Water/Wastewater (direct loans + grants): Likely qualifies for grant component
+    - USDA Community Facilities: Strong fit for fire station, community center
+    - State CDBG (non-entitlement): Good fit if LMI census tracts present
+    - REAP (renewable energy): If municipal utility or agricultural producers involved
+    - ARC (if Appalachian state): Area development grants
+  Strategy: Lead with USDA relationship (visit local RD office); USDA often funds 75% or more
+
+MID-WESTERN SMALL CITY — POST-INDUSTRIAL:
+  Population: ~25,000 | MHI: ~$48,000 | Former manufacturing base | Moderate unemployment
+  Best Grant Fits:
+    - EDA Public Works (economic distress likely qualifies): $500K–$5M
+    - HUD CDBG (state program): Infrastructure in LMI areas
+    - EPA Brownfields Assessment + Cleanup: If former industrial sites present
+    - DOE Fossil Fuel Transition (if energy community): Possible
+    - USDA RBDG (rural business development): If < 50,000 population
+  Strategy: Document distress designation (EDA, CEJST) first; package brownfield + economic development together
+
+SUNBELT GROWING SUBURB:
+  Population: ~85,000 | MHI: ~$95,000 | Fast-growing | Southern metro area
+  Best Grant Fits:
+    - SS4A (Safe Streets): Transportation safety with equity focus
+    - RAISE: If major transportation project ready
+    - EPA SRF: Water/wastewater for growth-driven capacity
+    - BEAD/ReConnect: If serving rural fringe areas
+  Strategy: Document growth-driven infrastructure need; emphasize safety and complete streets
+
+RUST BELT CITY:
+  Population: ~50,000 | MHI: ~$35,000 | Population declining | Economic distress
+  Best Grant Fits:
+    - EDA Economic Adjustment: Economic diversification, job creation
+    - HUD Choice Neighborhoods: If distressed public housing exists
+    - HUD CDBG (entitlement at 50K): Annual allocation for housing + public facilities
+    - EPA Brownfields: Multiple brownfield sites likely
+    - DOE GRIP (grid resilience): Aging utility infrastructure
+    - Lead Service Line (DWSRF IIJA): High probability of lead pipes in older housing stock
+  Strategy: Justice40/CEJST designation is powerful leverage; document multiple distress indicators

@@ -1,13 +1,14 @@
 import type { ReactNode } from "react";
-import { IconBuilding, IconChat, IconSearch, IconBrandLogo, IconMicrosoft } from "./Icons";
+import { IconBuilding, IconChat, IconMicrosoft } from "./Icons";
+import mgpLogo from "../assets/mgp-logo.png";
 
 export type AppTab = "chat" | "scan" | "admin";
 
 /**
- * AppHeader — the single, unified top navigation used across every view
- * (Analyze Grant / Scan My City / Administer). Keeps the brand and the
- * "Powered by Microsoft Foundry IQ" badge persistent on every screen so the
- * navigation never shifts between a sidebar and a top bar.
+ * AppHeader — unified top navigation.
+ * Left: MGP shield logo + product name + tagline
+ * Center: nav tabs
+ * Right: Microsoft Foundry badge + actions
  */
 export function AppHeader({
   active,
@@ -20,6 +21,7 @@ export function AppHeader({
 }) {
   return (
     <header className="app-header">
+      {/* ── Brand ── */}
       <div
         className="header-brand header-brand--link"
         role="button"
@@ -27,11 +29,14 @@ export function AppHeader({
         onClick={() => onNavigate("chat")}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onNavigate("chat"); }}
       >
-        <span className="header-icon"><IconBrandLogo size={26} /></span>
-        <span className="header-name">CivicGrant IQ</span>
-        <span className="header-tag">Municipal Revenue Intelligence</span>
+        <span className="header-icon"><img src={mgpLogo} alt="MGP logo" className="header-mgp-logo" /></span>
+        <div className="header-brand-text">
+          <span className="header-name">CivicGrant <span className="header-name-iq">IQ</span></span>
+          <span className="header-tag">Municipal Grant Portfolio</span>
+        </div>
       </div>
 
+      {/* ── Nav tabs ── */}
       <nav className="header-tabs" aria-label="Primary">
         <button
           className={`tab-btn${active === "chat" ? " tab-btn--active" : ""}`}
@@ -39,13 +44,6 @@ export function AppHeader({
           onClick={() => onNavigate("chat")}
         >
           <IconChat size={14} /> Analyze Grant
-        </button>
-        <button
-          className={`tab-btn${active === "scan" ? " tab-btn--active" : ""}`}
-          aria-current={active === "scan" ? "page" : undefined}
-          onClick={() => onNavigate("scan")}
-        >
-          <IconSearch size={14} /> Scan My City
         </button>
         <button
           className={`tab-btn${active === "admin" ? " tab-btn--active" : ""}`}
@@ -56,6 +54,7 @@ export function AppHeader({
         </button>
       </nav>
 
+      {/* ── Right cluster ── */}
       <div className="header-right">
         <div className="header-badge">
           <IconMicrosoft size={12} />

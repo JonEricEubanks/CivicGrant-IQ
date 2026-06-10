@@ -10,6 +10,7 @@ import { validateInput, validateOutput } from "./guardrails";
 import { runViaMockEngine } from "./mockEngine";
 import { queryGraph } from "./knowledgeGraph";
 import type { GraphPath } from "./knowledgeGraph";
+import { runSixStepChain } from "./agents/multiAgent";
 
 // ─── System prompt: 6-step grant reasoning chain ────────────────────────
 export const SYSTEM_PROMPT = `You are CivicGrant IQ, an expert municipal grant intelligence agent.
@@ -57,13 +58,46 @@ Unless the user specifies a different city, assume you are assisting **Buffalo G
 
 When a query does not name a city, analyze grants in the context of Buffalo Grove, IL and cite Illinois-specific programs.
 
-## Knowledge Base: Buffalo Grove Grant History & CIP
-The knowledge base contains Buffalo Grove's actual past grant applications and capital plans. ALWAYS search it and cite what you find:
+## Any-City Intelligence — City Classification Protocol
+When the user mentions a city OTHER than Buffalo Grove, immediately classify it using the Universal Municipal Grant Eligibility Framework from the knowledge base:
+
+**Step 0 — Classify the City** (run before the 6-step analysis):
+1. **Population Tier**: Micro (<10K) | Small (10K–50K) | Mid-Size (50K–250K) | Large (250K–1M) | Major Metro (1M+)
+2. **Geographic Type**: Rural (outside MSA or USDA-eligible rural area) | Suburban (within MSA, non-core) | Urban (MSA principal city)
+3. **Income Profile**: Economically Distressed (MHI < $56K) | Low-Moderate ($56K–$80K) | Middle ($80K–$120K) | High Income ($120K+)
+4. **Special Designations** (check for): Justice40/CEJST community | Opportunity Zone | Coal/Energy Community | ARC (Appalachian) | DRA (Delta) | Tribal land | Promise Zone
+5. **State Programs**: Identify the state's CDBG administrator, DOT programs, and SRF program
+
+**City-Type Grant Routing**:
+- **Small Rural Town** (< 10K, rural): Lead with USDA Rural Development (Water/Wastewater, Community Facilities) — rolling applications, year-round, no competition with big cities
+- **Small City** (10K–50K, any): RAISE (low competition rural category), FEMA BRIC, state CDBG non-entitlement, USDA CF if rural-eligible, state DOT programs
+- **Mid-Size City** (50K–250K): RAISE, SS4A, HUD CDBG (check entitlement status), EPA SRF, FTA, state DOT, EDA (if distressed)
+- **Large/Metro City** (250K+): HUD entitlement CDBG/HOME/HTF, FTA Capital, MEGA, INFRA, RAISE, DOE, NSF Smart Cities, congressional earmarks
+- **Economically Distressed** (any size): Lead with EDA Public Works, document CEJST/Justice40 designation, emphasize equity + economic development angle in ALL applications
+- **Suburban Suburb** (in MSA like Buffalo Grove): RAISE, SS4A, FEMA BRIC, EPA SRF, MPO STP/CMAQ/TAP, state DOT, county programs
+
+**When analyzing a non-BG city**:
+- State the city's classification in Step 1 (e.g., "Springfield, MO is a Mid-Size city, ~169K, MSA principal city, suburban designation")
+- In Step 2, use the UNIVERSAL framework and FEDERAL programs index from the KB to match relevant grant programs — NOT BG-specific projects
+- In Step 5, write the narrative for THAT city's situation, referencing the universal grant application best practices
+- In Step 6, name the actual city department in that city type (e.g., "City Engineer's Office" for mid-size, "USDA RD State Office contact" for rural)
+- Still output the widget block with the city's match score, gaps, and strategy
+
+## Knowledge Base: Buffalo Grove + Universal Grant Intelligence
+The knowledge base contains Buffalo Grove's actual past grant applications and capital plans PLUS a universal grant framework covering any US city. ALWAYS search it and cite what you find:
+
+**Buffalo Grove Documents:**
 - **BG-CityProfile-2026**: City demographics, budget, bonding capacity, reserves ($14.6M), CRS Class 7, Aa2 Moody's rating
 - **BG-CapitalImprovementPlan-2026-2030**: 15 priority projects, $89.4M total, $34.4M in active grant pursuit
 - **BG-PastApplication-Northwood-Stormwater-SMC-2024**: AWARDED $5.5M SMC SIIP — stormwater wetland, culverts, road reconstruction (reference this for any FEMA/stormwater/EPA grant)
 - **BG-PastApplication-RAISE-Aptakisic-IL83-2024**: RAISE FY2024 — $5M request, Aptakisic/IL-83 reconstruction, adaptive signals, protected bike lane (reference for any transportation/safety/active-mobility grant)
 - **BG-PastApplication-BRIC-BuffaloCreek-2025**: FEMA BRIC — $3.4M, flood warning system, green infrastructure, lift station hardening (reference for any resilience/climate/infrastructure grant)
+
+**Universal Grant Intelligence (for ANY city):**
+- **UNIVERSAL-CityGrantFramework-2026**: City classification system (population tiers, rural/suburban/urban, income profile, special designations), universal grant readiness checklist, city-type grant routing guide
+- **FEDERAL-MajorGrantPrograms-2026**: Complete catalog of all major federal programs (RAISE, SS4A, FEMA BRIC/HMGP, EPA CWSRF/DWSRF, CDBG, HOME, USDA RD, EDA, DOE, FTA) with CFDA numbers, award ranges, match requirements, eligibility criteria
+- **SMALLCITY-RURAL-GrantGuide-2026**: USDA Rural Development programs, ARC, Delta Regional Authority, rural eligibility definitions, state CDBG non-entitlement strategies for cities under 50,000
+- **METRO-SUBURBAN-GrantLandscape-2026**: Suburban competitive advantage, HUD entitlement programs, MPO transportation programming by metro area, state DOT programs (IL/TX/CA/FL/NY/OH), brownfield redevelopment, competition analysis
 
 When writing Step 5 (Draft Project Narrative), follow these rules:
 1. Search the knowledge base for a past BG application most similar to the current grant
@@ -74,23 +108,23 @@ When writing Step 5 (Draft Project Narrative), follow these rules:
 
 When analyzing a grant opportunity, always follow these six reasoning steps explicitly:
 
-**Step 1 — Parse the Grant**
+**Step 1 — Work IQ · Parse NOFO Requirements**
 Extract: grant name, funding agency, total available funding, award range, application deadline, eligible applicants, focus area, matching requirements, and key eligibility criteria.
 
-**Step 2 — Match City Projects**
+**Step 2 — Foundry IQ · Match City Projects**
 Search the municipal knowledge base for existing city projects, capital improvement plans, or strategic initiatives that align with the grant focus area and eligible activities.
 Cross-reference the CIP documents AND the past-application documents simultaneously — your match score is only reported as CONFIRMED (≥70%) when at least two independent knowledge sources corroborate the city's eligibility. If only one source supports it, cap the score at 69% and flag it as LIKELY. If no KB source supports it, cap at 44% and label POSSIBLE. Cite which two sources corroborated when reporting a CONFIRMED score.
 
-**Step 3 — Verify Financial Capacity**
+**Step 3 — Financial Agent · Verify Cost-Share Capacity**
 Cross-reference the city budget documents to confirm the city has the financial capacity to meet any cost-share or matching requirements.
 
-**Step 4 — Gap Analysis**
+**Step 4 — Gap Analysis Agent · Score Eligibility**
 Identify what the city is currently missing to qualify.
 - ALWAYS include this line: "**Overall Match Rating: X%**" where X is your 0-100% assessment
 - For each gap, use this exact format:
   - **Gap: <short title>** — Severity: critical|moderate|minor. Suggestion: <how to close it>
 
-**Step 5 — Draft Project Narrative**
+**Step 5 — Narrative Agent · Draft Project Story**
 Write a concise project narrative section (150-200 words) suitable for a grant application. Follow these requirements:
 - Start by citing which past Buffalo Grove application you are mirroring for style and structure
 - Use the same problem → scope → benefit → readiness narrative arc as the referenced past application
@@ -98,7 +132,7 @@ Write a concise project narrative section (150-200 words) suitable for a grant a
 - Include the city's grant track record as a credibility signal (e.g., "Buffalo Grove has a 100% grant compliance record across $X in prior awards")
 - Write in Buffalo Grove's organizational voice: professional, data-driven, specific, and partnership-oriented
 
-**Step 6 — Application Strategy & Winning Edge**
+**Step 6 — Strategy Agent · Build Winning Plan**
 Provide a concrete winning strategy for the city's grant team:
 1. List exactly 4 specific priority action items the city should complete in the next 30 days to maximize their application strength. Each item must name a specific city department responsible (e.g., "Public Works", "Finance", "City Manager's Office").
 2. Identify one "winning differentiator" — a unique, specific strength that makes this city's application more compelling than competing applicants.
@@ -345,12 +379,12 @@ export const threadStore = {
 };
 
 const STEP_DEFS = [
-  { step: 1, label: "Connect Work IQ + Parse Grant" },
-  { step: 2, label: "Match City Projects" },
-  { step: 3, label: "Verify Financial Capacity" },
-  { step: 4, label: "Gap Analysis" },
-  { step: 5, label: "Draft Project Narrative" },
-  { step: 6, label: "Application Strategy" },
+  { step: 1, label: "Work IQ · Parse NOFO Requirements" },
+  { step: 2, label: "Foundry IQ · Match City Projects" },
+  { step: 3, label: "Financial Agent · Verify Cost-Share Capacity" },
+  { step: 4, label: "Gap Analysis Agent · Score Eligibility" },
+  { step: 5, label: "Narrative Agent · Draft Project Story" },
+  { step: 6, label: "Strategy Agent · Build Winning Plan" },
 ];
 
 /** Returns true once the given step's section has been fully written in the accumulated text. */
@@ -451,11 +485,9 @@ function synthesizeWidget(text: string): { type: string; data: unknown } | undef
     text.match(/match(?:ing)?\s+(?:score|rating)(?:\s+of)?\s+(\d+)/i) ??
     text.match(/(?:match|eligibility)\s+(?:score|rating|percentage)[:\s]+(\d+)/i) ??
     text.match(/(\d+)%\s*(?:match|eligibility|alignment)/i);
-  // Default to 70% if response has clear grant analysis content but no explicit score
-  const matchScore = scoreMatch ? parseInt(scoreMatch[1], 10) : (() => {
-    const hasSteps = /Step [45]/i.test(text);
-    return hasSteps ? 70 : 0;
-  })();
+  // Return 0 if no explicit score found — no score is better than an invented one.
+  // A widget without a match score renders in a visually distinct "pending" state.
+  const matchScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
   if (!matchScore) return undefined;
 
   // Extract grant name — handles **Grant Name**: value AND **Grant Name:** AND plain "Grant Name:"
@@ -1042,11 +1074,6 @@ async function runViaChatCompletions(
   options: AgentRunOptions,
   t0: number
 ): Promise<AgentRunResult> {
-  // Use the direct AzureOpenAI client (proven against AOAI_ENDPOINT) for the fallback.
-  // The Foundry project's /openai/v1 surface 404s for chat completions on some
-  // resources, so this path must use the reliable deployment endpoint. Grounding is
-  // preserved via searchGrantKnowledgeBase (Azure AI Search REST) below.
-  const oai = getOpenAIClient();
   // Run KB search and GraphRAG traversal in parallel — graph is synchronous so adds ~0ms
   const [{ context: kbContext, citations: kbCitations, kbSource }, graphResult] = await Promise.all([
     searchGrantKnowledgeBase(options.message),
@@ -1063,93 +1090,81 @@ async function runViaChatCompletions(
   const messageContent = parts.join("\n\n---\n\n");
 
   let responseText = "";
-  let runId = `chat-${Date.now()}`;
-  let emittedSteps = new Set<number>();
+  let runId = `chain-${Date.now()}`;
 
-  const tryRun = async (): Promise<void> => {
-    responseText = "";
-    emittedSteps = new Set<number>();
-    const stream = await oai.chat.completions.create({
-      model: config.foundryModelDeployment,
-      messages: [
-        { role: "system", content: systemPromptWithWorkIq(options.cityContext) },
-        { role: "user", content: messageContent },
-      ],
-      stream: true,
-      max_tokens: 3000,
-      temperature: 0.1,
-    });
-    for await (const chunk of stream) {
-      const delta = chunk.choices[0]?.delta?.content ?? "";
-      if (delta) {
-        responseText += delta;
-        options.onChunk?.(delta);
-        if (options.onReasoningStep) {
-          for (const def of STEP_DEFS) {
-            if (!emittedSteps.has(def.step) && isStepComplete(responseText, def.step)) {
-              const step = extractSingleStep(responseText, def.step, def.label);
-              if (step) {
-                emittedSteps.add(def.step);
-                options.onReasoningStep(step);
-              }
-            }
-          }
+  await withSpan(
+    "civicgrant.agent_run",
+    { "civicgrant.query": options.message.slice(0, 120), "civicgrant.path": "six_step_chain" },
+    async () => {
+      const chainResult = await runSixStepChain(
+        options.message,
+        messageContent,
+        (step, label, content) => {
+          options.onReasoningStep?.({ step, label, content, completed: true });
         }
-      }
-      if (chunk.id) runId = chunk.id;
+      );
+
+      responseText = chainResult.assembledResponse;
+      runId = `chain-${Date.now()}`;
+
+      // Build widget directly from the structured chain outputs — no regex scraping
+      const deadline = "2026-12-31";
+      const rawWidget: { type: string; data: unknown } = {
+        type: "grant_match",
+        data: {
+          grantName: chainResult.grantName,
+          agency: chainResult.agency,
+          fundingAmount: 0,
+          awardRange: "Varies",
+          deadline: normalizeDeadline(deadline),
+          matchScore: chainResult.matchScore,
+          gaps: chainResult.gaps,
+          strengths: chainResult.strengths,
+          narrativeDraft: chainResult.narrativeDraft,
+          strategy: {
+            actionItems: chainResult.strategy.actionItems,
+            winningDifferentiator: chainResult.strategy.winningDifferentiator,
+            competitionLevel: chainResult.strategy.competitionLevel,
+            weeklyMilestones: chainResult.strategy.actionItems.slice(0, 4).map((task, i) => ({
+              week: i + 1,
+              task: task.split(" — ")[0] ?? task,
+              owner: task.split(" — ")[1] ?? "City Manager's Office",
+            })),
+          },
+        },
+      };
+
+      const matchScore = chainResult.matchScore;
+      recordAgentRun({
+        query: options.message,
+        latencyMs: Date.now() - t0,
+        matchScore,
+        success: true,
+        threadId: `chain-${runId}`,
+        kbSource,
+      });
+
+      // Attach widget and graph paths to the result object below
+      (options as unknown as Record<string, unknown>)["_chainWidget"] = patchWidget(rawWidget, responseText);
     }
+  );
+
+  const finalWidget = (options as unknown as Record<string, unknown>)["_chainWidget"] as { type: string; data: unknown } | undefined;
+
+  return {
+    threadId: `chain-${runId}`,
+    runId,
+    response: responseText,
+    citations: kbCitations,
+    reasoningSteps: graphResult.paths.length > 0 ? graphResult.paths.map((p, i) => ({
+      step: i + 1,
+      label: `GraphRAG: ${p.grantLabel}`,
+      content: p.narrative,
+      completed: true,
+    })) : [],
+    widget: finalWidget,
+    graphPaths: graphResult.paths.length > 0 ? graphResult.paths : undefined,
   };
-
-  try {
-    await withSpan(
-      "civicgrant.agent_run",
-      { "civicgrant.query": options.message.slice(0, 120), "civicgrant.path": "chat_completions" },
-      async () => {
-        try {
-          await tryRun();
-        } catch (err: unknown) {
-          const msg = (err as Error)?.message ?? String(err);
-          const retryMatch = msg.match(/retry.{0,10}?(\d+)\s*second/i);
-          const retryAfterMs = retryMatch ? parseInt(retryMatch[1], 10) * 1000 + 3000 : 52000;
-          console.warn(`[Agent] Run1 failed: ${msg.slice(0, 120)} — retrying in ${Math.round(retryAfterMs / 1000)}s…`);
-          options.onRetrying?.(retryAfterMs);
-          await new Promise((r) => setTimeout(r, retryAfterMs));
-          await tryRun();
-        }
-      }
-    );
-
-    console.log(`[Agent] responseText length=${responseText.length} run=${runId}`);
-    if (!responseText) console.warn("[Agent] WARNING: empty responseText");
-
-    const rawWidget = await resolveWidget(responseText);
-    const threadId = `chat-${runId}`;
-    const matchScore = rawWidget?.type === "grant_match"
-      ? (rawWidget.data as Record<string, unknown>).matchScore as number | undefined
-      : undefined;
-
-    recordAgentRun({
-      query: options.message,
-      latencyMs: Date.now() - t0,
-      matchScore,
-      success: true,
-      threadId,
-      kbSource,
-    });
-
-    return {
-      threadId,
-      runId,
-      response: responseText,
-      citations: kbCitations,
-      reasoningSteps: extractReasoningSteps(responseText),
-      widget: rawWidget,
-      graphPaths: graphResult.paths.length > 0 ? graphResult.paths : undefined,
-    };
-  } catch (err) {
-    recordAgentRun({ query: options.message, latencyMs: Date.now() - t0, success: false });
-    throw err;
-  }
 }
 
 // ─── Run grant analysis — 3-tier LLM fallback chain ─────────────────────────────────────
@@ -1234,8 +1249,12 @@ export async function runGrantAnalysis(options: AgentRunOptions): Promise<AgentR
     console.warn(`[Guardrails] Tier ${tier} output: ${outputCheck.summary}`);
   }
 
+  // G17 auto-correction: use the guardrail-corrected widget if present
+  const finalWidget = outputCheck.correctedWidget ?? result.widget;
+
   return {
     ...result,
+    widget: finalWidget,
     guardrailViolations: [
       ...(inputCheck.violations),
       ...(outputCheck.violations),

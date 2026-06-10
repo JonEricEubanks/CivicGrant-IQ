@@ -37,9 +37,10 @@ function formatCurrency(n: number | null): string {
  * City-eligible opportunities only (codes 01, 02, 04).
  */
 grantsSearchRouter.post("/", async (req: Request, res: Response) => {
-  const { keywords = "", focusAreas = [] } = req.body as {
+  const { keywords = "", focusAreas = [], categories } = req.body as {
     keywords?: string;
     focusAreas?: string[];
+    categories?: string;
     state?: string;
   };
 
@@ -48,6 +49,11 @@ grantsSearchRouter.post("/", async (req: Request, res: Response) => {
     .map((s) => s.trim())
     .filter(Boolean);
   const keyword = keywordParts.slice(0, 3).join(" ") || "infrastructure";
+
+  // Sanitize categories — only allow pipe-separated uppercase alphanumeric
+  const fundingCategories = categories
+    ? categories.replace(/[^A-Z|]/g, "").slice(0, 60) || undefined
+    : undefined;
 
   try {
     const controller = new AbortController();
@@ -60,6 +66,7 @@ grantsSearchRouter.post("/", async (req: Request, res: Response) => {
       startRecordNum: 0,
       resultType: "json",
       sortBy: "openDate|desc",
+      ...(fundingCategories ? { fundingCategories } : {}),
     };
 
     const response = await fetch(GRANTS_GOV_URL, {
@@ -100,12 +107,18 @@ grantsSearchRouter.post("/", async (req: Request, res: Response) => {
       })
     );
 
-    // Client-friendly summary for each result
-    const enriched = results.map((r) => ({
-      ...r,
-      awardCeilingFmt: formatCurrency(r.awardCeiling),
-      awardFloorFmt: formatCurrency(r.awardFloor),
-    }));
+    // Client-friendly summary for each result — drop any with an already-passed close date
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const enriched = results
+      .filter((r) => {
+        if (!r.closeDate) return true;
+        return new Date(r.closeDate) >= today;
+      })
+      .map((r) => ({
+        ...r,
+        awardCeilingFmt: formatCurrency(r.awardCeiling),
+        awardFloorFmt: formatCurrency(r.awardFloor),
+      }));
 
     res.json({ results: enriched, total, keyword, source: "grants.gov" });
   } catch (err: unknown) {

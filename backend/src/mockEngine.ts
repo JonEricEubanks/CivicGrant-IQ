@@ -33,31 +33,31 @@ const BG_CITATIONS: Citation[] = [
     id: "BG-CityProfile-2026",
     title: "BG City Profile 2026 — Village of Buffalo Grove",
     excerpt: "Population 41,496 | Median HHI $103,847 | Moody's Aa2 | CRS Class 7 | $15.4M capital reserves | $89.4M in active CIP projects | 100% grant compliance record on $14.8M in prior federal awards.",
-    source: "foundry_iq",
+    source: "municipal_docs",
   },
   {
     id: "BG-CapitalImprovementPlan-2026-2030",
     title: "BG Capital Improvement Plan 2026–2030",
     excerpt: "15 priority projects totaling $89.4M, of which $34.4M is in active federal/state grant pursuit. Key projects: Aptakisic Road ($18.2M), Northwood Stormwater ($8.1M), Buffalo Creek Watershed ($6.8M), Long Grove Trail ($2.3M).",
-    source: "foundry_iq",
+    source: "municipal_docs",
   },
   {
     id: "BG-PastApplication-BRIC-BuffaloCreek-2025",
     title: "BG Past Application — FEMA BRIC Buffalo Creek 2025",
     excerpt: "FEMA BRIC FY2025 sub-application: $3.4M request, Buffalo Creek watershed flood-warning sensor network, green infrastructure retrofit, lift-station hardening. Demonstrates BG's proven technical capacity for climate resilience infrastructure.",
-    source: "foundry_iq",
+    source: "municipal_docs",
   },
   {
     id: "BG-PastApplication-RAISE-Aptakisic-IL83-2024",
     title: "BG Past Application — RAISE Aptakisic/IL-83 2024",
     excerpt: "USDOT RAISE FY2024: $5.0M request for Aptakisic Road/IL-83 intersection reconstruction, adaptive signal timing, protected bike lane, and stormwater BMP integration. Strong safety + equity narrative with 12-year crash history data.",
-    source: "foundry_iq",
+    source: "municipal_docs",
   },
   {
     id: "BG-PastApplication-Northwood-Stormwater-SMC-2024",
     title: "BG Past Application — SMC SIIP Northwood Stormwater 2024",
     excerpt: "AWARDED $5.5M — SMC SIIP grant for Northwood neighborhood stormwater wetland, culvert replacement, and Hastings Drive road reconstruction. Confirms BG's track record of delivering complex stormwater projects on time and on budget.",
-    source: "foundry_iq",
+    source: "municipal_docs",
   },
 ];
 

@@ -1,0 +1,88 @@
+{
+  "runAt": "2026-06-10T19:05:15.474Z",
+  "model": "gpt-4o-mini",
+  "endpoint": "https://civicgrant-aoai-fd751.openai.azure.com/",
+  "summary": {
+    "pass": 5,
+    "total": 5,
+    "avgScore": 5,
+    "avgLatencyMs": 10406
+  },
+  "results": [
+    {
+      "id": "TC-01",
+      "name": "RAISE Transportation Grant",
+      "category": "transportation",
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "overall": 5,
+      "reasoning": "The response is well-supported by the context, directly addresses the eligibility of Buffalo Grove for RAISE grants focusing on transportation safety, is logically structured, and includes verifiable information while mentioning the expected keywords.",
+      "latencyMs": 9736
+    },
+    {
+      "id": "TC-02",
+      "name": "FEMA BRIC Resilience",
+      "category": "resilience",
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "overall": 5,
+      "reasoning": "The response is well-supported by the context, directly addresses the FEMA BRIC grant for flood resilience in Buffalo Grove, is logically structured and clear, and all cited information is verifiable, while also including the expected keywords.",
+      "latencyMs": 11838
+    },
+    {
+      "id": "TC-03",
+      "name": "EPA Stormwater",
+      "category": "environment",
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "overall": 5,
+      "reasoning": "The response is well-grounded in the context provided, directly addresses the query about EPA stormwater and clean water grants, is logically structured, and includes verifiable information while mentioning the expected keywords.",
+      "latencyMs": 10764
+    },
+    {
+      "id": "TC-04",
+      "name": "HUD CDBG Housing",
+      "category": "housing",
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "overall": 5,
+      "reasoning": "The response is well-grounded in the provided context, directly addresses the query about HUD community development grants for affordable housing in Buffalo Grove, is logically structured and clear, and includes verifiable information while mentioning the expected keywords.",
+      "latencyMs": 9433
+    },
+    {
+      "id": "TC-05",
+      "name": "EDA Economic Development",
+      "category": "economic",
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "overall": 5,
+      "reasoning": "The response is well-supported by the context, directly addresses the query about EDA grants for Buffalo Grove, is logically structured and clear, and includes verifiable information while mentioning the expected keywords.",
+      "latencyMs": 10259
+    }
+  ]
+}

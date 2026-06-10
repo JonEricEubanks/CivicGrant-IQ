@@ -212,9 +212,51 @@ export const IconAward = ico([
   <path key="b" d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />,
 ]);
 
+export const IconPaperclip = ico([
+  <path key="a" d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />,
+]);
+
+export const IconDatabase = ico([
+  <ellipse key="a" cx="12" cy="5" rx="9" ry="3" />,
+  <path key="b" d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />,
+  <path key="c" d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />,
+]);
+
 // ─── Brand / product logos ───────────────────────────────────────────────
 
-/** CivicGrant IQ brand seal — circular badge with government building */
+/**
+ * MGP — Municipal Grant Portfolio — shield-badge monogram logo.
+ * A modern government-tech mark: clipped shield with "MGP" lettermark
+ * and a thin horizontal rule accent.
+ */
+export const IconMGP = ({ size = 32 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    {/* Shield base */}
+    <path
+      d="M16 2L4 7v8c0 7.18 5.19 13.89 12 15.5C22.81 28.89 28 22.18 28 15V7L16 2Z"
+      fill="url(#mgp-grad)"
+    />
+    {/* Inner shield highlight */}
+    <path
+      d="M16 4.8L6.4 9v6c0 5.9 4.26 11.41 9.6 12.75C21.34 26.41 25.6 20.9 25.6 15V9L16 4.8Z"
+      fill="rgba(255,255,255,0.08)"
+    />
+    {/* "M" left stroke */}
+    <path d="M8.5 20V12l3.5 4 3.5-4v8" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    {/* "G" */}
+    <path d="M17 16.5h2.5V20h-2a2.5 2.5 0 1 1 0-5h2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    {/* Accent bar at bottom of shield */}
+    <path d="M10 22.5h12" stroke="rgba(255,255,255,0.35)" strokeWidth="0.8" strokeLinecap="round"/>
+    <defs>
+      <linearGradient id="mgp-grad" x1="4" y1="2" x2="28" y2="32" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#1e40af"/>
+        <stop offset="100%" stopColor="#1a6fba"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+/** CivicGrant IQ brand seal — circular badge with government building (legacy) */
 export const IconBrandLogo = ({ size = 26 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 26 26" fill="none" aria-hidden="true">
     <circle cx="13" cy="13" r="12" fill="#1a6fba" />

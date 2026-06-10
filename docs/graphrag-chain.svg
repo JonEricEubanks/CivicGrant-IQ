@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="score" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0078D4"/>
+      <stop offset="1" stop-color="#6E40C9"/>
+    </linearGradient>
+    <path id="chainpath" d="M80,100 L80,510" fill="none"/>
+  </defs>
+  <style>
+    .flow{fill:none;stroke-width:2.5;stroke-dasharray:7 7;animation:dash 0.9s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-14}}
+    .ht{font-size:14px;font-weight:700;fill:#201F1E}
+    .he{font-size:11.5px;font-style:italic;fill:#484644}
+    .hs{font-size:11px;fill:#605E5C}
+    .badge-c{font-size:10.5px;font-weight:700;fill:#107C10}
+    .badge-l{font-size:10.5px;font-weight:700;fill:#986F0B}
+  </style>
+
+  <rect width="1000" height="650" fill="#FAF9F8"/>
+
+  <text x="500" y="36" text-anchor="middle" font-size="19" font-weight="800" fill="#201F1E">🔗 GraphRAG Evidence Chain — Buffalo Grove → FEMA BRIC</text>
+  <text x="500" y="58" text-anchor="middle" font-size="12" fill="#605E5C">Multi-hop BFS traversal · per-hop citations · confidence pre-computed from edge weights</text>
+
+  <!-- spine + travelling dot -->
+  <use href="#chainpath" class="flow" stroke="#6E40C9"/>
+  <circle r="6" fill="#6E40C9">
+    <animateMotion dur="10.5s" repeatCount="indefinite"><mpath href="#chainpath"/></animateMotion>
+  </circle>
+
+  <!-- HOP 1 -->
+  <g>
+    <rect x="120" y="86" width="760" height="88" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="120" y="86" width="760" height="88" rx="10" fill="#6E40C9" opacity="0">
+      <animate attributeName="opacity" dur="10.5s" begin="0s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.1;0.1;0;0"/>
+    </rect>
+    <circle cx="80" cy="130" r="16" fill="#6E40C9"/>
+    <circle cx="80" cy="130" r="16" fill="none" stroke="#6E40C9" stroke-width="2" opacity="0">
+      <animate attributeName="r" dur="10.5s" begin="0s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="16;16;28;28;28"/>
+      <animate attributeName="opacity" dur="10.5s" begin="0s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.7;0;0;0"/>
+    </circle>
+    <text x="80" y="135" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">1</text>
+    <text x="140" y="112" class="ht">Buffalo Grove —[HAS_ATTRIBUTE]→ Aa2 Moody's Rating</text>
+    <text x="140" y="136" class="he">"Moody's rating Aa2 qualifies for federal infrastructure programs"</text>
+    <text x="140" y="158" class="hs">📄 BG-CityProfile-2026.txt</text>
+    <rect x="730" y="98" width="135" height="24" rx="12" fill="#DFF6DD" stroke="#107C10"/>
+    <text x="797" y="114" text-anchor="middle" class="badge-c">CONFIRMED ✓</text>
+  </g>
+
+  <!-- HOP 2 -->
+  <g>
+    <rect x="120" y="192" width="760" height="88" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="120" y="192" width="760" height="88" rx="10" fill="#6E40C9" opacity="0">
+      <animate attributeName="opacity" dur="10.5s" begin="2.1s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.1;0.1;0;0"/>
+    </rect>
+    <circle cx="80" cy="236" r="16" fill="#6E40C9"/>
+    <circle cx="80" cy="236" r="16" fill="none" stroke="#6E40C9" stroke-width="2" opacity="0">
+      <animate attributeName="r" dur="10.5s" begin="2.1s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="16;16;28;28;28"/>
+      <animate attributeName="opacity" dur="10.5s" begin="2.1s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.7;0;0;0"/>
+    </circle>
+    <text x="80" y="241" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">2</text>
+    <text x="140" y="218" class="ht">NFIP CRS Class 7 —[CLOSES_GAP]→ Active FEMA Community Participation</text>
+    <text x="140" y="242" class="he">"CRS Class 7 requires active NFIP membership in good standing"</text>
+    <text x="140" y="264" class="hs">📄 BG-PastApplication-BRIC-BuffaloCreek-2025.txt</text>
+    <rect x="730" y="204" width="135" height="24" rx="12" fill="#DFF6DD" stroke="#107C10"/>
+    <text x="797" y="220" text-anchor="middle" class="badge-c">CONFIRMED ✓</text>
+  </g>
+
+  <!-- HOP 3 -->
+  <g>
+    <rect x="120" y="298" width="760" height="88" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="120" y="298" width="760" height="88" rx="10" fill="#6E40C9" opacity="0">
+      <animate attributeName="opacity" dur="10.5s" begin="4.2s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.1;0.1;0;0"/>
+    </rect>
+    <circle cx="80" cy="342" r="16" fill="#6E40C9"/>
+    <circle cx="80" cy="342" r="16" fill="none" stroke="#6E40C9" stroke-width="2" opacity="0">
+      <animate attributeName="r" dur="10.5s" begin="4.2s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="16;16;28;28;28"/>
+      <animate attributeName="opacity" dur="10.5s" begin="4.2s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.7;0;0;0"/>
+    </circle>
+    <text x="80" y="347" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">3</text>
+    <text x="140" y="324" class="ht">$15.4M Fund Balance —[COVERS]→ $850K BRIC Local Match</text>
+    <text x="140" y="348" class="he">"$15.4M reserves provides 18× coverage of required match"</text>
+    <text x="140" y="370" class="hs">📄 BG-CapitalImprovementPlan-2026-2030.txt</text>
+    <rect x="730" y="310" width="135" height="24" rx="12" fill="#DFF6DD" stroke="#107C10"/>
+    <text x="797" y="326" text-anchor="middle" class="badge-c">CONFIRMED ✓</text>
+  </g>
+
+  <!-- HOP 4 -->
+  <g>
+    <rect x="120" y="404" width="760" height="88" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="120" y="404" width="760" height="88" rx="10" fill="#6E40C9" opacity="0">
+      <animate attributeName="opacity" dur="10.5s" begin="6.3s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.1;0.1;0;0"/>
+    </rect>
+    <circle cx="80" cy="448" r="16" fill="#6E40C9"/>
+    <circle cx="80" cy="448" r="16" fill="none" stroke="#6E40C9" stroke-width="2" opacity="0">
+      <animate attributeName="r" dur="10.5s" begin="6.3s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="16;16;28;28;28"/>
+      <animate attributeName="opacity" dur="10.5s" begin="6.3s" repeatCount="indefinite" keyTimes="0;0.01;0.19;0.22;1" values="0;0.7;0;0;0"/>
+    </circle>
+    <text x="80" y="453" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">4</text>
+    <text x="140" y="430" class="ht">BRIC-FY24-IL-0223 —[AWARDED]→ $3.4M flood resilience, Buffalo Creek</text>
+    <text x="140" y="454" class="he">"Prior BRIC success signals program alignment"</text>
+    <text x="140" y="476" class="hs">📄 BG-PastApplication-BRIC-BuffaloCreek-2025.txt</text>
+    <rect x="730" y="416" width="135" height="24" rx="12" fill="#FFF4CE" stroke="#C19C00"/>
+    <text x="797" y="432" text-anchor="middle" class="badge-l">LIKELY ◐</text>
+  </g>
+
+  <!-- score banner -->
+  <g>
+    <rect x="120" y="522" width="760" height="86" rx="10" fill="url(#score)"/>
+    <rect x="120" y="522" width="760" height="86" rx="10" fill="#ffffff" opacity="0">
+      <animate attributeName="opacity" dur="10.5s" begin="8.4s" repeatCount="indefinite" keyTimes="0;0.01;0.17;0.2;1" values="0;0.18;0.18;0;0"/>
+    </rect>
+    <text x="500" y="552" text-anchor="middle" font-size="17" font-weight="800" fill="#ffffff">FINAL SCORE: 92% MATCH → RECOMMENDED FOR APPLICATION</text>
+    <text x="500" y="574" text-anchor="middle" font-size="11.5" fill="#E8F1FB">Every number traced · every claim cited · no hallucination</text>
+    <rect x="160" y="586" width="680" height="6" rx="3" fill="#ffffff" opacity="0.25"/>
+    <rect x="160" y="586" width="0" height="6" rx="3" fill="#50E6FF">
+      <animate attributeName="width" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.05;0.78;0.9;1" values="0;0;0;626;626"/>
+    </rect>
+  </g>
+
+  <text x="500" y="636" text-anchor="middle" font-size="11" fill="#605E5C">Implementation: knowledgeGraph.ts · findEvidencePaths (line 464) · 29 typed entities · 49 weighted edges</text>
+</svg>

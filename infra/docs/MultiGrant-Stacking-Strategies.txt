@@ -1,0 +1,435 @@
+MULTI-GRANT STACKING STRATEGIES FOR MUNICIPAL PROJECTS
+CivicGrant IQ Knowledge Base | FY2026 Edition
+The Art of Fully Funding Projects by Combining Multiple Sources
+
+=============================================================================
+SECTION 1: WHAT IS GRANT STACKING AND WHY IT WINS HACKATHONS
+=============================================================================
+
+"Grant stacking" means funding a single project from multiple independent sources —
+federal grants + state programs + local bonds + special financing + tax incentives.
+
+WHY REVIEWERS LOVE GRANT STACKING:
+  → RAISE: Applicants who demonstrate ≥ 20% local match from non-federal sources
+    score higher in the "Local/Non-Federal Commitment" criterion
+  → BRIC: "Leveraged Funding" is a 40-point category — stacked funding = more points
+  → SS4A: Multiple funding partners signal community commitment
+  → EDA: Leverage ratio (non-EDA dollars per EDA dollar) is a scored criterion
+
+THE STACKING CONCEPT:
+  Imagine a $20M project. You don't need one $20M grant — you need:
+    $8M  RAISE grant (40%)
+    $4M  CMAQ (20%)
+    $2M  HSIP (10%)
+    $3M  State DOT (15%)
+    $3M  Local bonds (15%)
+    ─────────────────
+    $20M TOTAL PROJECT FUNDED ✓
+
+THE ANCHOR GRANT CONCEPT:
+  Every stacked project needs one large "anchor" grant that provides 40-60% of costs.
+  Build the stack around the anchor:
+    → Transportation projects: RAISE, INFRA, or MEGA is typically the anchor
+    → Flood/resilience projects: BRIC or HMGP is typically the anchor
+    → Economic development: EDA Public Works is typically the anchor
+    → Water/wastewater: CWSRF loan is typically the anchor (not a grant, but very low cost)
+    → Broadband: BEAD state subgrant is typically the anchor
+
+=============================================================================
+SECTION 2: TRANSPORTATION PROJECT STACKING COMBINATIONS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+STACK A: MAJOR ARTERIAL / INTERSECTION RECONSTRUCTION
+─────────────────────────────────────────────────────────────────────────────
+Best for: Signalized intersections, major road reconstructions, bridge replacements
+
+RAISE (anchor, 40-50% of project)
+  → Federal share: up to 80% of RAISE-eligible elements
+  → Eligible: Roadway reconstruction, bridge, intersection, ADA, multimodal
+
+HSIP (Highway Safety Improvement Program, 90/10 match)
+  → Apply separately through state DOT
+  → Eligible cost: All safety improvements (signal hardware, signing, pavement marking)
+  → Stack logic: RAISE covers the full project; HSIP covers the safety-specific costs
+  → Most efficient match ratio in federal transportation (state DOT pays 10%)
+
+CMAQ (Congestion Mitigation and Air Quality, 80/20 match)
+  → MPO programs CMAQ through TIP/STIP process
+  → Eligible: Signal coordination, bike/ped improvements, intersection capacity (in non-attainment areas)
+  → Stack logic: CMAQ covers multimodal/ATC components; RAISE covers roadway
+
+TAP/ITEP (Transportation Alternatives Program)
+  → MPO/state competitive program, 80/20 match
+  → Eligible: Bike lanes, pedestrian paths, safe routes to school, trail connections
+  → Stack logic: TAP covers dedicated bike/ped infrastructure embedded in larger project
+
+State DOT Local Road Improvement Program
+  → All states have formula or competitive programs for locally-owned roads
+  → Illinois: ITEP, STP-L, IDOT District programs; typical 50/50 match
+  → Stack logic: State fills gap between federal grants and local match requirement
+
+Local Bonds (TIF, GO bonds, or revenue bonds)
+  → Provide the required local match while freeing future tax receipts for other priorities
+  → TIF: Tax Increment Financing — use future property tax increment to repay bonds
+    (best for projects in older districts needing redevelopment)
+  → GO bonds: General obligation; requires referendum in many states
+
+EXAMPLE STACK — SIGNALIZED INTERSECTION RECONSTRUCTION, $5M:
+  RAISE                $2,000,000 (40%) ← anchor grant
+  HSIP                 $1,800,000 (36%) ← 90% federal, 10% local = $200K local match
+  CMAQ (signal coord)    $800,000 (16%) ← 80% federal
+  Local bonds (match)    $400,000  (8%) ← total local match across all programs
+  TOTAL               $5,000,000 ✓
+  Net local cost: $400,000 on a $5M project = 8% local share (extraordinary leverage)
+
+─────────────────────────────────────────────────────────────────────────────
+STACK B: COMPLETE STREET / PEDESTRIAN SAFETY CORRIDOR
+─────────────────────────────────────────────────────────────────────────────
+Best for: Road diet, protected bike lanes, sidewalk gaps, pedestrian plaza
+
+SS4A Implementation (anchor, 40-60% of project)
+  → Specifically designed for pedestrian/bike safety projects
+  → Lower competition than RAISE; $1M–$25M award range
+  → Eligible: Everything in a complete street redesign
+
+CMAQ (80/20 match, through MPO)
+  → Covers air quality benefits of reduced car trips from mode shift
+  → Best if project is in a non-attainment or maintenance area
+
+TAP/ITEP (80/20 match)
+  → Specifically designed for pedestrian and bicycle infrastructure
+  → Strong program for sidewalk gaps, trail connections
+
+Safe Routes to School (SRTS)
+  → Available if project is within 2 miles of a K-12 school
+  → Through state DOT; typically 100% federal for infrastructure
+  → Stack logic: Designate school-adjacent project elements as SRTS-eligible
+
+ADA Supplemental Funding (state programs)
+  → Some states have separate ADA compliance funding programs
+  → Illinois: IDOT has accessible pedestrian infrastructure funding available
+
+EXAMPLE STACK — COMPLETE STREET CORRIDOR, $8M:
+  SS4A Implementation   $4,000,000 (50%) ← anchor grant
+  CMAQ                  $1,600,000 (20%) ← mode shift air quality benefits
+  TAP/ITEP              $1,200,000 (15%) ← bike lane and trail connection
+  Safe Routes to School   $800,000 (10%) ← near-school segments
+  Local bonds             $400,000  (5%) ← local match
+  TOTAL                 $8,000,000 ✓
+
+─────────────────────────────────────────────────────────────────────────────
+STACK C: BRIDGE REPLACEMENT OR MAJOR BRIDGE REHABILITATION
+─────────────────────────────────────────────────────────────────────────────
+Best for: Structurally deficient bridges on local roads
+
+Bridge Formula Program (BFP, 80/20 match)
+  → IIJA created $26.5B dedicated bridge funding; most flows to states; some to local
+  → Contact state DOT for off-system bridge replacement program eligibility
+  → If your bridge is "structurally deficient" (SD) or "functionally obsolete" (FO):
+    → Illinois: IDOT Off-System Bridge Program (OSBP) — apply to IDOT District Office
+    → Texas: TxDOT Off-System Bridge Program — through district bridge engineer
+  → Match: 80/20; state often provides the 20% match through their programs
+
+RAISE (anchor if > $20M project, or if bridge is multimodal)
+  → RAISE is better for major bridge replacements with multimodal elements
+  → Can fund approach roadwork, pedestrian/bike lanes on bridge, utility relocation
+
+FHWA PROTECT Program (PROTECT, 80/20 match)
+  → New IIJA program for resilience and protection of transportation infrastructure
+  → Eligible: Bridge replacement for resilience (if bridge is at flood/erosion risk)
+  → Stack: PROTECT covers resilience elements; Bridge Formula covers structural replacement
+
+State Historic Preservation Office (SHPO) Grants
+  → If bridge has historic significance (NRHP eligible) — check with state SHPO
+  → Transportation Enhancement funds available for historic bridge preservation
+
+─────────────────────────────────────────────────────────────────────────────
+STACK D: TRAIL / GREENWAY / MULTIUSE PATH
+─────────────────────────────────────────────────────────────────────────────
+Best for: Off-road trails, greenway connections, linear park infrastructure
+
+RAISE (anchor for > $5M projects with multimodal access connections)
+
+TAP/ITEP (anchor for < $5M projects; 80/20 match)
+  → Most trail projects start with TAP as the anchor
+  → Apply through state DOT or MPO (varies by state)
+
+LWCF (Land and Water Conservation Fund, 50/50 match)
+  → Through state LWCF office (e.g., IDNR in Illinois)
+  → Eligible: Outdoor recreation facilities, trail acquisition, park development
+  → Cannot be combined with other federal funds on SAME project scope
+    but can fund adjacent/complementary scope (trail acquisition vs. trail construction)
+
+CDBG (if trail connects LMI neighborhoods)
+  → Through HUD entitlement cities or state CDBG programs
+  → If trail eliminates access barrier for LMI area → Area Benefit eligibility
+  → Can cover design, construction, and land acquisition
+
+Recreational Trails Program (RTP, 80/20 match)
+  → Through state DOT, allocated by FHWA
+  → Eligible: Non-motorized and motorized recreational trails
+  → Good for nature trails, greenways without roadway connections
+
+=============================================================================
+SECTION 3: FLOOD/STORMWATER PROJECT STACKING
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+STACK E: STORMWATER MANAGEMENT / FLOOD MITIGATION PROJECT
+─────────────────────────────────────────────────────────────────────────────
+Best for: Detention basins, green infrastructure, creek/channel improvements
+
+FEMA BRIC (anchor, 75% federal / 25% local for most applicants)
+  → Best anchor for any flood risk reduction project
+  → Eligible: Stormwater infrastructure, buyouts, elevation, natural systems
+  → If CEJST disadvantaged community: 90% federal / 10% local match available
+  → NOTE: Must apply through state hazard mitigation office (not directly to FEMA)
+
+FEMA FMA (Flood Mitigation Assistance, 75-100% federal)
+  → Specifically for NFIP-insured properties at repetitive flood loss
+  → 100% federal for Severe Repetitive Loss (SRL) properties
+  → 90% federal for Repetitive Loss (RL) properties  
+  → Stack: FMA covers individual property buyouts/elevation; BRIC covers infrastructure
+
+EPA CWSRF (Clean Water SRF, very low interest loan + possible forgiveness)
+  → Eligible: Stormwater infrastructure, green infrastructure, CSO correction
+  → "Disadvantaged community" forgiveness: up to 100% forgiveness of principal
+  → Not a grant — low-interest loan (often 0.5-2% interest, 30-year term)
+  → But low-cost capital reduces local debt burden; "stacks" by reducing true cost
+
+USDOT PROTECT (Promoting Resilient Operations, 80/20 match)
+  → For transportation infrastructure at risk from flooding or climate
+  → If stormwater project protects a road, bridge, or transit — PROTECT applies
+
+State/Regional Programs:
+  → Illinois IEPA SIIP (Stormwater Infrastructure Improvement Program): $5.5M example
+  → Illinois DCEO Community Development Block Grant for infrastructure
+  → County stormwater management programs (often provide technical assistance + funding)
+
+EXAMPLE STACK — REGIONAL DETENTION BASIN, $12M:
+  FEMA BRIC              $6,000,000 (50%) ← anchor; 75% fed, 25% local
+  EPA CWSRF loan         $3,600,000 (30%) ← low-interest, possible partial forgiveness
+  State SIIP             $1,500,000 (12%) ← state program
+  Local match/bonds        $900,000  (8%) ← local share of BRIC
+  TOTAL                 $12,000,000 ✓
+  Actual local bonds: $900K for a $12M project
+
+─────────────────────────────────────────────────────────────────────────────
+STACK F: WATER / WASTEWATER INFRASTRUCTURE
+─────────────────────────────────────────────────────────────────────────────
+
+EPA DWSRF (Drinking Water SRF) — anchor for water system improvements
+  + EPA DWSRF Lead Service Line Replacement (IIJA dedicated funding)
+  + USDA Water & Wastewater grants (if rural eligible)
+  + USDA Emergency Community Water Assistance (post-disaster)
+  + EDA Public Works (if project supports economic development)
+  + State clean water programs (most states have supplemental programs)
+
+EPA CWSRF — anchor for wastewater/stormwater
+  + BRIC (if flooding contributes to CSO/SSO events)
+  + State revolving fund supplemental grants
+  + USDA RD Water & Environmental grants (if ≤ 10,000 pop rural)
+
+=============================================================================
+SECTION 4: ECONOMIC DEVELOPMENT PROJECT STACKING
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+STACK G: BROWNFIELD REDEVELOPMENT
+─────────────────────────────────────────────────────────────────────────────
+Best for: Contaminated site cleanup and redevelopment
+
+EPA Brownfields Assessment Grant ($500K, no match)
+  → First step: Fund Phase I/II environmental assessments
+  → Apply through EPA Brownfields program
+
+EPA Brownfields Cleanup Grant ($500K, 20% match)
+  → Fund actual cleanup of documented contamination
+  → After assessment grant is complete
+
+CDBG (if LMI area benefit or slum/blight removal)
+  → HUD entitlement CDBG covers brownfield acquisition, demo, site prep in LMI areas
+  → "Elimination of Slums and Blight" national objective works for vacant brownfields
+
+EDA Public Works & Economic Adjustment
+  → Fund infrastructure improvements to make cleaned site development-ready
+  → Required: Documented economic distress in area; job creation plan
+
+New Markets Tax Credits (NMTC)
+  → Not a grant — tax credit equity investment
+  → 39% subsidy on capital invested through CDFIs
+  → Best for projects in NMTC-eligible census tracts (check CDFI fund)
+  → Combines with EPA cleanup grants and EDA for full site redevelopment
+
+Historic Tax Credits (HTC, if historic building)
+  → 20% federal HTC + state HTC (varies by state; 15-25% in many states)
+  → Stacks with NMTC for abandoned industrial/commercial buildings
+
+Opportunity Zone (OZ) Tax Incentive
+  → If brownfield is in an OZ (check opportunity.zones.gov)
+  → Deferred capital gains taxes for investors → reduces equity financing cost
+  → Not a grant but reduces deal financing cost significantly
+
+─────────────────────────────────────────────────────────────────────────────
+STACK H: DOWNTOWN REVITALIZATION
+─────────────────────────────────────────────────────────────────────────────
+CDBG (Public Facilities, Street Improvements in LMI area) — anchor
+  + EDA Public Works (if economic distress present)
+  + RAISE (if a major road/streetscape project)
+  + TAP/ITEP (if bike/ped elements)
+  + NMTC (for private development portion)
+  + State Main Street / downtown revitalization programs
+  + Façade improvement grants (local or state programs)
+  + TIF district (provides ongoing public infrastructure funding from tax increment)
+
+=============================================================================
+SECTION 5: BUFFALO GROVE SPECIFIC STACKING EXAMPLES
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+BG PROJECT: APTAKISIC ROAD / IL 83 INTERSECTION ($9.5M CIP ESTIMATE)
+─────────────────────────────────────────────────────────────────────────────
+Recommended stack:
+  RAISE FY2027               $3,800,000 (40%) ← applied FY2024; reapply
+  HSIP (IDOT call FY2026)    $3,420,000 (36%) ← safety-specific elements, 90/10 match
+  CMAQ (CMAP TIP cycle)      $1,330,000 (14%) ← signal coordination, ATC elements
+  Illinois IDOT ITEP           $570,000  (6%) ← pedestrian safety elements
+  BG local bonds               $380,000  (4%) ← local match (only 4%!)
+  TOTAL                      $9,500,000 ✓
+  Logic: Village has prior RAISE application — reuse narrative. HSIP covers 90% of
+    safety elements. CMAQ covers traffic management. Only $380K local on $9.5M project.
+
+─────────────────────────────────────────────────────────────────────────────
+BG PROJECT: BUFFALO CREEK FLOOD MITIGATION ($6M CIP ESTIMATE)
+─────────────────────────────────────────────────────────────────────────────
+Recommended stack:
+  FEMA BRIC FY2026           $4,500,000 (75%) ← prior BRIC application; resubmit
+  FEMA FMA                     $600,000 (10%) ← for RL/SRL properties in flood zone
+  IEPA SIIP                    $600,000 (10%) ← prior SIIP award; request supplemental
+  BG local bonds               $300,000  (5%) ← minimum local commitment
+  TOTAL                      $6,000,000 ✓
+  Logic: Buffalo Grove has two prior flood mitigation applications — excellent track record.
+    BRIC Leveraged Funding criterion rewards the FMA and SIIP layering.
+
+─────────────────────────────────────────────────────────────────────────────
+BG PROJECT: NORTHWOOD STORMWATER PHASE 2 ($4.5M)
+─────────────────────────────────────────────────────────────────────────────
+Recommended stack (building on the $5.5M SIIP AWARD already received):
+  EPA CWSRF                  $2,250,000 (50%) ← low-interest loan; Phase 2 is CWSRF-eligible
+  FEMA BRIC                  $1,575,000 (35%) ← expand flood benefits beyond Phase 1
+  IEPA SIIP Phase 2            $450,000 (10%) ← continuation of awarded program
+  BG local bonds               $225,000  (5%) ← minimal local share
+  TOTAL                      $4,500,000 ✓
+  Logic: SIIP award establishes track record (scoring advantage). Phase 2 continuation
+    reduces review risk for BRIC. CWSRF loan at 1-2% interest is near-free capital.
+
+=============================================================================
+SECTION 6: THE STACKING METHODOLOGY — HOW TO BUILD YOUR STACK
+=============================================================================
+
+STEP 1: IDENTIFY YOUR ANCHOR GRANT (must be ≥ 40% of project cost)
+  → Match the project type to the best anchor program (see Section 2-4 above)
+  → Confirm eligibility; confirm you can meet the match requirement
+  → This is your primary application; write it first and write it best
+
+STEP 2: IDENTIFY COMPLEMENTARY PROGRAMS (cover remaining 40-50%)
+  → Look for programs with no/low competition (formula programs, rolling applications)
+  → Layer in safety-specific programs (HSIP) for their favorable 90/10 match
+  → Use state programs to fill gaps and demonstrate state commitment
+
+STEP 3: IDENTIFY LOCAL MATCH SOURCES (covers last 5-15%)
+  → Bonds: GO bonds, revenue bonds, TIF bonds
+  → Existing appropriations: Capital budget already allocated to project
+  → County contributions: Regional project? Ask county to share local match
+  → Utility contributions: Water/stormwater utilities can fund utility components
+  → Special districts: Park districts, school districts, transit agencies can contribute
+
+STEP 4: CHECK FOR FEDERAL STACKING PROHIBITIONS
+  → Two grants cannot fund the EXACT SAME cost (double-dipping is prohibited)
+  → Solution: Segregate project elements into distinct work packages:
+    Roadway reconstruction → RAISE
+    Signal safety upgrades → HSIP
+    Bike/ped elements → TAP
+    Environmental/air quality benefits → CMAQ
+  → Have your engineer prepare a detailed cost breakdown by element type
+  → Key rule: Each dollar of project cost can only be claimed by ONE federal program
+
+STEP 5: SEQUENCE YOUR APPLICATIONS STRATEGICALLY
+  Timing matters: Some programs require other grants to be committed first:
+  → RAISE application: Submit before HSIP/CMAQ commitments are received;
+    list them as "anticipated" with conditional commitments
+  → BRIC: Submit leveraged funding commitments with signed letters; firm up before FEMA submission
+  → CWSRF: Apply any time; EPA/state does not require grant commitment first
+  → EDA: Often requires local match to be firmly committed before application
+
+STEP 6: WRITE EACH APPLICATION TO REFERENCE THE FULL STACK
+  → In every application, list ALL funding sources (committed and anticipated):
+    "This project will be funded with RAISE ($3.8M), HSIP ($3.4M),
+    CMAQ ($1.3M), and local bonds ($380K). HSIP and CMAQ applications
+    are anticipated for submission in Q4 2026; local bond ordinance
+    adopted by [City] Council on [date]."
+  → This STRENGTHENS each individual application — shows project viability
+  → Reviewers know a project with multiple committed funding sources is more likely to proceed
+
+=============================================================================
+SECTION 7: FINANCING TOOLS THAT STACK WITH GRANTS
+=============================================================================
+
+TAX INCREMENT FINANCING (TIF):
+  → State-created tool; available in most states
+  → How: Freeze property tax base in a defined district; new property tax increment
+    (growth above the frozen base) goes into a TIF fund for public improvements
+  → Best for: Downtown redevelopment, commercial corridors, brownfields
+  → Stacks with: CDBG, EDA, NMTC
+  → Note: Cannot create new TIF districts overnight — takes 6-12 months to establish
+
+SPECIAL SERVICE AREAS (SSA) / SPECIAL ASSESSMENT DISTRICTS:
+  → Property owners in a defined area vote to assess themselves for improvements
+  → Provides a dedicated revenue stream for area improvements
+  → Stacks with: CDBG (for LMI areas), TAP (for streetscape)
+
+REVENUE BONDS:
+  → Water/sewer utility revenue bonds: Backed by utility revenues, not property taxes
+  → Useful for: Water/wastewater projects where utility rate increases cover debt service
+  → Low interest if issued as qualified bonds (tax-exempt)
+
+FEDERAL HOME LOAN BANK (FHLB) COMMUNITY INVESTMENT PROGRAM:
+  → Low-interest loans for housing and community development
+  → Access through: FHLB member bank in your community
+  → Stacks with: CDBG, HOME, LIHTC for affordable housing projects
+
+ARRA (American Recovery and Reinvestment Act) — Historical Note:
+  ARRA's "direct pay" bonds (Build America Bonds, QECBs) expired; however,
+  IIJA created new clean energy bond programs — check with bond counsel
+  on Qualified Energy Conservation Bonds (QECBs) for clean energy projects.
+
+IRA DIRECT PAY (Inflation Reduction Act § 6417):
+  → Municipalities (previously ineligible for tax credits) can now receive
+    direct cash payments (IRA "direct pay") for clean energy projects
+  → Eligible: Solar PV installation, geothermal heat pumps, battery storage,
+    EV charging infrastructure, clean hydrogen, fuel cells
+  → Amount: 30% Investment Tax Credit (ITC) base; up to 50% with bonuses:
+    + 10% domestic content bonus (US-made solar panels)
+    + 10% energy community bonus (census tracts with fossil fuel industry closure)
+  → Stacks with: USDA REAP, DOE EECBG, state clean energy grants
+  → Important: Apply for direct pay on Form 3468 with your annual tax return;
+    no competitive application — this is an entitlement
+
+=============================================================================
+SECTION 8: GRANT STACKING CHECKLIST
+=============================================================================
+
+Before submitting your anchor grant application, confirm:
+
+  □ Project cost breakdown by element type (enables clean federal/state allocation)
+  □ Anchor grant drafted with full stack listed in "Other Funding Sources" section
+  □ Complementary grant applications identified with realistic timelines
+  □ Local match source confirmed (council resolution or budget line item)
+  □ Legal review: No double-counting of federal funds on identical cost items
+  □ Each funding source's eligible use confirmed against project elements
+  □ Congressional office notified of full project and all pending applications
+  □ State program office notified of full stack (they may help coordinate)
+  □ Engineer has prepared element-specific cost estimate (not just lump sum)
+  □ Federal UEI/SAM.gov registration current and active
+  □ Environmental clearances understood for each funding source (NEPA/state)

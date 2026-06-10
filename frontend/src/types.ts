@@ -1,3 +1,9 @@
+export interface ScanActivity {
+  type: "orchestrator" | "foundry_iq" | "work_iq" | "agent" | "grants_gov";
+  label: string;
+  detail?: string;
+}
+
 export interface ReasoningStep {
   step: number;
   label: string;
@@ -73,6 +79,12 @@ export interface WorkIqCityContext {
   riskSignals: string[];
   matchableGrants: string[];
   narrative: string;
+  /** Upcoming grant-related calendar events from M365 (Calendars.Read) */
+  calendarEvents?: string[];
+  /** Recent Teams channel messages related to grants (ChannelMessage.Read.All) */
+  teamsInsights?: string[];
+  /** Recent grant-related emails from the user mailbox (Mail.Read) */
+  mailSignals?: string[];
   error?: string;
 }
 
@@ -101,6 +113,8 @@ export interface RedTeamResult {
   quickFixes: string[];
   reviewerVerdict: string;
   confidence: number;
+  /** True when the Red Team agent was unreachable — UI renders an honest "unavailable" state */
+  unavailable?: boolean;
 }
 
 // ─── Competitive Intelligence ────────────────────────────────────────────────
@@ -119,6 +133,8 @@ export interface CompetitorIntelResult {
   winProbability: number;
   strategyTip: string;
   confidence: number;
+  /** True when the Competitive Intel agent was unreachable — UI renders an honest "unavailable" state */
+  unavailable?: boolean;
 }
 
 // ─── Narrative Refinement (feedback loop) ───────────────────────────────────

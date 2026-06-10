@@ -98,6 +98,7 @@ export async function refreshCityContext(): Promise<import("./types").WorkIqCity
 export async function streamScan(
   profile: import("./types").CityProfile,
   handlers: SSEHandler & {
+    onScanActivity?: (a: import("./types").ScanActivity) => void;
     onPortfolioItem?: (item: import("./types").PortfolioItem) => void;
     onPortfolioComplete?: (data: { grants: import("./types").PortfolioItem[]; totalOpportunity: number }) => void;
     onResults?: (data: { threadId: string; content: string }) => void;
@@ -139,6 +140,7 @@ export async function streamScan(
         const parsed = JSON.parse(data);
         if (event === "status") handlers.onStatus?.(parsed.message);
         if (event === "citations") handlers.onCitations?.(parsed.citations);
+        if (event === "scan_activity") handlers.onScanActivity?.(parsed);
         if (event === "portfolio_item") handlers.onPortfolioItem?.(parsed);
         if (event === "portfolio_complete") handlers.onPortfolioComplete?.(parsed);
         if (event === "results") handlers.onResults?.(parsed);
@@ -239,12 +241,13 @@ export interface GrantsSearchResponse {
  */
 export async function searchGrantsGov(
   keywords: string,
-  focusAreas: string[] = []
+  focusAreas: string[] = [],
+  categories?: string
 ): Promise<GrantsSearchResponse> {
   const res = await fetch(`${API_BASE}/grants-search`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ keywords, focusAreas }),
+    body: JSON.stringify({ keywords, focusAreas, categories }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText })) as { error?: string };

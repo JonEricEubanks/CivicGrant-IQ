@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <defs>
+    <path id="grpath" d="M500,112 L500,546" fill="none"/>
+  </defs>
+  <style>
+    .flow{fill:none;stroke-width:2.5;stroke-dasharray:7 7;animation:dash 0.9s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-14}}
+    .gt{font-size:15px;font-weight:700;fill:#201F1E}
+    .gs{font-size:11.5px;fill:#484644}
+    .bb{font-size:10.5px;font-weight:700}
+  </style>
+
+  <rect width="1000" height="640" fill="#FAF9F8"/>
+
+  <text x="500" y="36" text-anchor="middle" font-size="19" font-weight="800" fill="#201F1E">🛡️ 17-Rule Guardrail Pipeline</text>
+  <text x="500" y="58" text-anchor="middle" font-size="12" fill="#605E5C">Input validated before the LLM · output validated before the user</text>
+
+  <!-- input pill -->
+  <rect x="395" y="76" width="210" height="36" rx="18" fill="#201F1E"/>
+  <text x="500" y="99" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">⚡ USER INPUT</text>
+
+  <!-- spine + travelling dot -->
+  <use href="#grpath" class="flow" stroke="#6E40C9"/>
+  <circle r="6" fill="#6E40C9">
+    <animateMotion dur="7s" repeatCount="indefinite"><mpath href="#grpath"/></animateMotion>
+  </circle>
+
+  <!-- G01–G05 BLOCK -->
+  <g>
+    <rect x="180" y="128" width="640" height="78" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="180" y="128" width="6" height="78" rx="3" fill="#D13438"/>
+    <rect x="180" y="128" width="640" height="78" rx="10" fill="#D13438" opacity="0">
+      <animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" keyTimes="0;0.02;0.2;0.24;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="208" y="158" class="gt">G01–G05 — Input Hard Stops</text>
+    <text x="208" y="182" class="gs">Empty input · DoS payloads · SSN/PII · prompt injection · harmful keywords</text>
+    <rect x="700" y="140" width="100" height="24" rx="12" fill="#FDE7E9" stroke="#D13438"/>
+    <text x="750" y="156" text-anchor="middle" class="bb" fill="#D13438">⛔ BLOCK</text>
+    <text x="208" y="200" font-size="10.5" font-weight="700" fill="#D13438">Request rejected pre-LLM — saves compute, kills attacks early</text>
+  </g>
+
+  <!-- G06–G09 WARN -->
+  <g>
+    <rect x="180" y="222" width="640" height="78" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="180" y="222" width="6" height="78" rx="3" fill="#C19C00"/>
+    <rect x="180" y="222" width="640" height="78" rx="10" fill="#C19C00" opacity="0">
+      <animate attributeName="opacity" dur="7s" begin="1.5s" repeatCount="indefinite" keyTimes="0;0.02;0.2;0.24;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="208" y="252" class="gt">G06–G09 — Input Soft Flags</text>
+    <text x="208" y="276" class="gs">Email/phone PII · untrusted URLs · off-topic queries</text>
+    <rect x="700" y="234" width="100" height="24" rx="12" fill="#FFF4CE" stroke="#C19C00"/>
+    <text x="750" y="250" text-anchor="middle" class="bb" fill="#986F0B">⚠️ WARN</text>
+    <text x="208" y="294" font-size="10.5" font-weight="700" fill="#986F0B">Logged to telemetry — processing continues</text>
+  </g>
+
+  <!-- LLM pill -->
+  <g>
+    <rect x="410" y="314" width="180" height="34" rx="17" fill="#6E40C9"/>
+    <rect x="410" y="314" width="180" height="34" rx="17" fill="#ffffff" opacity="0">
+      <animate attributeName="opacity" dur="7s" begin="2.9s" repeatCount="indefinite" keyTimes="0;0.03;0.12;0.16;1" values="0;0.3;0.3;0;0"/>
+    </rect>
+    <text x="500" y="336" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">🧠 LLM RESPONSE</text>
+  </g>
+
+  <!-- G10–G13 WARN -->
+  <g>
+    <rect x="180" y="362" width="640" height="78" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="180" y="362" width="6" height="78" rx="3" fill="#C19C00"/>
+    <rect x="180" y="362" width="640" height="78" rx="10" fill="#C19C00" opacity="0">
+      <animate attributeName="opacity" dur="7s" begin="3.8s" repeatCount="indefinite" keyTimes="0;0.02;0.2;0.24;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="208" y="392" class="gt">G10–G13 — Output Integrity</text>
+    <text x="208" y="416" class="gs">Stub responses · missing reasoning steps · invalid match score · broken widget schema</text>
+    <rect x="700" y="374" width="100" height="24" rx="12" fill="#FFF4CE" stroke="#C19C00"/>
+    <text x="750" y="390" text-anchor="middle" class="bb" fill="#986F0B">⚠️ WARN</text>
+    <text x="208" y="434" font-size="10.5" font-weight="700" fill="#986F0B">Telemetry flags it — reasoning completeness enforced</text>
+  </g>
+
+  <!-- G14–G17 INFO -->
+  <g>
+    <rect x="180" y="454" width="640" height="78" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="180" y="454" width="6" height="78" rx="3" fill="#0078D4"/>
+    <rect x="180" y="454" width="640" height="78" rx="10" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="7s" begin="5.2s" repeatCount="indefinite" keyTimes="0;0.02;0.2;0.24;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="208" y="484" class="gt">G14–G17 — Output Quality</text>
+    <text x="208" y="508" class="gs">Incomplete gap suggestions · missing citations · excessive hedging · implausible funding</text>
+    <rect x="700" y="466" width="100" height="24" rx="12" fill="#DEECF9" stroke="#0078D4"/>
+    <text x="750" y="482" text-anchor="middle" class="bb" fill="#0078D4">ℹ️ INFO</text>
+    <text x="208" y="526" font-size="10.5" font-weight="700" fill="#0078D4">Advisory note — the user sees it</text>
+  </g>
+
+  <!-- safe output pill -->
+  <g>
+    <rect x="385" y="546" width="230" height="34" rx="17" fill="#DFF6DD" stroke="#107C10"/>
+    <rect x="385" y="546" width="230" height="34" rx="17" fill="#107C10" opacity="0">
+      <animate attributeName="opacity" dur="7s" begin="6.2s" repeatCount="indefinite" keyTimes="0;0.04;0.2;0.26;1" values="0;0.25;0.25;0;0"/>
+    </rect>
+    <text x="500" y="568" text-anchor="middle" font-size="12.5" font-weight="800" fill="#107C10">✓ SAFE, GROUNDED OUTPUT</text>
+  </g>
+
+  <text x="500" y="616" text-anchor="middle" font-size="11" fill="#605E5C">17 rules · BLOCK aborts pre-LLM · every verdict traced to App Insights · guardrails.ts</text>
+</svg>

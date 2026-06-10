@@ -1,0 +1,341 @@
+EQUITY, JUSTICE40 & ENVIRONMENTAL JUSTICE GRANT FRAMING GUIDE
+CivicGrant IQ Knowledge Base | FY2026 Edition
+Applicable to: All Federal Grant Applications — Equity is now a top-weighted criterion
+
+=============================================================================
+SECTION 1: WHY EQUITY IS NOW THE #1 SCORING FACTOR
+=============================================================================
+
+Since Executive Order 13985 (Advancing Racial Equity, January 2021) and the Justice40
+Initiative (EO 14008, January 2021), every major federal infrastructure program has
+elevated equity to a primary evaluation criterion. In FY2024-FY2026:
+
+  → RAISE: "Equity" was explicitly elevated to equal weight with Safety in FY2023+
+  → FEMA BRIC: New 40-point equity category added in FY2024 (up from 0 in FY2022)
+  → SS4A: Community engagement with disadvantaged populations is a required element
+  → EPA SRF: Principal forgiveness mandated for disadvantaged communities (IIJA requirement)
+  → EDA: Justice40-community projects receive priority scoring
+
+CRITICAL INSIGHT: Even wealthy suburban cities can score EQUITY points if they:
+  1. Have senior populations, residents with disabilities, or limited-English households
+  2. Have LMI census tracts within or adjacent to the project area
+  3. Serve transit-dependent households
+  4. Document barriers to access created by existing infrastructure deficiencies
+  5. Have engaged underserved populations in the project planning process
+
+=============================================================================
+SECTION 2: JUSTICE40 — THE COMPLETE GUIDE
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+WHAT IS JUSTICE40?
+─────────────────────────────────────────────────────────────────────────────
+Justice40 is a Biden Administration commitment (EO 14008) that 40% of the
+overall benefits of federal climate and clean energy investments flow to
+"disadvantaged communities." The Biden Administration defined this broadly
+to include communities facing burdens from:
+  → Climate change impacts (flooding, heat, wildfire)
+  → Legacy pollution (industrial facilities, superfund sites)
+  → Energy poverty (high energy costs as % of income)
+  → Housing burden (high housing costs as % of income)
+  → Transportation burden (high transport costs, limited transit)
+  → Health disparities (higher asthma, cancer rates)
+  → Economic distress (unemployment, low wages)
+  → Education gaps (low educational attainment)
+
+NOTE (2025-2026): The Trump Administration (January 2025) rescinded EO 14008
+and formally ended the Justice40 Initiative by EO on January 20, 2025.
+However, PROGRAM-LEVEL equity requirements built into IIJA statutes (passed by Congress)
+remain in effect. The equity scoring in RAISE, BRIC, SS4A NOFOs is statutory —
+it cannot be eliminated by executive order. Equity scoring criteria for FY2026 NOFOs
+remain substantively in place under different nomenclature.
+STRATEGY: Don't use "Justice40" language in FY2026-FY2027 applications.
+  Instead use: "disadvantaged communities," "underserved populations,"
+  "low-income households," "environmental justice communities," "equity lens."
+
+─────────────────────────────────────────────────────────────────────────────
+CLIMATE AND ECONOMIC JUSTICE SCREENING TOOL (CEJST)
+─────────────────────────────────────────────────────────────────────────────
+Website: screeningtool.geoplatform.gov
+What it does: Identifies census tracts as "disadvantaged" based on 18+ burden indicators
+  across 8 categories (climate, energy, health, housing, legacy pollution, transportation,
+  water/wastewater, workforce development) combined with low income indicators.
+
+HOW TO USE CEJST FOR GRANT APPLICATIONS:
+  Step 1: Go to screeningtool.geoplatform.gov
+  Step 2: Enter your project address or census tract number
+  Step 3: If the tract is flagged as "disadvantaged" — you get full equity credit
+  Step 4: If your project tract is NOT disadvantaged, check adjacent tracts:
+    → Does your project CONNECT TO a disadvantaged tract? (bridge/road connecting areas)
+    → Does your project SERVE residents from a disadvantaged tract?
+  Step 5: Document your finding in the application:
+    "Census Tract [FIPS code] is identified as a CEJST disadvantaged community
+    based on [X burden indicator(s)]. The project directly reduces [specific burden]."
+
+CEJST BURDEN INDICATORS MOST RELEVANT TO MUNICIPAL GRANTS:
+  Transportation Burden (transit):
+    → Indicator: % households with no vehicle + low-transit-access score
+    → Relevant for: RAISE, SS4A, FTA programs
+    → Document: "X% of households within 1 mile of project have no vehicle and limited transit"
+  Flood Risk:
+    → Indicator: Share of properties with ≥ 1% annual flood risk + low income
+    → Relevant for: FEMA BRIC, HMGP, FMA, EPA CWSRF
+    → Document: "X% of properties in the project watershed face ≥1% annual flood risk"
+  Legacy Pollution (PM2.5):
+    → Indicator: PM2.5 exposure + low income
+    → Relevant for: CMAQ, EPA programs, SS4A
+  Energy Burden:
+    → Indicator: Energy cost as % of income ≥ threshold + low income
+    → Relevant for: DOE EECBG, IRA clean energy programs
+
+─────────────────────────────────────────────────────────────────────────────
+EPA EJSCREEN — ENVIRONMENTAL JUSTICE SCREENING TOOL
+─────────────────────────────────────────────────────────────────────────────
+Website: ejscreen.epa.gov
+What it does: Calculates EJ Index = environmental burden × demographic factor
+  for any Census Block Group in the US
+
+HOW TO USE EJSCREEN FOR GRANT APPLICATIONS:
+  Step 1: Enter your address or block group at ejscreen.epa.gov
+  Step 2: Run an EJScreen report showing percentile rankings
+  Step 3: If your project area has EJScreen percentile ≥ 80th → document as "EJ community"
+  Step 4: Key indicators to cite:
+    → Particulate Matter (PM2.5): relevant for transportation/air quality grants
+    → Ozone: relevant for CMAQ
+    → Superfund proximity: relevant for brownfield and economic development grants
+    → Traffic Proximity/Volume: relevant for all transportation grants
+    → Flood Risk: relevant for FEMA/EPA water grants
+    → People of Color %: overall EJ designation factor
+    → Low Income %: overall EJ designation factor
+
+EJSCREEN LANGUAGE FOR APPLICATIONS:
+  "The project area (Census Block Group FIPS: XXXXXXXXXXX) ranks at the [X]th percentile
+  nationally for [indicator] according to EPA EJScreen (version 2.3). This designation
+  confirms the project area is an environmental justice community as defined by 
+  [program name] evaluation criteria."
+
+=============================================================================
+SECTION 3: HOW TO DOCUMENT EQUITY FOR EVERY CITY TYPE
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+APPROACH A: PROJECT-AREA LMI DOCUMENTATION (for CDBG and HUD programs)
+─────────────────────────────────────────────────────────────────────────────
+HUD provides pre-computed LMI data for every census tract in the US.
+Website: hud.gov/program_offices/comm_planning/maps (LMISD dataset)
+
+Step 1: Download HUD LMISD data for your county
+Step 2: Identify census tracts within or adjacent to your project area
+Step 3: If ≥51% of residents are LMI (income ≤ 80% AMI) → Area Benefit eligibility
+Step 4: Calculate: "[X]% of the [Y] residents within the project area are low-to-moderate income,
+  qualifying this project for Area Benefit designation under the National Objective [24 CFR 570.208(a)(1)]"
+
+AMI (AREA MEDIAN INCOME) 2024 LIMITS (80% AMI thresholds for LMI designation):
+  Chicago-Naperville MSA: 80% AMI = $74,950 (family of 4)
+  Dallas-Fort Worth: 80% AMI = $70,400
+  Houston: 80% AMI = $65,300
+  Los Angeles: 80% AMI = $79,900
+  New York: 80% AMI = $93,350
+  National: Check HUD income limits: huduser.gov/portal/datasets/il.html
+
+─────────────────────────────────────────────────────────────────────────────
+APPROACH B: SPECIFIC POPULATION DOCUMENTATION (for all programs)
+─────────────────────────────────────────────────────────────────────────────
+Even if the overall city is middle-income, document specific vulnerable populations:
+
+ELDERLY POPULATIONS (65+):
+  → ACS Table B01001: Get exact count and % for project area
+  → Relevance: ADA accessibility, pedestrian safety, transit dependency
+  → Language: "The project's 0.5-mile service area includes [X] residents age 65+,
+    representing [Y]% of the population. These residents face disproportionate risk from
+    [LOS F intersection / flooding / utility outage] due to limited mobility and
+    vehicle access." 
+  → Programs that weight elderly: SS4A, RAISE (ADA compliance), FTA 5310, CDBG public services
+
+RESIDENTS WITH DISABILITIES:
+  → ACS Table B18101: Disability type breakdown
+  → Relevance: ADA compliance, accessible pedestrian infrastructure, reliable utilities
+  → Language: "[X]% of project-area residents (ACS 5-year estimate) have a documented
+    disability. The existing infrastructure fails to meet ADA standards at [specific locations],
+    creating documented mobility barriers for this population."
+  → Programs: All transportation grants (ADA Transition Plan required); CDBG public facilities
+
+LOW-INCOME HOUSEHOLDS (even in affluent cities):
+  → ACS Table B19001: Household income distribution
+  → Every city has LMI households — identify the census tracts where they concentrate
+  → Language: "While the Village of [X]'s overall median income is $[Y], census tracts
+    [list FIPS codes] within [0.5/1/2] miles of the project have [Z]% LMI households.
+    These [N] households disproportionately rely on [pedestrian/transit/aging utility] infrastructure."
+
+LIMITED ENGLISH PROFICIENCY (LEP):
+  → ACS Table B16004: Language spoken at home
+  → Relevant for: Community engagement documentation, CDBG programs
+  → Language: "The project area includes [X] households where English is not the primary
+    language, including [Y] Spanish-speaking, [Z] Mandarin-speaking households.
+    The Village conducted bilingual public engagement sessions on [dates] in [languages]."
+
+TRANSIT-DEPENDENT HOUSEHOLDS:
+  → ACS Table B08201: Household vehicle availability
+  → Language: "[X]% of households within 1 mile of the project have no vehicle,
+    making them entirely dependent on pedestrian access, transit, and bicycle infrastructure."
+
+─────────────────────────────────────────────────────────────────────────────
+APPROACH C: INFRASTRUCTURE DISPARITY DOCUMENTATION
+─────────────────────────────────────────────────────────────────────────────
+Document how EXISTING infrastructure creates inequities for vulnerable populations:
+
+TRANSPORTATION DISPARITY:
+  "The project intersection has no pedestrian signal, no ADA ramps, and no
+  protected crossing. The nearest alternative crossing is [X] feet away.
+  For a resident using a wheelchair or walker, this [X]-foot detour represents
+  a [Y]-minute additional travel time each trip — a barrier documented in
+  [number] ADA accommodation requests filed with the Village since [year]."
+
+FLOODING/UTILITIES DISPARITY:
+  "The [X] households most affected by the documented flooding in the project
+  watershed have a median household income of $[Y], compared to the
+  Village-wide median of $[Z]. Lower-income residents are disproportionately
+  located in the flood-prone areas due to historical development patterns."
+
+BROADBAND/TECHNOLOGY DISPARITY:
+  "The [X] households in the project area lack broadband access at speeds
+  needed for remote work or distance learning (< 25 Mbps download).
+  Of these, [Y]% have household incomes below 80% of AMI."
+
+=============================================================================
+SECTION 4: COMMUNITY ENGAGEMENT — DOCUMENTING YOUR EQUITY PROCESS
+=============================================================================
+
+Federal reviewers now require EVIDENCE of community engagement, not just claims.
+What counts as credible engagement documentation:
+
+STRONG EVIDENCE (full points):
+  → Formal public meetings with sign-in sheets (document attendance + demographics)
+  → Online survey with minimum 100 responses (include demographic breakdown)
+  → Multilingual outreach: translated flyers, bilingual staff at meetings
+  → Targeted outreach to specific populations: senior center, disability services, school
+  → Community advisory committee with low-income/minority member representation
+  → Partnership with Community Development Corporation (CDC) or neighborhood association
+  → Partnership with local Head Start, food bank, or social services organization
+
+MODERATE EVIDENCE (partial points):
+  → Village website notice + single public hearing
+  → Email blast to community list
+  → Notice in local newspaper
+
+WEAK EVIDENCE (few points):
+  → "Public input was invited" with no documentation
+  → Single meeting with no documentation of who attended
+  → No translation/language access for LEP communities
+
+HOW TO BUILD A STRONG ENGAGEMENT RECORD IN 90 DAYS:
+  Week 1-2: Identify community organizations representing disadvantaged groups
+  Week 3-4: Host community meeting at accessible location; provide childcare/food
+  Week 5-6: Conduct online survey (Google Forms); promote through social media + schools
+  Week 7-8: Follow-up meeting with specific group (senior center, disability advocacy org)
+  Week 9-10: Draft equity impact summary; document all inputs
+  Week 11-12: Include summary in application; attach sign-in sheets as exhibit
+
+=============================================================================
+SECTION 5: DEIA IN GRANT APPLICATIONS (DIVERSITY, EQUITY, INCLUSION, ACCESSIBILITY)
+=============================================================================
+
+Many FY2026 NOFOs ask applicants to address DEIA in project implementation.
+Key elements to include:
+
+WORKFORCE EQUITY:
+  "The project will be constructed using Davis-Bacon prevailing wage rates,
+  ensuring living wages for construction workers. The Village will include a
+  Section 3 economic opportunity clause in all contracts exceeding $200,000,
+  requiring that 30% of new hire labor hours be filled by low-income residents
+  from the project area." (Section 3 of HUD Act applies to HUD-funded projects
+  but can be adopted voluntarily for all grant-funded construction)
+
+SUPPLIER DIVERSITY:
+  "The Village will conduct outreach to MBE (Minority Business Enterprise) and
+  WBE (Women Business Enterprise) certified contractors for all prime and
+  subcontract opportunities, consistent with [state] Executive Order [X] on
+  supplier diversity."
+
+ACCESSIBLE DESIGN:
+  "All project elements will be designed to ADA Standards for Accessible Design
+  (2010 ADA Standards) and Universal Design principles, ensuring full access
+  for persons with disabilities including those using mobility devices,
+  vision-impaired pedestrians (detectable warning surfaces), and
+  hearing-impaired individuals (visual signal alerts at pedestrian crossings)."
+
+=============================================================================
+SECTION 6: EQUITY LANGUAGE TEMPLATES BY PROGRAM
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+RAISE EQUITY SECTION TEMPLATE
+─────────────────────────────────────────────────────────────────────────────
+"[City Name]'s [Project Name] advances equity by addressing documented infrastructure
+barriers that disproportionately burden vulnerable residents.
+
+Demographic Context: The project area's [X] residents include [Y] individuals age 65+
+([Z]%), [A] residents with disabilities ([B]%), and [C] zero-vehicle households ([D]%).
+[Name of census tract] ranks at the [percentile]th percentile for [EJScreen indicator]
+according to EPA EJScreen, confirming its status as an environmental justice community.
+
+Infrastructure Disparity: The existing [intersection/road/facility] lacks [ADA-compliant
+pedestrian infrastructure / flood protection / reliable utility service], creating specific
+documented barriers for these populations: [1-2 specific documented incidents or
+access barriers with data].
+
+Community Engagement: The Village engaged [specific populations] through [specific methods]
+in [months]. Outreach included [bilingual sessions / senior center presentations / online survey].
+[X] residents participated. Key community input shaped the project in the following ways:
+[1-2 specific design changes based on community input].
+
+Project Benefits: Upon completion, the project will [specific benefit for each identified
+vulnerable population]. The protected pedestrian crossing will enable [N] elderly and
+disabled residents to safely access [destination] without vehicle dependency. ADA
+upgrades will eliminate [specific documented barrier]."
+
+─────────────────────────────────────────────────────────────────────────────
+FEMA BRIC EQUITY SECTION TEMPLATE
+─────────────────────────────────────────────────────────────────────────────
+"Community Vulnerability: The project area encompasses [N] properties at risk from
+[flood/hazard], including [X] households with incomes below 80% AMI, [Y] elderly
+residents, and [Z] residents with disabilities who face disproportionate barriers
+to evacuation and recovery. [Flood event] in [year] resulted in $[damage] in property
+losses concentrated in census tracts [FIPS codes] — where [percentage]% of residents
+are [low-income / elderly / limited English].
+
+Environmental Justice: Census tract [FIPS] is identified as a CEJST disadvantaged
+community based on [indicator(s)]. The project directly reduces flood risk burden
+for [N households / population] in this community.
+
+Engagement: The Village held community meetings at [venue/date] with [attendance].
+Materials were provided in [languages]. Input from the meetings resulted in [specific
+design modification] to better serve [specific population]."
+
+=============================================================================
+SECTION 7: ADA COMPLIANCE AS AN EQUITY FOUNDATION
+=============================================================================
+
+Every federal infrastructure grant expects ADA compliance as a baseline.
+But ADA also strengthens your equity narrative.
+
+ADA TRANSITION PLAN:
+  → Required: Every local government that employs 50+ people must have one
+  → Must be updated every few years; some grants require it to be < 3 years old
+  → Identifies ADA deficiencies in public rights-of-way (curb cuts, sidewalks, signals)
+  → Reference it: "The Village's ADA Transition Plan (adopted [year]) identifies
+    [intersection/facility] as a Priority-1 barrier removal. This project completes
+    Priority-1 item #[X] by installing [specific ADA improvements]."
+
+ADA SPECIFIC DOCUMENTATION FOR GRANT APPS:
+  → Count accessible curb cuts installed vs. needed (data from ADA Transition Plan)
+  → Document pedestrian detectable warning surface coverage
+  → Map accessible routes connecting to transit stops, medical facilities, schools
+  → Cite any ADA accommodation requests received (Freedom of Information) as demand evidence
+
+ADA IMPROVEMENT COST ANALYSIS:
+  "$[X] of the total project cost is dedicated to ADA improvements:
+  [N] compliant curb ramps ($[unit cost] each × [count]),
+  [N] accessible pedestrian signal units ($[unit cost] each × [count]),
+  [linear feet] of accessible sidewalk reconstruction ($[per LF] × [LF])."
+  This level of specificity signals to reviewers that ADA is a genuine project driver.

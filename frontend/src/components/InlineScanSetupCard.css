@@ -1,0 +1,542 @@
+/* InlineScanSetupCard — light-mode city profile form, inline in chat */
+/* NO CSS nesting (lightningcss / Vite 8) */
+
+.issc-root {
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 6px 0 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+/* ── Header ── */
+.issc-header {
+  position: relative;
+  padding: 18px 22px 14px;
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 55%, #1e40af 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.issc-header-bg {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.04) 0px,
+    rgba(255,255,255,0.04) 1px,
+    transparent 1px,
+    transparent 9px
+  );
+  pointer-events: none;
+}
+
+.issc-header-content {
+  position: relative;
+  z-index: 1;
+}
+
+.issc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.59rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 6px;
+}
+
+.issc-badge-icon {
+  color: #93c5fd;
+  font-size: 0.7rem;
+}
+
+.issc-headline {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.issc-sub {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+/* Work IQ status pill */
+.issc-wiq-status {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.issc-wiq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 100px;
+  padding: 5px 11px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.issc-wiq-pill--loading {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.6);
+}
+
+.issc-wiq-pill--done {
+  background: rgba(220, 252, 231, 0.18);
+  border: 1px solid rgba(134, 239, 172, 0.35);
+  color: #bbf7d0;
+}
+
+.issc-wiq-pill--warn {
+  background: rgba(254, 243, 199, 0.15);
+  border: 1px solid rgba(252, 211, 77, 0.3);
+  color: #fde68a;
+}
+
+.issc-wiq-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.issc-wiq-dot--pulse {
+  background: #93c5fd;
+  animation: issc-pulse 1.5s ease-in-out infinite;
+}
+
+.issc-wiq-dot--on {
+  background: #4ade80;
+}
+
+@keyframes issc-pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.8); }
+}
+
+/* ── Body ── */
+.issc-body {
+  padding: 18px 22px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+}
+
+/* City + State row */
+.issc-row {
+  display: flex;
+  gap: 12px;
+}
+
+.issc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.issc-field--city { flex: 1; }
+.issc-field--state { width: 72px; flex-shrink: 0; }
+
+.issc-label {
+  font-size: 0.59rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.issc-input {
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 9px;
+  padding: 9px 13px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+  font-family: inherit;
+}
+
+.issc-input::placeholder { color: #c1c5cb; }
+
+.issc-input:focus {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+/* Sections */
+.issc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.issc-section-label {
+  font-size: 0.59rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.issc-section-label--inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.issc-section-note {
+  font-size: 0.57rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #d1d5db;
+}
+
+.issc-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+}
+
+.issc-toggle-chevron {
+  font-size: 0.6rem;
+  color: #c1c5cb;
+  flex-shrink: 0;
+}
+
+.issc-proj-count {
+  background: #eff6ff;
+  color: #2563eb;
+  border-radius: 100px;
+  padding: 1px 7px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  border: 1px solid #bfdbfe;
+}
+
+/* Focus area chips */
+.issc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.issc-chip {
+  display: inline-block;
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.issc-chip:hover {
+  border-color: #93c5fd;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.issc-chip--on {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+/* Project chips */
+.issc-project-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.issc-proj-chip {
+  display: inline-block;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.63rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid #e5e7eb;
+  background: #f9fafb;
+  color: #9ca3af;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.issc-proj-chip:hover {
+  border-color: #6ee7b7;
+  color: #059669;
+}
+
+.issc-proj-chip--on {
+  background: #f0fdf4;
+  border-color: #6ee7b7;
+  color: #059669;
+}
+
+/* Work IQ inline note */
+.issc-wiq-inline-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.61rem;
+  color: #10b981;
+  font-style: italic;
+}
+
+/* Work IQ prominent callout — visible connection between priorities and matched projects */
+.issc-wiq-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: 10px;
+  padding: 9px 13px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.issc-wiq-callout--flash {
+  background: #dcfce7;
+  border-color: #4ade80;
+  animation: issc-wiq-flash 1.4s ease-out forwards;
+}
+
+@keyframes issc-wiq-flash {
+  0%   { background: #bbf7d0; border-color: #22c55e; }
+  40%  { background: #dcfce7; border-color: #4ade80; }
+  100% { background: #f0fdf4; border-color: #86efac; }
+}
+
+.issc-wiq-callout-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.issc-wiq-callout-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #15803d;
+  line-height: 1.4;
+}
+
+.issc-wiq-dot--warn {
+  background: #f59e0b;
+}
+
+.issc-wiq-callout-updated {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 100px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Focus area hint when nothing selected */
+.issc-focus-hint {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 4px 2px;
+}
+
+/* City size chips */
+.issc-size-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.issc-size-chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  border-radius: 10px;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: 1.5px solid #e5e7eb;
+  background: #f9fafb;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.issc-size-chip:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.issc-size-chip--on {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.issc-size-chip-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.issc-size-chip--on .issc-size-chip-label {
+  color: #1d4ed8;
+}
+
+.issc-size-chip-sub {
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.issc-size-chip--on .issc-size-chip-sub {
+  color: #60a5fa;
+}
+
+/* No-match proj count badge */
+.issc-proj-count--none {
+  background: #fef9c3;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+/* Project preview tags (collapsed state) */
+.issc-proj-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.issc-proj-preview-tag {
+  font-size: 0.61rem;
+  background: #f0fdf4;
+  color: #059669;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.issc-proj-preview-more {
+  font-size: 0.6rem;
+  color: #c1c5cb;
+  padding: 2px 5px;
+}
+
+/* ── Footer ── */
+.issc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 22px 18px;
+  border-top: 1px solid #f3f4f6;
+  background: #ffffff;
+  margin-top: 4px;
+}
+
+.issc-dismiss-btn {
+  background: none;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 9px;
+  padding: 9px 16px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #9ca3af;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.issc-dismiss-btn:hover {
+  border-color: #d1d5db;
+  color: #6b7280;
+}
+
+.issc-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  border: none;
+  border-radius: 11px;
+  padding: 11px 22px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 3px 12px rgba(37, 99, 235, 0.3);
+  transition: all 0.2s ease;
+}
+
+.issc-submit-btn:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+  box-shadow: 0 5px 20px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+
+.issc-submit-btn--disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
+.issc-submit-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.issc-submit-meta {
+  font-size: 0.63rem;
+  font-weight: 600;
+  opacity: 0.7;
+  background: rgba(255,255,255,0.12);
+  border-radius: 100px;
+  padding: 2px 7px;
+}

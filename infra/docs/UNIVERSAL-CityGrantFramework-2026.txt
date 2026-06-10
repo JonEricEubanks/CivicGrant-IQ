@@ -1,0 +1,423 @@
+UNIVERSAL MUNICIPAL GRANT ELIGIBILITY FRAMEWORK
+CivicGrant IQ Knowledge Base | FY2026 Edition
+Applicable to: All U.S. Municipalities, Counties, Townships, and Special Districts
+
+=============================================================================
+PART 1: CITY CLASSIFICATION SYSTEM
+=============================================================================
+
+A municipality's size, geographic classification, and income profile are the
+primary determinants of which federal and state grant programs they can access.
+Use this framework to quickly classify any city and route to relevant programs.
+
+─────────────────────────────────────────────────────────────────────────────
+1A. POPULATION TIER CLASSIFICATION
+─────────────────────────────────────────────────────────────────────────────
+
+TIER 1 — MICRO CITY / SMALL TOWN (Population < 10,000)
+  Definition: Incorporated place with fewer than 10,000 residents
+  Characteristics: Limited staff capacity, reliance on county/state services,
+    high per-capita infrastructure cost, often rural or exurban location
+  Primary funding sources: USDA Rural Development (dominant), state block grants,
+    county CDBG pass-throughs, EDA, ARC/DRA regional programs
+  Key eligibility advantages:
+    - USDA Rural Development programs are exclusively available to cities/towns
+      with populations under 10,000 (Water/Wastewater) or 20,000 (Community Facilities)
+    - Lower competition pool vs. large city grant cycles
+    - Many programs have "small community" scoring preferences
+  Key challenges:
+    - Insufficient staff to manage complex federal applications
+    - Limited match capacity (no large reserve funds)
+    - May not have SAM.gov registration or UEI number
+    - State grants often require a minimum grant administration capacity
+
+TIER 2 — SMALL CITY (Population 10,000–50,000)
+  Definition: Incorporated municipality or urban area with 10,000–50,000 residents
+  Characteristics: Professional management (often City/Village Manager), dedicated
+    public works, moderate capital capacity, may or may not be in an MSA
+  Primary funding sources: CDBG (if HUD entitlement or state-administered),
+    USDOT RAISE, FEMA BRIC, EPA SRF, USDA CF (if rural designation), state DOT,
+    state infrastructure programs, EDA
+  Key eligibility advantages:
+    - Below $50K population threshold for USDA Community Facilities "intermediate" rates
+    - Often eligible for both rural AND urban program streams
+    - Less competition than major metros
+    - Strong benefit-cost ratios on transportation projects (lower baseline ADT = bigger gap)
+  Key challenges:
+    - CDBG entitlement threshold is 50,000 (HUD) — smaller cities rely on state-administered funds
+    - May lack dedicated grant writing staff
+    - Federal programs increasingly require Equity Plans and DEIA commitments
+  Examples: Buffalo Grove IL (41,496), Bozeman MT (53,000), Naperville IL (148,000),
+    Fishers IN (100,000), Round Rock TX (128,000)
+
+TIER 3 — MID-SIZE CITY (Population 50,000–250,000)
+  Definition: Substantial standalone city, often principal city of a micropolitan or
+    smaller metropolitan area
+  Characteristics: Full city government, dedicated planning/grants departments,
+    HUD CDBG entitlement status likely, established capital improvement program,
+    independent bond rating
+  Primary funding sources: HUD CDBG (entitlement), RAISE, MEGA, INFRA, FTA,
+    EPA CWSRF/DWSRF, FEMA BRIC/HMGP, EDA, DOE Grid, state DOT, state housing
+  Key eligibility advantages:
+    - HUD direct entitlement CDBG allocation (predictable annual funding)
+    - Sufficient scale to pursue large RAISE/INFRA/MEGA awards ($5M–$25M range)
+    - Dedicated staff for federal reporting and compliance
+    - Bond rating supports match capacity proof
+  Key challenges:
+    - Competing with larger cities for discretionary awards
+    - Federal reporting burden (DRGR, IDIS, etc.)
+
+TIER 4 — LARGE CITY (Population 250,000–1,000,000)
+  Definition: Major regional urban center, likely core city of a Metropolitan
+    Statistical Area (MSA)
+  Characteristics: Large bureaucracy, established grants office, multiple CDBG/HOME
+    entitlements, active federal partnerships, complex multi-modal transportation
+  Primary funding sources: HUD CDBG/HOME/HTF, FTA Capital, MEGA, INFRA, RAISE,
+    EPA SRF, DOE Grid/BIL Energy, HHS, DOJ, FEMA, NSF Smart City
+  Key eligibility advantages:
+    - Highest federal allocations (formula-based)
+    - Federal agency direct relationships (HUD, FTA field offices)
+    - Earmarks and appropriations (congressional relationships)
+  Examples: Denver CO, Memphis TN, Baltimore MD, Milwaukee WI, Albuquerque NM
+
+TIER 5 — MAJOR METRO (Population 1,000,000+)
+  Definition: Core city of a large MSA (e.g., Chicago, Los Angeles, New York, Houston)
+  Primary funding sources: Direct federal appropriations, USDOT mega projects,
+    FTA New Starts, DOE hub grants, DOD grants, HHS, NSF, NCI
+  Note: MEGA and other "transformational" programs require metro-scale justification
+
+─────────────────────────────────────────────────────────────────────────────
+1B. GEOGRAPHIC CLASSIFICATION
+─────────────────────────────────────────────────────────────────────────────
+
+RURAL (ERS Rural-Urban Continuum Codes 4–9; Census non-MSA):
+  Definition (USDA): Outside of an urbanized area with population ≥ 50,000 AND
+    outside of an urban cluster with population ≥ 10,000
+  USDA Rural Development eligibility: YES (all RD programs)
+  CDBG (non-entitlement): State-administered CDBG (CDBG-Non-Entitlement Communities)
+  Key programs: USDA RD Water/Wastewater, Community Facilities, Rural Business,
+    Rural Utilities Service, Reconnect Broadband, ARC, DRA, EDA, REAP, LIHTC
+
+SUBURBAN (Within MSA, non-core city):
+  Definition: Municipality within a Metropolitan Statistical Area that is NOT the
+    principal city
+  Examples: Buffalo Grove IL (suburb of Chicago), Plano TX (suburb of Dallas),
+    Naperville IL, Scottsdale AZ (suburb of Phoenix MSA)
+  Note: Suburban municipalities access the same federal programs as urban cities
+    of similar size but may not get metro planning organization (MPO) priority
+  Key access point: Must work with MPO (CMAP, NCTCOG, DVRPC, etc.) for STP/CMAQ funds
+
+URBAN/METRO CORE:
+  Definition: The principal city or central city of an MSA
+  Access to: HUD entitlement, FTA formula, comprehensive planning grants
+
+─────────────────────────────────────────────────────────────────────────────
+1C. INCOME PROFILE CLASSIFICATION
+─────────────────────────────────────────────────────────────────────────────
+
+ECONOMICALLY DISTRESSED (MHI < $56,000 or < 80% of national median):
+  National median HHI (2023 ACS): ~$78,700
+  Programs with distressed community preferences:
+    - HUD CDBG (LMI benefit requirement: 70% of activities must benefit LMI households)
+    - EDA (Economic Distress Designation opens EDA Planning, Public Works, Economic Adjustment)
+    - USDA Community Facilities (interest rate discount for low-income communities)
+    - EPA Environmental Justice programs (EJScreen percentile ≥ 80 for bonus points)
+    - DOE Justice40 Initiative communities (40% of climate investment benefits go here)
+    - Treasury CDFI, New Markets Tax Credits
+    - HHS Community Services Block Grant (CSBG)
+    - USDA ReConnect (broadband priority scoring)
+  Designation process: EDA economic distress = unemployment ≥ 1.5× national rate OR
+    per-capita income ≤ 80% national average OR special need designation
+
+LOW-TO-MODERATE INCOME (MHI $56,000–$80,000):
+  Programs accessible: CDBG if LMI census tracts qualify, USDA moderate rates,
+    HUD HOME, LIHTC, state affordable housing programs
+
+MIDDLE INCOME (MHI $80,000–$120,000):
+  Programs accessible: Most infrastructure programs without income-based preferences,
+    RAISE, BRIC, SRF, state DOT programs
+  Note: Buffalo Grove MHI $103,847 falls here
+
+HIGH INCOME (MHI > $120,000):
+  Challenge: CDBG LMI benefit documentation more difficult; income-targeted programs
+    may require LMI census tract mapping rather than citywide MHI
+  Strategy: Focus on infrastructure merit-based programs (RAISE, BRIC, SRF, HSIP),
+    technical programs (NSF Smart Cities, DOE), and regional competitive programs
+
+─────────────────────────────────────────────────────────────────────────────
+1D. SPECIAL DESIGNATIONS (unlock additional programs)
+─────────────────────────────────────────────────────────────────────────────
+
+OPPORTUNITY ZONE (IRS/Treasury):
+  Definition: Low-income census tract nominated by governor, certified by Treasury
+  Programs: Opportunity Zone Investment Fund (private investment), not direct grants
+  Benefit: Attracts private investment with capital gains tax deferral; can be cited
+    in CDBG/EDA applications as evidence of economic distress
+
+PROMISE ZONE (HUD):
+  Definition: High-poverty communities designated for federal coordination
+  Programs: Priority access across 12+ federal agencies, dedicated federal liaison
+  Active Zones: 22 designated across urban, rural, and tribal areas
+  Application: Closed — existing designees use the designation for priority scoring
+
+JUSTICE40 COMMUNITY (CEQ/OMB):
+  Definition: Disadvantaged community as defined by Climate & Economic Justice
+    Screening Tool (CEJST); EJScreen percentile ≥ 80th on multiple metrics
+  Programs: 40% of benefits from climate/clean energy investments (IIJA/IRA)
+    must flow to Justice40 communities; scoring bonus in BRIC, PROTECT, EPA EJ, DOE
+  How to check: https://screeningtool.geoplatform.gov/en/
+
+COAL / ENERGY COMMUNITY (IRA/IIJA):
+  Definition: Census tract or MSA with significant coal employment or recent
+    coal/power plant closure; brownfield communities
+  Programs: IRA bonus credits for clean energy investment (10% bonus ITC for siting
+    clean energy in energy community); DOE fossil fuel transition grants,
+    EDA Economic Adjustment grants, ARC Power Grant Program
+  How to check: IRA/IIJA Energy Communities mapping tool (energycommunities.gov)
+
+TRIBAL COMMUNITY / TRIBAL LAND:
+  Definition: Federally recognized tribal government or tribal trust land
+  Programs: HUD IHBG (Indian Housing Block Grant), BIA, IHS Infrastructure,
+    USDA Tribal Set-Asides, IIJA Tribal Transportation Program, EPA Tribal grants,
+    DOE Tribal Energy Program. Many IIJA programs have tribal set-aside amounts.
+
+APPALACHIAN REGION (ARC):
+  Definition: 420 counties in 13 states from New York to Mississippi along
+    the Appalachian mountain range
+  Programs: ARC Area Development, Leadership & Workforce Development, Access to Capital
+  Website: arc.gov
+
+DELTA REGION (DRA):
+  Definition: 252 counties and parishes across 8 states along the Mississippi Delta
+  Programs: DRA Access to Capital, Public Infrastructure, Workforce Development
+  Website: dra.gov
+
+COLONIA (USDA/HUD):
+  Definition: Substandard housing community near the U.S.–Mexico border in TX, NM, AZ, CA
+  Programs: CDBG-CV Colonia set-aside, USDA Colonia Water/Wastewater priority, HUD Colonia HOME
+
+=============================================================================
+PART 2: UNIVERSAL GRANT READINESS CHECKLIST
+=============================================================================
+
+Every municipality pursuing federal grants must have these in place:
+
+TIER A — MINIMUM REQUIREMENTS (must have before applying to ANY federal grant):
+  ☐ SAM.gov Active Registration (System for Award Management)
+      - All federal grant applicants must be registered in SAM.gov
+      - SAM registration provides Unique Entity Identifier (UEI) — replaced DUNS in 2022
+      - Registration expires annually; must be renewed 60 days before application
+      - Allow 5–7 business days for new registration to activate
+  ☐ UEI Number (Unique Entity Identifier) — issued at SAM.gov registration
+  ☐ DUNS/CAGE Code (legacy, still used by some DoD programs)
+  ☐ Authorized Organization Representative (AOR) in Grants.gov
+  ☐ Grants.gov account (grants.gov — federal grants portal)
+  ☐ State single audit compliance (if receiving ≥ $750K federal awards/year)
+      - 2 CFR Part 200 (Uniform Guidance) compliance required
+      - Single audit report must be submitted to Federal Audit Clearinghouse
+
+TIER B — PROGRAM-SPECIFIC REQUIREMENTS (required for specific grant families):
+  ☐ FEMA/DHS Programs (BRIC, HMGP, PDM, NFIP):
+      - Active NFIP community participation (no lapsed policies)
+      - FEMA-approved Local Hazard Mitigation Plan (LHMP) — must be current
+      - CRS (Community Rating System) participation = bonus points
+  ☐ USDOT Programs (RAISE, MEGA, INFRA, PROTECT, Safe Streets):
+      - Benefit-Cost Analysis (BCA) — required for RAISE/INFRA; use BCA Toolkit v6
+      - ADA Transition Plan (updated within 3 years)
+      - Coordinated Human Services Transportation Plan (for FTA programs)
+  ☐ EPA SRF Programs (CWSRF, DWSRF):
+      - State drinking water/clean water project priority list placement
+      - Environmental review (NEPA categorical exclusion or EA)
+  ☐ HUD Programs (CDBG, HOME, HOPWA):
+      - Consolidated Plan (5-year) and Annual Action Plan (CDBG entitlement)
+      - Low-to-Moderate Income (LMI) area benefit data or income survey
+      - Analysis of Impediments to Fair Housing Choice (AI) or AFH
+  ☐ All Infrastructure Programs (IIJA/BIL):
+      - Buy America/Build America Act (BABA) compliance plan
+      - Davis-Bacon prevailing wage compliance
+      - National Environmental Policy Act (NEPA) review
+      - Federal labor standards compliance
+
+TIER C — COMPETITIVE DIFFERENTIATORS (strengthen any application):
+  ☐ Moody's / S&P Municipal Bond Rating (Aa2, AA- or better = top-tier credibility)
+  ☐ Dedicated capital reserve fund with documented available balance
+  ☐ Letters of support from state legislators, congressional delegation
+  ☐ Intergovernmental agreements (partnerships with county, transit, state)
+  ☐ Prior federal award compliance record (no audits, no findings)
+  ☐ Equity/Environmental Justice community engagement plan
+  ☐ Climate adaptation / resilience plan
+  ☐ Complete Streets policy adopted by city council
+  ☐ Americans with Disabilities Act (ADA) Transition Plan (current)
+  ☐ Capital Improvement Plan (CIP) published and approved
+  ☐ Long-range transportation plan alignment (MPO TIP/STIP inclusion)
+
+=============================================================================
+PART 3: GRANT READINESS SCORING BY CITY TYPE
+=============================================================================
+
+When evaluating any municipality's grant readiness, score these dimensions:
+
+FINANCIAL CAPACITY (0–25 points):
+  25: Investment-grade bond rating (Aaa/Aa1/Aa2 or AAA/AA+/AA), reserves > 15% of budget
+  20: Bond rating Aa3/A1 or AA-/A+, reserves 10–15% of budget
+  15: Bond rating A2/A3 or A/A-, reserves 5–10% of budget
+  10: Non-rated or below investment grade, reserves 3–5% of budget
+   5: No bond rating, reserves < 3% of budget, recent budget shortfalls
+
+TECHNICAL CAPACITY (0–25 points):
+  25: Dedicated grants manager + department heads with federal compliance experience
+  20: Part-time grants coordinator, experienced public works/engineering dept
+  15: No dedicated grants staff but city manager coordinates grant pursuit
+  10: Volunteer or contractor-based grant writing
+   5: No prior federal grant experience
+
+PRIOR FEDERAL GRANT TRACK RECORD (0–25 points):
+  25: Multiple prior federal awards, zero audit findings, active federal awards
+  20: 1–2 prior federal awards, clean audit record
+  15: State grant experience only, no federal history
+  10: No grant history but capacity exists
+   5: Prior award with compliance issues or findings
+
+PROJECT READINESS (0–25 points):
+  25: NEPA complete or CE, design ≥ 60%, right-of-way secured, local match committed
+  20: Design 30–60%, environmental initiated, match identified but not committed
+  15: Feasibility complete, design not started, match concept only
+  10: Planning stage, no design
+   5: Concept only, no design or environmental work
+
+=============================================================================
+PART 4: HOW TO IDENTIFY GRANTS FOR ANY CITY
+=============================================================================
+
+STEP 1: DETERMINE CITY TYPE
+  Use Part 1 to classify: population tier + geographic type + income profile + special designations
+
+STEP 2: IDENTIFY PRIORITY FOCUS AREAS
+  Common municipal priority areas and associated funding streams:
+  
+  TRANSPORTATION & ROADS:
+    - USDOT RAISE (any city, $1M–$25M, competitive)
+    - USDOT MEGA (transformational projects, $100M+)
+    - USDOT INFRA (freight, highways, $25M+)
+    - IDOT/State DOT (STP-Urban, HSIP, CMAQ, ITEP/TAP)
+    - FHWA Safe Streets & Roads for All (SS4A)
+    - FHWA PROTECT (climate resilience, transportation)
+    - Carbon Reduction Program (CRP)
+    - FTA (transit capital, bus rapid transit, rural transit)
+
+  STORMWATER & WATER QUALITY:
+    - EPA CWSRF (Clean Water State Revolving Fund via state agency)
+    - EPA DWSRF (Drinking Water SRF via state)
+    - EPA Lead Service Line Replacement (LSLR — IIJA funded)
+    - EPA Emerging Contaminants / PFAS (IIJA funded)
+    - FEMA BRIC (flood resilience, green infrastructure)
+    - FEMA HMGP (post-disaster, structure elevation, buyouts)
+    - Lake/county stormwater authorities (varies by state/region)
+    - NOAA Coastal Resilience (coastal communities)
+
+  AFFORDABLE HOUSING:
+    - HUD HOME Investment Partnerships (entitlement or state)
+    - HUD CDBG (housing rehab, code enforcement, demolition)
+    - HUD Choice Neighborhoods (public housing transformation)
+    - USDA RD Section 538 GRRHP (rural rental housing)
+    - LIHTC (Low Income Housing Tax Credits via state HFA)
+    - HUD Housing Trust Fund (HTF — lowest income)
+
+  BROADBAND / TECHNOLOGY:
+    - NTIA BEAD (Broadband Equity Access & Deployment — $42.45B via states)
+    - USDA ReConnect (rural broadband, up to $25M/project)
+    - NTIA Middle Mile (middle mile infrastructure)
+    - E-Rate (schools and libraries)
+    - FCC Emergency Connectivity Fund
+
+  ENERGY / CLIMATE:
+    - DOE Grid Resilience (IIJA — grid modernization)
+    - IRA Clean Energy Investment Tax Credits (ITC/PTC — also for municipalities)
+    - DOE Better Buildings Grants (energy efficiency in public buildings)
+    - USDA REAP (Rural Energy for America Program)
+    - EPA Greenhouse Gas Reduction Fund (GGRF — $20B via community lenders)
+    - EPA Environmental Justice Collaborative Problem-Solving
+    - HUD Green and Resilient Retrofit Program (GRRP)
+
+  PUBLIC SAFETY:
+    - DOJ Byrne JAG (justice assistance — law enforcement equipment, training)
+    - FEMA BSIR (Building Safety Inspection Records / code enforcement)
+    - DHS UASI (Urban Area Security Initiative — major metros only)
+    - DHS BRIC (physical hardening, early warning systems)
+    - COPS Office (community policing grants)
+    - NHTSA Highway Safety Program Grants
+
+  PARKS & RECREATION:
+    - LWCF (Land & Water Conservation Fund via NPS)
+    - USDA Forest Service Community Forest Program
+    - NEA/NEH (arts & cultural infrastructure)
+    - HUD CDBG (park improvements in LMI areas)
+
+  ECONOMIC DEVELOPMENT:
+    - EDA Public Works & Economic Adjustment (distressed communities)
+    - EDA STEM Talent Challenge, Regional Innovation Engines
+    - SBA Economic Development programs
+    - USDA Rural Business Development Grants (RBDG)
+    - HUD Choice Neighborhoods, Brownfields
+
+STEP 3: CHECK STATE-LEVEL PROGRAMS
+  Every state has analogous programs administered through:
+    - State DOT (transportation — STP, HSIP, local bridge programs)
+    - State EPA/DEQ (water quality, stormwater, environmental cleanup)
+    - State Housing Finance Agency (HFA) (affordable housing, LIHTC)
+    - State Commerce/Economic Development (business attraction, brownfields)
+    - State CDBG administrator (for non-entitlement communities)
+    - Governor's Office of Broadband (BEAD subgrant administration)
+
+STEP 4: CHECK REGIONAL PROGRAMS
+  Metropolitan Planning Organizations (MPOs): STP-Urban, CMAQ, TAP
+    - MPOs program federal transportation funds for their regions
+    - Cities must get projects on the MPO's Transportation Improvement Program (TIP)
+  Councils of Government (COGs): often administer CDBG pass-throughs
+  Regional utility authorities: stormwater, water, wastewater grants
+  County programs: counties often pass through state and federal funds
+
+STEP 5: CONFIRM ELIGIBILITY AND APPLY
+  1. Verify active SAM.gov registration
+  2. Identify NOFO (Notice of Funding Opportunity) on Grants.gov or program website
+  3. Review eligible applicants, match requirements, evaluation criteria
+  4. Develop project narrative aligned with program priorities
+  5. Submit via Grants.gov or program-specific portal (e.g., FEMA GO, USDOT RAISES)
+
+=============================================================================
+PART 5: CITY-TYPE QUICK REFERENCE
+=============================================================================
+
+FOR ANY QUERY ABOUT A SMALL SUBURBAN CITY (like Buffalo Grove, Naperville, Fishers):
+  Top 5 program families: RAISE/USDOT, FEMA BRIC/HMGP, EPA SRF, state DOT, CDBG (via county/state)
+  Match advantage: Strong bond ratings and capital reserves are competitive differentiators
+  Strategy: Lead with project readiness (design %, right-of-way secured) and prior award track record
+
+FOR ANY QUERY ABOUT A SMALL RURAL CITY OR TOWN (< 20,000, outside MSA):
+  Top 5 program families: USDA RD (all programs), CDBG-Non-Entitlement, EDA (if distressed),
+    ARC/DRA (if in region), ReConnect (broadband)
+  Match advantage: USDA programs have no competition from metro areas
+  Strategy: Confirm USDA rural eligibility first, then apply to RD directly (no competitive NOFO required for some programs)
+
+FOR ANY QUERY ABOUT A MID-SIZE TO LARGE CITY:
+  Top 5 program families: HUD CDBG (entitlement), FTA Capital, RAISE/MEGA/INFRA,
+    EPA SRF, DOE Grid/Energy
+  Match advantage: Scale justifies large award requests; federal relationships exist
+  Strategy: Align projects with federal administration priorities (Justice40, climate, equity, safety)
+
+FOR ECONOMICALLY DISTRESSED COMMUNITIES (any size):
+  Priority programs: EDA Public Works, HUD CDBG, USDA CF, DOE fossil fuel transition,
+    EPA Environmental Justice, IRA Energy Communities bonus credits
+  Strategy: Document distress designation (EDA, CEJST, Justice40) prominently in every application
+
+FOR COMMUNITIES WITH FLOOD/STORMWATER CHALLENGES:
+  Top programs: FEMA BRIC (green infrastructure, flood early warning, structure hardening),
+    FEMA HMGP (post-declaration), EPA CWSRF (wet weather, green infrastructure),
+    NOAA (coastal), Army Corps Section 408, SMC/county-level stormwater programs
+  Eligibility checkers: Active NFIP + current FEMA-approved LHMP required for FEMA grants
+
+FOR COMMUNITIES WITH TRANSPORTATION CHALLENGES:
+  Top programs: USDOT RAISE, Safe Streets & Roads for All (SS4A), HSIP (safety only),
+    CMAQ (air quality + congestion), STP-Urban (pavement, bridges), TAP (trails, bike/ped),
+    PROTECT (climate resilience), Carbon Reduction Program
+  Eligibility checkers: ADA Transition Plan, BCA for RAISE, MPO TIP inclusion for STP/CMAQ

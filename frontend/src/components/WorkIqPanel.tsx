@@ -242,9 +242,48 @@ export function WorkIqPanel({ grantName, agency, deadline, milestones, actionIte
             {context.activeProjects.length > 0 && (
               <ul className="workiq-projects">
                 {context.activeProjects.slice(0, 3).map((project) => (
-                  <li key={project.name}>{project.name}{project.budget ? ` · ${project.budget}` : ""}</li>
+                  <li key={project.name}>{project.name}{project.budget ? ` · ${project.budget}` : ""}{project.status ? ` — ${project.status}` : ""}</li>
                 ))}
               </ul>
+            )}
+            {/* Live M365 signals — calendar, Teams, mail */}
+            {(context.calendarEvents?.length || context.teamsInsights?.length || context.mailSignals?.length) ? (
+              <div className="workiq-live-signals">
+                <span className="workiq-live-label">Live M365 Signals</span>
+                {context.calendarEvents?.length ? (
+                  <div className="workiq-signal-group">
+                    <span className="workiq-signal-icon">📅</span>
+                    <ul className="workiq-signal-list">
+                      {context.calendarEvents.slice(0, 4).map((e, i) => <li key={i}>{e}</li>)}
+                    </ul>
+                  </div>
+                ) : null}
+                {context.teamsInsights?.length ? (
+                  <div className="workiq-signal-group">
+                    <span className="workiq-signal-icon">💬</span>
+                    <ul className="workiq-signal-list">
+                      {context.teamsInsights.slice(0, 3).map((t, i) => <li key={i}>{t}</li>)}
+                    </ul>
+                  </div>
+                ) : null}
+                {context.mailSignals?.length ? (
+                  <div className="workiq-signal-group">
+                    <span className="workiq-signal-icon">✉️</span>
+                    <ul className="workiq-signal-list">
+                      {context.mailSignals.slice(0, 3).map((m, i) => <li key={i}>{m}</li>)}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+            {/* Risk signals from past rejected applications */}
+            {context.riskSignals.length > 0 && (
+              <div className="workiq-risks">
+                <span className="workiq-risks-label">⚠ Lessons from Past Applications</span>
+                <ul className="workiq-risk-list">
+                  {context.riskSignals.slice(0, 3).map((r, i) => <li key={i}>{r}</li>)}
+                </ul>
+              </div>
             )}
             {context.error && <p className="workiq-context-error">Fallback active: {context.error}</p>}
           </>

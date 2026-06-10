@@ -4,16 +4,19 @@ dist/
 *.env.local
 *.env.*.local
 backend/.env
+frontend/.env
 
 # TypeScript build output
 backend/dist/
 
 # Deploy artifacts (local build/deploy helpers)
+.deploy/
 backend/deploy*.zip
 backend/deploy*.tar.gz
 backend/deploy-package.json
 backend/app-logs*
 publish_profile.xml
+_sse_test.txt
 
 # Logs
 *.log

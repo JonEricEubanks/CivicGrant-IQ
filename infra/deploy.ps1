@@ -3,7 +3,7 @@
 .SYNOPSIS
   Deploys all CivicGrant IQ Azure infrastructure to resource group rg-skillsfest.
   AI Search and Azure OpenAI are deployed to eastus2 (required for agentic retrieval).
-  All resources are registered under rg-skillsfest (sub: b8f90e47-b8ee-45f1-9442-d3b4f8fd0695).
+  Set AZURE_SUBSCRIPTION_ID env var or update $SUBSCRIPTION_ID below before running.
 
 .USAGE
   ./infra/deploy.ps1
@@ -16,7 +16,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 # ── Constants ──────────────────────────────────────────────────────────────
-$SUBSCRIPTION_ID   = "b8f90e47-b8ee-45f1-9442-d3b4f8fd0695"
+# Set your subscription ID here or via $env:AZURE_SUBSCRIPTION_ID
+$SUBSCRIPTION_ID   = $env:AZURE_SUBSCRIPTION_ID ?? "<your-subscription-id>"
 $RESOURCE_GROUP    = "rg-skillsfest"
 $LOCATION          = "northcentralus"   # RG logical location
 $AI_LOCATION       = "eastus2"          # AI Search + AOAI must be eastus2 for agentic retrieval

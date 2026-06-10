@@ -1,0 +1,287 @@
+FEDERAL GRANT CALENDAR — FY2026 DEADLINES & UPCOMING OPPORTUNITIES
+CivicGrant IQ Knowledge Base | FY2026 Edition
+Current as of: June 2026 | Source: Grants.gov, Federal Register, Program websites
+
+IMPORTANT: Grant deadlines shift year to year. Use this calendar for approximate timing
+and current cycle guidance. Always verify on Grants.gov before committing to a deadline.
+
+=============================================================================
+SECTION 1: GRANTS OPEN RIGHT NOW (June 2026)
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+CURRENTLY OPEN — APPLY IMMEDIATELY
+─────────────────────────────────────────────────────────────────────────────
+
+EPA CLEAN WATER STATE REVOLVING FUND (CWSRF) — ALL STATES
+  Status: OPEN YEAR-ROUND (rolling applications through state EPA offices)
+  What to do: Contact your state environmental agency TODAY; place project on priority list
+  Illinois (IEPA): Priority list cycle — applications accepted January–March each year
+    Next cycle: January 2027 for FY2027 funding (apply now for FY2026 late allocations)
+  Texas (TCEQ): Rolling applications; CWSRF project priority list submitted quarterly
+  California (SWRCB): Applications accepted year-round; priority list updated quarterly
+  Average processing: 6-12 months from application to loan closing
+  Note: This is the single most accessible infrastructure program in the US —
+    no competition, no NOFO, apply through your state environmental agency.
+
+EPA DRINKING WATER SRF — LEAD SERVICE LINE REPLACEMENT
+  Status: OPEN YEAR-ROUND (rolling through state agencies)
+  IIJA money: $15 billion over 5 years — states have not fully deployed this yet
+  Priority: ANY water system with documented lead service lines should apply immediately
+  Contact: State drinking water program (IEPA, TCEQ, CDPH, etc.)
+
+USDA RURAL DEVELOPMENT — WATER & ENVIRONMENTAL PROGRAMS
+  Status: OPEN YEAR-ROUND (rolling applications)
+  Eligibility: Communities ≤ 10,000 population in rural areas
+  What to do: Contact your local USDA RD State Office — no competitive deadline
+  Website: rd.usda.gov/contact-us/state-offices
+
+USDA RURAL DEVELOPMENT — COMMUNITY FACILITIES
+  Status: OPEN YEAR-ROUND (rolling applications)
+  Eligibility: Communities ≤ 20,000 population in rural areas
+  Contact: Local USDA RD State Office
+
+FEMA HAZARD MITIGATION GRANT PROGRAM (HMGP) — POST-DISASTER STATES
+  Status: OPEN for communities in states with active Presidential Disaster Declarations
+  Check current declarations: fema.gov/disaster/declarations
+  Active declarations as of June 2026: Check FEMA website for current list
+  Note: HMGP opens within weeks of a major disaster declaration — move fast
+
+DOJ BYRNE JAG (Justice Assistance Grants)
+  Status: Formula program — most jurisdictions receive allocation automatically
+  Action: Contact your State SAA (State Administering Agency) to claim your FY2026 formula allocation
+  Application: Through BJA website; most cities apply June-August
+
+─────────────────────────────────────────────────────────────────────────────
+OPEN NOW — CLOSING SOON (July–August 2026 expected deadlines)
+─────────────────────────────────────────────────────────────────────────────
+
+USDOT SAFE STREETS & ROADS FOR ALL (SS4A) — FY2026 NOFO
+  Expected NOFO publication: July 2026 (historically published June-August)
+  Expected application deadline: September–October 2026
+  Award announcement: Spring 2027
+  What to do NOW:
+    1. Adopt a Vision Zero resolution at city council (required for Implementation grants)
+    2. Compile 5-year crash data by location, type, and severity (KABCO scale)
+    3. Map your High-Injury Network (top 5-10% of road segments with highest injury crash density)
+    4. Identify highest-priority safety project with 30%+ design
+    5. Draft public engagement plan for underserved populations
+  Award range: $1M–$25M (Implementation); $100K–$5M (Action Plan)
+  Note: SS4A Implementation grants have LOWER competition than RAISE — fewer applicants,
+    same federal funding pool for safety projects.
+
+EPA BROWNFIELDS GRANTS — FY2026
+  Expected NOFO: July–August 2026
+  Expected deadline: October–November 2026
+  Award: $500K assessment; $500K cleanup; $800K multipurpose
+  What to do NOW: Inventory contaminated/potentially contaminated sites in your jurisdiction
+    (former gas stations, dry cleaners, industrial sites, abandoned facilities)
+
+STATE CDBG PROGRAMS — VARIES BY STATE
+  Illinois DCEO: NOFO expected August-September 2026; deadline November-December 2026
+  Texas GLO: NOFO cycles vary; check floridajobs.org/community for current cycle
+  California HCD: Check hcd.ca.gov for current program cycle
+  What to do NOW: Pre-apply/pre-qualify with your state CDBG office; confirm LMI documentation ready
+
+=============================================================================
+SECTION 2: DEADLINES COMING UP (September–December 2026)
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+FALL 2026 — HIGH PRIORITY APPLICATIONS
+─────────────────────────────────────────────────────────────────────────────
+
+FEMA BRIC FY2026
+  NOFO expected: August 2026
+  Subapplication deadline (to state HSEMD): January 2027
+  State submission to FEMA: February 2027
+  FEMA award announcements: September–October 2027
+  What to do NOW (June–August 2026):
+    1. Confirm LHMP is current (must not expire before award date)
+    2. Commission BCA/Hazus analysis for your project
+    3. Develop engineering concept with cost estimate
+    4. Schedule meeting with State HSEMD (IEMA in IL) to discuss project
+    5. Draft Hazard Mitigation Plan project sheet for LHMP amendment if needed
+  Alert: BRIC FY2026 may be last year under current program structure — apply now
+    before potential program restructuring under new administration
+
+USDOT HIGHWAY SAFETY IMPROVEMENT PROGRAM (HSIP) — STATE CALL FOR PROJECTS
+  Illinois: IDOT HSIP call for projects typically September–October
+  Deadline: November 2026 (varies by IDOT district)
+  What to do NOW: Submit crash data to IDOT District Engineer;
+    request High-Injury Network designation; get project on IDOT's radar
+  Note: HSIP is 90/10 federal/local match — best match ratio for safety projects
+
+CMAP TRANSPORTATION ALTERNATIVES PROGRAM (TAP/ITEP) — CHICAGO REGION
+  Next call for projects: Expected October–November 2026
+  Eligible: Trail connections, bike lanes, sidewalks, safe routes to school
+  What to do: Pre-application meeting with CMAP staff (highly recommended)
+    Prepare alignment study + cost estimate for bike/ped project
+
+NTIA BEAD (State Broadband Subgrants)
+  Status: States are beginning subgrant solicitations NOW
+  Illinois: DCEO broadband office expected to release first BEAD solicitation Fall 2026
+  Texas: TDEM/Broadband Development Office — check for RFPs
+  Action: If your city has unserved areas, contact your state broadband office
+    to ensure your coverage data is correct in the NTIA Broadband Map
+
+─────────────────────────────────────────────────────────────────────────────
+LATE FALL 2026 — PLANNING AHEAD
+─────────────────────────────────────────────────────────────────────────────
+
+USDOT RAISE FY2027
+  NOFO expected: December 2026 – January 2027
+  Application deadline: March–April 2027
+  Award announcement: Fall 2027
+  What to do NOW (June–December 2026):
+    1. Advance project design to 30%+ (environmental survey, preliminary design)
+    2. Secure NEPA categorical exclusion or begin EA
+    3. Get local match funding committed via city council resolution
+    4. Engage congressional delegation staff — schedule office visits BEFORE the NOFO drops
+    5. Begin BCA analysis using USDOT BCA Toolkit v6
+    6. Collect and format all crash/traffic/condition data into clear tables
+    7. Draft project narrative following RAISE evaluation criteria framework
+
+USDA RURAL BUSINESS DEVELOPMENT GRANTS (RBDG) — FY2027
+  Annual NOFO: Typically October–November with December/January deadline
+  Eligible: Communities ≤ 50,000 population
+  Award: $10K–$500K for rural business technical assistance and economic development
+
+HUD HOME INVESTMENT PARTNERSHIPS — NEXT CYCLE
+  Entitlement PJ allocations: HUD announces February each year
+  Application: PJs submit Action Plans by June each year
+  What to do NOW: Identify CHDO partners; plan affordable housing activities for FY2027 AAP
+
+EPA BROWNFIELDS AREA-WIDE PLANNING GRANTS
+  Next NOFO: November–December 2026
+  Award: Up to $300K for brownfield area-wide planning studies
+  Best for: Cities with brownfield redevelopment districts or strategic plans
+
+=============================================================================
+SECTION 3: ALWAYS-ON PROGRAMS (No Competitive Deadline)
+=============================================================================
+
+These programs accept applications year-round or through rolling processes:
+
+FEDERAL HOME LOAN BANK (FHLB) AFFORDABLE HOUSING PROGRAM (AHP)
+  Twice-yearly: Spring (March-April) and Fall (September-October) competitive rounds
+  Access through: FHLB member bank in your community (community banks, savings banks)
+  Award: $750K–$5M per project
+  Eligible: Affordable housing development and rehabilitation
+
+LIHTC (LOW INCOME HOUSING TAX CREDITS)
+  State QAP cycle: Varies by state; typically applications due January–March
+  Illinois: IHDA QAP; award announcements June–July
+  Texas: TDHCA QAP; award announcements July-August
+  Developers apply; city provides support letters and approvals
+
+USDA RURAL ENERGY FOR AMERICA (REAP)
+  Typical deadlines: March 31 and September 30 each year
+  FY2026 deadline: March 31, 2026 has passed; next: September 30, 2026
+  Award: Up to 50% grant for renewable energy and energy efficiency
+
+STATE REVOLVING FUNDS (CWSRF + DWSRF)
+  All 50 states: Priority list submission deadline typically January–March
+  State DOT LOCAL ROAD PROGRAMS: Annual call for projects varies by state; most fall
+
+LWCF (Land & Water Conservation Fund via NPS)
+  State program annual cycle: applications through state LWCF office
+  Illinois: IDNR administers; projects due to IDNR by October each year
+  Award: 50% matching grants for parkland acquisition and outdoor recreation
+
+=============================================================================
+SECTION 4: FY2027 PLANNING CALENDAR (January–June 2027)
+=============================================================================
+
+JANUARY 2027:
+  → FEMA BRIC subapplication deadline (to state)
+  → EPA SRF/CWSRF priority list submissions (most states)
+  → USDA REAP third-cycle deadline (some states)
+  → USDOT RAISE NOFO expected publication
+
+FEBRUARY 2027:
+  → HUD formula allocation announcements (CDBG, HOME, HOPWA, ESG)
+  → EDA rolling application opportunities open
+
+MARCH–APRIL 2027:
+  → USDOT RAISE FY2027 expected application deadline
+  → USDA REAP deadline
+  → LIHTC QAP applications (most states)
+  → FHWA Active Transportation Program (ATP — California) deadline
+
+MAY–JUNE 2027:
+  → BRIC state submissions to FEMA Regional offices
+  → HUD CDBG Annual Action Plan submissions (entitlement cities)
+  → State DOT call for safety projects (HSIP, TAP — varies by state)
+
+=============================================================================
+SECTION 5: HOW TO NEVER MISS A DEADLINE
+=============================================================================
+
+GRANTS.GOV SUBSCRIPTION ALERTS:
+  1. Create a free Grants.gov account
+  2. Set up email alerts for any agency (USDOT, FEMA, EPA, USDA, HUD, EDA)
+  3. Filter by eligible applicant type: "Local government"
+  4. Receive email instantly when any new NOFO is posted
+  Website: grants.gov/search-grants (set up saved searches)
+
+FEDERAL REGISTER ALERTS:
+  Subscribe to Federal Register for specific agency rules/NOFOs:
+  federalregister.gov — set email alerts for "RAISE", "BRIC", "SS4A", etc.
+
+STATE AGENCY EMAIL LISTS:
+  → Sign up for your state DOT, emergency management, and EPA email lists
+  → Most state CDBG offices maintain mailing lists for NOFOs
+  → Illinois: Subscribe to IDOT, IEMA, IEPA, and DCEO mailing lists
+
+CONGRESSIONAL OFFICE SUBSCRIPTION:
+  → Your US Representative and Senators' offices track federal funding opportunities
+  → Ask their constituent services staff to notify you of relevant NOFOs
+  → Congressional offices also provide application review support (free)
+
+GRANT CALENDARS BY STATE (most current):
+  Illinois: dceo.illinois.gov/grants
+  Texas: comptroller.texas.gov/grants/
+  California: grants.ca.gov
+  Florida: floridajobs.org
+  Ohio: development.ohio.gov/grants
+  New York: grantsgateway.ny.gov
+
+=============================================================================
+SECTION 6: GRANT PREPARATION TIMELINE FOR RAISE (MODEL FOR ANY MAJOR GRANT)
+=============================================================================
+
+12 months before deadline (Month 1):
+  → Identify project; confirm it aligns with program priorities
+  → Commission feasibility/preliminary engineering study
+  → Begin collecting crash/condition/usage data
+  → Contact congressional delegation offices to notify of intent to apply
+
+9 months before deadline (Month 3):
+  → Commission BCA analysis
+  → Begin NEPA environmental review
+  → Secure local match commitment (city council resolution)
+  → Begin community engagement documentation
+
+6 months before deadline (Month 6):
+  → Complete BCA; confirm BCR ≥ 1.5
+  → Advance design to 30%+
+  → Secure state agency support letters (state DOT, state emergency management)
+  → Schedule congressional office visits; request support letters
+
+3 months before deadline (Month 9):
+  → Begin full application narrative writing
+  → Compile all data tables, exhibits, photos
+  → Request letters from partners (county, transit agency, MPO)
+  → Internal review of draft application against NOFO evaluation criteria checklist
+
+1 month before deadline (Month 11):
+  → Final internal review
+  → All certifications and assurances signed
+  → Grants.gov submission test run
+  → Backup plan if portal goes down (have printed copy + PDF ready)
+
+1 week before deadline:
+  → Submit early (Grants.gov crashes on deadline day — submit 1 week early)
+  → Confirm submission receipt email from Grants.gov
+  → Send courtesy notification to state program office

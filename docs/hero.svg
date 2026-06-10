@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#004E8C"/>
+      <stop offset="0.55" stop-color="#0078D4"/>
+      <stop offset="1" stop-color="#6E40C9"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <style>
+    .flow{fill:none;stroke-width:2;stroke-dasharray:6 8;animation:dash 0.9s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-14}}
+  </style>
+
+  <rect width="1200" height="300" fill="url(#bg)"/>
+
+  <!-- drifting glow orbs -->
+  <circle cx="150" cy="70" r="120" fill="url(#glow)">
+    <animate attributeName="cx" values="150;240;150" dur="9s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="1050" cy="230" r="150" fill="url(#glow)">
+    <animate attributeName="cx" values="1050;950;1050" dur="11s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="640" cy="30" r="100" fill="url(#glow)">
+    <animate attributeName="cy" values="30;80;30" dur="8s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- title -->
+  <g opacity="0">
+    <text x="600" y="112" text-anchor="middle" font-size="52" font-weight="800" fill="#ffffff">🏛️ CivicGrant IQ</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0s" fill="freeze"/>
+  </g>
+
+  <!-- underline sweep -->
+  <rect x="450" y="132" width="0" height="4" rx="2" fill="#50E6FF">
+    <animate attributeName="width" from="0" to="300" dur="0.9s" begin="0.5s" fill="freeze"/>
+  </rect>
+
+  <!-- taglines -->
+  <g opacity="0">
+    <text x="600" y="170" text-anchor="middle" font-size="16" font-style="italic" fill="#DCE9F7">Every year, U.S. cities leave billions in federal grant money on the table.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.7s" begin="0.9s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <text x="600" y="196" text-anchor="middle" font-size="16" font-style="italic" fill="#DCE9F7">Not because they're ineligible — because finding, qualifying, and writing takes weeks they don't have.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.7s" begin="1.3s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <text x="600" y="232" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">An AI grant analyst for municipal governments — grounded in your city's real documents, cited at every step.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.7s" begin="1.7s" fill="freeze"/>
+  </g>
+
+  <!-- five pulsing agent dots -->
+  <g>
+    <circle cx="540" cy="258" r="4.5" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0s" repeatCount="indefinite"/></circle>
+    <circle cx="570" cy="258" r="4.5" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0.3s" repeatCount="indefinite"/></circle>
+    <circle cx="600" cy="258" r="4.5" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0.6s" repeatCount="indefinite"/></circle>
+    <circle cx="630" cy="258" r="4.5" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0.9s" repeatCount="indefinite"/></circle>
+    <circle cx="660" cy="258" r="4.5" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="1.2s" repeatCount="indefinite"/></circle>
+  </g>
+  <text x="600" y="282" text-anchor="middle" font-size="10.5" fill="#B7D6F2" letter-spacing="2">FIVE-AGENT FLEET · SIX-STEP REASONING · GRAPHRAG-CITED · NEVER DOWN</text>
+
+  <!-- marching baseline -->
+  <line x1="0" y1="296" x2="1200" y2="296" class="flow" stroke="#50E6FF" opacity="0.6"/>
+</svg>

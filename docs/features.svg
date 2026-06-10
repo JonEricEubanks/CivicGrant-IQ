@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 660" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <style>
+    .ct{font-size:15px;font-weight:700;fill:#201F1E}
+    .cd{font-size:11.5px;fill:#484644}
+  </style>
+
+  <rect width="1000" height="660" fill="#FAF9F8"/>
+
+  <text x="500" y="36" text-anchor="middle" font-size="19" font-weight="800" fill="#201F1E">✨ What It Does — Live, Right Now</text>
+
+  <!-- 1 Grant Analysis -->
+  <g opacity="0">
+    <rect x="24" y="70" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="24" y="70" width="6" height="100" rx="3" fill="#0078D4"/>
+    <rect x="24" y="70" width="464" height="100" rx="10" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="0s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="48" y="102" class="ct">🔍 Grant Analysis</text>
+    <text x="48" y="126" class="cd">Paste any NOFO → 6-step chain: Parse → Match → Verify →</text>
+    <text x="48" y="144" class="cd">Gap → Narrative → Strategy. Every number cited.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0s" fill="freeze"/>
+  </g>
+
+  <!-- 2 Five-Agent Pressure Test -->
+  <g opacity="0">
+    <rect x="512" y="70" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="512" y="70" width="6" height="100" rx="3" fill="#6E40C9"/>
+    <rect x="512" y="70" width="464" height="100" rx="10" fill="#6E40C9" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="1.2s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="536" y="102" class="ct">🤖 Five-Agent Pressure Test</text>
+    <text x="536" y="126" class="cd">GS-14 Red Team + Competitive Intel run in parallel.</text>
+    <text x="536" y="144" class="cd">Refinement folds feedback into a polished draft.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.12s" fill="freeze"/>
+  </g>
+
+  <!-- 3 Smart Router -->
+  <g opacity="0">
+    <rect x="24" y="182" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="24" y="182" width="6" height="100" rx="3" fill="#00B7C3"/>
+    <rect x="24" y="182" width="464" height="100" rx="10" fill="#00B7C3" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="2.4s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="48" y="214" class="ct">🧭 Smart Router</text>
+    <text x="48" y="238" class="cd">Re-queries KB on weak grounding · spawns Red Team only on</text>
+    <text x="48" y="256" class="cd">viable matches (&gt;55%) · skips fan-out on quick follow-ups.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.24s" fill="freeze"/>
+  </g>
+
+  <!-- 4 Live Portfolio Scan -->
+  <g opacity="0">
+    <rect x="512" y="182" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="512" y="182" width="6" height="100" rx="3" fill="#107C10"/>
+    <rect x="512" y="182" width="464" height="100" rx="10" fill="#107C10" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="3.6s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="536" y="214" class="ct">📡 Live Grant Portfolio Scan</text>
+    <text x="536" y="238" class="cd">Type a city → ranked feed of live grants.gov opportunities</text>
+    <text x="536" y="256" class="cd">sorted by deadline urgency and city-specific match.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.36s" fill="freeze"/>
+  </g>
+
+  <!-- 5 One-Click Export -->
+  <g opacity="0">
+    <rect x="24" y="294" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="24" y="294" width="6" height="100" rx="3" fill="#C19C00"/>
+    <rect x="24" y="294" width="464" height="100" rx="10" fill="#C19C00" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="4.8s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="48" y="326" class="ct">📄 One-Click Export</text>
+    <text x="48" y="350" class="cd">Submission-ready package: narrative, gap analysis, 4-week</text>
+    <text x="48" y="368" class="cd">action plan + full application drafting and PDF preview.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.48s" fill="freeze"/>
+  </g>
+
+  <!-- 6 Grant Admin Hub -->
+  <g opacity="0">
+    <rect x="512" y="294" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="512" y="294" width="6" height="100" rx="3" fill="#D13438"/>
+    <rect x="512" y="294" width="464" height="100" rx="10" fill="#D13438" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="6s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="536" y="326" class="ct">🗂️ Grant Admin Hub</text>
+    <text x="536" y="350" class="cd">Post-award: disbursements, milestones, compliance flags,</text>
+    <text x="536" y="368" class="cd">auto-draft SF-425 closeouts — with its own admin agent.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.6s" fill="freeze"/>
+  </g>
+
+  <!-- 7 Foundry IQ + Work IQ -->
+  <g opacity="0">
+    <rect x="24" y="406" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="24" y="406" width="6" height="100" rx="3" fill="#0078D4"/>
+    <rect x="24" y="406" width="464" height="100" rx="10" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="7.2s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="48" y="438" class="ct">🧠 Foundry IQ + Work IQ</text>
+    <text x="48" y="462" class="cd">SharePoint documents auto-load · city context personalizes</text>
+    <text x="48" y="480" class="cd">every analysis. Grounding is required — not optional.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.72s" fill="freeze"/>
+  </g>
+
+  <!-- 8 Eval Dashboard -->
+  <g opacity="0">
+    <rect x="512" y="406" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="512" y="406" width="6" height="100" rx="3" fill="#6E40C9"/>
+    <rect x="512" y="406" width="464" height="100" rx="10" fill="#6E40C9" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="8.4s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="536" y="438" class="ct">📊 Built-in Eval Dashboard</text>
+    <text x="536" y="462" class="cd">LLM-as-judge scores Groundedness, Relevance, Coherence,</text>
+    <text x="536" y="480" class="cd">Safety on a 1–5 scale. See what worked. Iterate.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.84s" fill="freeze"/>
+  </g>
+
+  <!-- 9 Full Observability -->
+  <g opacity="0">
+    <rect x="24" y="518" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="24" y="518" width="6" height="100" rx="3" fill="#00B7C3"/>
+    <rect x="24" y="518" width="464" height="100" rx="10" fill="#00B7C3" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="9.6s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="48" y="550" class="ct">📈 Full Observability</text>
+    <text x="48" y="574" class="cd">Every request traced to App Insights via OpenTelemetry:</text>
+    <text x="48" y="592" class="cd">guardrail verdicts, tier fallbacks, agent spawns, tokens.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.96s" fill="freeze"/>
+  </g>
+
+  <!-- 10 Guided Demo Tour -->
+  <g opacity="0">
+    <rect x="512" y="518" width="464" height="100" rx="10" fill="#ffffff" stroke="#E1DFDD"/>
+    <rect x="512" y="518" width="6" height="100" rx="3" fill="#107C10"/>
+    <rect x="512" y="518" width="464" height="100" rx="10" fill="#107C10" opacity="0">
+      <animate attributeName="opacity" dur="12s" begin="10.8s" repeatCount="indefinite" keyTimes="0;0.01;0.09;0.12;1" values="0;0.12;0.12;0;0"/>
+    </rect>
+    <text x="536" y="550" class="ct">🎬 Guided Demo Tour</text>
+    <text x="536" y="574" class="cd">First-time visitors get an interactive walkthrough —</text>
+    <text x="536" y="592" class="cd">judges see the hero features without hunting.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="1.08s" fill="freeze"/>
+  </g>
+
+  <text x="500" y="646" text-anchor="middle" font-size="11" fill="#605E5C">Ten live capabilities · every one running in the demo right now</text>
+</svg>

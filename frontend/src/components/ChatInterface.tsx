@@ -1,12 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
-import { streamChat, generatePackage, draftApplication, fetchGrantUrl, fetchMonitor, fetchHeroGrants } from "../api";
+import { streamChat, streamScan, generatePackage, draftApplication, fetchGrantUrl, fetchMonitor, fetchHeroGrants } from "../api";
 import type { FetchedUrl, MonitorData, HeroGrantResult } from "../api";
-import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext } from "../types";
+import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext, CityProfile } from "../types";
 import { GrantMatchWidget } from "./GrantMatchWidget";
 import type { GrantMatchData } from "./GrantMatchWidget";
 import { GrantPipelineWidget } from "./GrantPipelineWidget";
 import type { PipelineGrant } from "./GrantPipelineWidget";
+import { CityProfileScanWidget } from "./CityProfileScanWidget";
+import type { CityProfileScanData } from "./CityProfileScanWidget";
+import { InlineScanSetupCard } from "./InlineScanSetupCard";
 import type { DrawerView } from "./AgentDrawer";
 import { AgentDrawer } from "./AgentDrawer";
 import { ReportPreviewModal } from "./ReportPreviewModal";
@@ -21,12 +24,14 @@ import {
   IconCopy, IconCheck, IconBolt,
   IconChart, IconFilePdf, IconFileText, IconGlobe,
   IconLink, IconScales, IconTarget, IconSparkle, IconAward,
+  IconPaperclip, IconDatabase,
 } from "./Icons";
 import "./ChatInterface.css";
 
 type WidgetPayload =
   | { type: "grant_match"; data: GrantMatchData }
-  | { type: "grant_pipeline"; data: { grants: PipelineGrant[]; cityName: string; totalOpportunity: number } };
+  | { type: "grant_pipeline"; data: { grants: PipelineGrant[]; cityName: string; totalOpportunity: number } }
+  | { type: "city_scan"; data: CityProfileScanData };
 
 interface Message {
   id: string;
@@ -50,6 +55,8 @@ interface Message {
   startedAt?: number;
   completedAt?: number;
   isFollowUp?: boolean;
+  isScanSetup?: boolean;
+  scanSetupConfirmed?: boolean;
 }
 
 const HERO_GRANTS_DEFAULT: HeroGrantResult[] = [
@@ -560,8 +567,11 @@ function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStre
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
 
   const completedCount = steps.filter(s => s.completed).length;
-  // Total expected steps = highest step number seen so far (dynamic — 3 for follow-ups, 6 for full analysis)
-  const totalSteps = steps.length > 0 ? Math.max(...steps.map(s => s.step)) : 6;
+  const maxSeenStep = steps.length > 0 ? Math.max(...steps.map(s => s.step)) : 0;
+  const maxCompletedStep = completedCount > 0 ? Math.max(...steps.filter(s => s.completed).map(s => s.step)) : 0;
+  // While streaming keep at least 6 slots so "1/6" shows instead of "1/1" during early steps.
+  // After streaming ends, base on completed steps only — avoids "0/1" from a lone incomplete preview.
+  const totalSteps = isStreaming ? Math.max(6, maxSeenStep) : (maxCompletedStep > 0 ? maxCompletedStep : maxSeenStep > 0 ? maxSeenStep : 6);
   const allDone = !isStreaming && completedCount >= totalSteps;
 
   // Collapse to the clean summary bar once all steps finish
@@ -707,6 +717,7 @@ interface WorkspacePanelProps {
   citations: Citation[];
   graphPaths?: import("../types").GraphPath[];
   artifacts: WorkspaceArtifact[];
+  inputs: AttachDoc[];
   widget?: WidgetPayload;
   analysisText: string;
   isLoading: boolean;
@@ -717,32 +728,32 @@ interface WorkspacePanelProps {
   reviewStreaming?: boolean;
   competitorStreaming?: boolean;
   refinementStreaming?: boolean;
+  tierInfo?: { tier: 1 | 2 | 3; label: string; guardrailsPassed: boolean; violations: number };
   onOpenPreview: (payload: ReportPayload) => void;
   onOpenDrawer: (view: DrawerView) => void;
 }
 
-function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
+function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, tierInfo, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
   const [planOpen, setPlanOpen] = useState(true);
   const [outputOpen, setOutputOpen] = useState(true);
+  const [inputsOpen, setInputsOpen] = useState(true);
   const [intelOpen, setIntelOpen] = useState(true);
   const [refsOpen, setRefsOpen] = useState(true);
-  const [kgOpen, setKgOpen] = useState(false);
   const [selectedRef, setSelectedRef] = useState<Citation | null>(null);
-  // Animate steps completing one-by-one even when they arrive as a batch
-  const [visibleSteps, setVisibleSteps] = useState(0);
+  const [selectedInput, setSelectedInput] = useState<AttachDoc | null>(null);
+  const [graphPopoutOpen, setGraphPopoutOpen] = useState(false);
 
-  useEffect(() => {
-    const completed = steps.filter(s => s.completed).length;
-    if (completed <= visibleSteps) { setVisibleSteps(completed); return; }
-    let i = visibleSteps;
-    const tick = () => {
-      i++;
-      setVisibleSteps(i);
-      if (i < completed) setTimeout(tick, 260);
-    };
-    const t = setTimeout(tick, 80);
-    return () => clearTimeout(t);
-  }, [steps]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Only show steps that are fully completed — don't pollute the Plan with in-flight partial labels
+  const completedSteps = steps.filter(s => s.completed);
+  const completedCount = completedSteps.length;
+  // Expected total: use what we know — 3 for follow-ups (they get 3 fixed steps), 6 for full analysis
+  // While loading and we have no steps yet, default to 6. After done, use actual count.
+  const expectedTotal = !isLoading
+    ? completedCount
+    : completedCount >= 3 && steps.some(s => s.label.includes("Load Session Context"))
+    ? 3
+    : Math.max(6, completedCount);
+  const allPlanDone = !isLoading && completedCount > 0;
 
   return (
     <aside className={`workspace-panel ${hasMessages ? "workspace-panel--visible" : ""}`}>
@@ -755,43 +766,102 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analy
         <button className="ws-section-header" onClick={() => setPlanOpen(!planOpen)}>
           <span className="ws-section-name">Plan</span>
           <div className="ws-section-meta">
-            {steps.length > 0 && (
-              <span className="ws-badge ws-badge--count">{visibleSteps}/{steps.length}</span>
+            {isLoading && (
+              <span className="ws-badge ws-badge--count">{completedCount}/{expectedTotal}</span>
+            )}
+            {allPlanDone && (
+              <span className="ws-badge ws-badge--done">✓ {completedCount}</span>
             )}
             <span className={`ws-chevron ${planOpen ? "ws-chevron--open" : ""}`}>›</span>
           </div>
         </button>
         {planOpen && (
           <div className="ws-section-body">
-            {steps.map((step, i) => {
-              const done = (step.completed ?? false) && visibleSteps > i;
-              const active = isLoading && !done && i === visibleSteps;
-              return (
-                <div key={step.step} className={`ws-plan-item ws-plan-item--${done ? "done" : active ? "active" : "pending"}`}>
-                  <span className="ws-plan-check">
-                    {done ? "✓" : active ? <span className="ws-plan-spinner" /> : "○"}
-                  </span>
-                  <span className="ws-plan-label">{step.label}</span>
-                </div>
-              );
-            })}
-            {steps.length === 0 && isLoading && (
+            {/* Only render completed steps — in-flight partial steps stay in ThoughtProcess */}
+            {completedSteps.map((step) => (
+              <div key={step.step} className="ws-plan-item ws-plan-item--done">
+                <span className="ws-plan-check">✓</span>
+                <span className="ws-plan-label">{step.label}</span>
+              </div>
+            ))}
+            {/* Loading placeholder while no steps have completed yet */}
+            {isLoading && completedCount === 0 && (
               <div className="ws-plan-item ws-plan-item--active">
                 <span className="ws-plan-check"><span className="ws-plan-spinner" /></span>
-                <span className="ws-plan-label">Connecting…</span>
+                <span className="ws-plan-label">Analyzing…</span>
               </div>
+            )}
+            {/* While loading, show pending placeholders for remaining steps */}
+            {isLoading && completedCount > 0 && completedCount < expectedTotal && (
+              <div className="ws-plan-item ws-plan-item--active">
+                <span className="ws-plan-check"><span className="ws-plan-spinner" /></span>
+                <span className="ws-plan-label">{expectedTotal - completedCount} step{expectedTotal - completedCount !== 1 ? "s" : ""} remaining…</span>
+              </div>
+            )}
+            {!isLoading && completedCount === 0 && (
+              <p className="ws-empty">No plan yet</p>
             )}
           </div>
         )}
       </div>
+
+      {/* Inputs — pinned context docs & M365 signals used in this analysis */}
+      {inputs.length > 0 && (
+        <div className="ws-section">
+          <button className="ws-section-header" onClick={() => setInputsOpen(!inputsOpen)}>
+            <span className="ws-section-name">Inputs</span>
+            <div className="ws-section-meta">
+              <span className="ws-badge ws-badge--count">{inputs.length}</span>
+              <span className={`ws-chevron ${inputsOpen ? "ws-chevron--open" : ""}`}>›</span>
+            </div>
+          </button>
+          {inputsOpen && (
+            <div className="ws-section-body">
+              {inputs.map((doc) => {
+                const isExpanded = selectedInput?.id === doc.id;
+                const icon = doc.kind === "calendar" ? "📅"
+                  : doc.kind === "email" ? "✉️"
+                  : doc.kind === "teams" ? "💬"
+                  : null;
+                const preview = doc.content ?? doc.desc;
+                return (
+                  <div key={doc.id} className="ws-input-item">
+                    <button
+                      className={`ws-file-item ws-file-item--clickable${isExpanded ? " ws-file-item--active" : ""}`}
+                      onClick={() => setSelectedInput(isExpanded ? null : doc)}
+                      title="Click to preview"
+                    >
+                      <span className="ws-input-icon">
+                        {icon
+                          ? <span className="ws-input-emoji">{icon}</span>
+                          : doc.source === "foundry-iq"
+                            ? <IconDatabase size={13} className="ws-file-icon" />
+                            : <IconFileText size={13} className="ws-file-icon" />}
+                      </span>
+                      <span className="ws-file-name ws-file-name--truncate">{doc.label}</span>
+                      <span className="ws-file-menu">{isExpanded ? "∧" : "›"}</span>
+                    </button>
+                    {isExpanded && (
+                      <div className="ws-input-preview">
+                        <div className="ws-input-preview-source">{doc.desc}</div>
+                        <div className="ws-input-preview-body">{preview}</div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Output */}
       <div className="ws-section">
         <button className="ws-section-header" onClick={() => setOutputOpen(!outputOpen)}>
           <span className="ws-section-name">Output</span>
           <div className="ws-section-meta">
-            {(widget ? 1 : 0) + artifacts.length > 0 && (
-              <span className="ws-badge ws-badge--count">{(widget ? 1 : 0) + artifacts.length}</span>
+            {(widget ? 1 : 0) + artifacts.length + (!widget && !isLoading && analysisText ? 1 : 0) > 0 && (
+              <span className="ws-badge ws-badge--count">{(widget ? 1 : 0) + artifacts.length + (!widget && !isLoading && analysisText ? 1 : 0)}</span>
             )}
             <span className={`ws-chevron ${outputOpen ? "ws-chevron--open" : ""}`}>›</span>
           </div>
@@ -847,7 +917,21 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analy
                 <button className="ws-file-menu" onClick={(e) => { e.stopPropagation(); art.reopen(); }} title="Reopen">↗</button>
               </div>
             ))}
-            {!widget && artifacts.length === 0 && hasMessages && (
+            {!widget && artifacts.length === 0 && !isLoading && analysisText && hasMessages && (
+              <div
+                className="ws-file-item ws-file-item--clickable"
+                onClick={() => onOpenPreview({ type: "grant_pipeline", analysisText, title: "Follow-up Analysis", citations })}
+              >
+                <IconFileText size={13} className="ws-file-icon" />
+                <span className="ws-file-name">Follow-up Analysis</span>
+                <button
+                  className="ws-file-menu"
+                  onClick={(e) => { e.stopPropagation(); onOpenPreview({ type: "grant_pipeline", analysisText, title: "Follow-up Analysis", citations }); }}
+                  title="Open preview"
+                >↗</button>
+              </div>
+            )}
+            {!widget && artifacts.length === 0 && !(!isLoading && analysisText) && hasMessages && (
               <p className="ws-empty">No outputs yet</p>
             )}
           </div>
@@ -855,14 +939,14 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analy
       </div>
 
       {/* Agent Intelligence — result cards for secondary agents */}
-      {(redTeamReview || competitorIntel || refinement || reviewStreaming || competitorStreaming || refinementStreaming) && (
+      {(redTeamReview || competitorIntel || refinement || reviewStreaming || competitorStreaming || refinementStreaming || tierInfo) && (
         <div className="ws-section">
           <button className="ws-section-header" onClick={() => setIntelOpen(!intelOpen)}>
             <span className="ws-section-name">Agent Intel</span>
             <div className="ws-section-meta">
               {(redTeamReview || competitorIntel || refinement) && (
                 <span className="ws-badge ws-badge--intel">
-                  {[redTeamReview, competitorIntel, refinement].filter(Boolean).length} agents
+                  {[redTeamReview && "Red Team", competitorIntel && "Intel", refinement && "Refined"].filter(Boolean).join(" · ")}
                 </span>
               )}
               <span className={`ws-chevron ${intelOpen ? "ws-chevron--open" : ""}`}>›</span>
@@ -985,6 +1069,22 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analy
                 </div>
               )}
 
+              {/* Tier / provenance card */}
+              {tierInfo && (
+                <div className="ws-intel-card ws-intel-card--tier ws-intel-card--ready">
+                  <div className="ws-intel-card-header">
+                    <span className="ws-intel-icon">⬡</span>
+                    <span className="ws-intel-label">AI Provenance</span>
+                  </div>
+                  <div className="ws-tier-label">{tierInfo.tier === 1 ? "Tier 1 — Foundry SDK" : tierInfo.tier === 2 ? "Tier 2 — Azure OpenAI" : "Tier 3 — Mock Engine"}</div>
+                  <div className="ws-tier-rules">
+                    <span className={`ws-tier-pill ${tierInfo.guardrailsPassed ? "ws-tier-pill--pass" : "ws-tier-pill--warn"}`}>
+                      {tierInfo.guardrailsPassed ? `17 rules passed` : `${tierInfo.violations} flag${tierInfo.violations === 1 ? "" : "s"}`}
+                    </span>
+                  </div>
+                </div>
+              )}
+
             </div>
           )}
         </div>
@@ -1008,7 +1108,7 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analy
                 <div
                   key={i}
                   className={`ws-file-item ws-file-item--clickable${selectedRef === c ? " ws-file-item--active" : ""}`}
-                  onClick={() => setSelectedRef(selectedRef === c ? null : c)}
+                  onClick={() => { setSelectedRef(selectedRef === c ? null : c); setGraphPopoutOpen(false); }}
                   title="Click to preview"
                 >
                   {c.source === "web"
@@ -1022,47 +1122,80 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analy
               <p className="ws-empty">No references yet</p>
             )}
 
-            {/* Knowledge Graph subsection — GraphRAG evidence chains */}
+            {/* GraphRAG entry — opens the paths popout */}
             {graphPaths && graphPaths.length > 0 && (
-              <div className="ws-kg-section">
-                <button className="ws-kg-header" onClick={() => setKgOpen(o => !o)}>
-                  <span className="ws-kg-icon">⬡</span>
-                  <span className="ws-kg-label">Knowledge Graph</span>
-                  <span className="ws-badge ws-badge--count ws-kg-badge">{graphPaths.length}</span>
-                  <span className={`ws-chevron ${kgOpen ? "ws-chevron--open" : ""}`}>›</span>
-                </button>
-                {kgOpen && (
-                  <div className="ws-kg-body">
-                    {graphPaths.map((path, pi) => (
-                      <div key={pi} className="ws-kg-path">
-                        <div className="ws-kg-path-label">
-                          <span className={`ws-kg-confidence ws-kg-confidence--${path.confidence.toLowerCase()}`}>{path.confidence}</span>
-                          <span className="ws-kg-path-name">{path.grantLabel}</span>
-                        </div>
-                        <div className="ws-kg-hops">
-                          {path.hops.slice(0, 3).map((hop, hi) => (
-                            <div key={hi} className="ws-kg-hop">
-                              <span className="ws-kg-from">{hop.fromLabel}</span>
-                              <span className="ws-kg-rel">→ {hop.rel} →</span>
-                              <span className="ws-kg-to">{hop.toLabel}</span>
-                            </div>
-                          ))}
-                          {path.hops.length > 3 && (
-                            <div className="ws-kg-more">+{path.hops.length - 3} more hops</div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div
+                className={`ws-file-item ws-file-item--clickable ws-file-item--graphrag${graphPopoutOpen ? " ws-file-item--active" : ""}`}
+                onClick={() => { setGraphPopoutOpen(v => !v); setSelectedRef(null); }}
+                title="View GraphRAG reasoning paths"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.2" className="ws-file-icon">
+                  <circle cx="5" cy="12" r="3" /><circle cx="19" cy="5" r="3" /><circle cx="19" cy="19" r="3" />
+                  <line x1="8" y1="11" x2="16" y2="7" /><line x1="8" y1="13" x2="16" y2="17" />
+                </svg>
+                <span className="ws-file-name">GraphRAG · {graphPaths.length} path{graphPaths.length !== 1 ? "s" : ""}</span>
+                <span className="ws-file-menu">›</span>
               </div>
             )}
           </div>
         )}
       </div>
 
+      {/* GraphRAG Popout */}
+      {graphPopoutOpen && graphPaths && graphPaths.length > 0 && (
+        <>
+          <div className="ref-preview-overlay" onClick={() => setGraphPopoutOpen(false)} />
+          <div className="ref-preview-card ref-preview-card--graphrag" role="dialog" aria-label="GraphRAG reasoning paths">
+            <div className="ref-preview-header">
+              <div className="ref-preview-title-block">
+                <div className="ref-preview-source-badge ref-preview-source-badge--graphrag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <circle cx="5" cy="12" r="3" /><circle cx="19" cy="5" r="3" /><circle cx="19" cy="19" r="3" />
+                    <line x1="8" y1="11" x2="16" y2="7" /><line x1="8" y1="13" x2="16" y2="17" />
+                  </svg>
+                  GraphRAG
+                </div>
+                <div className="ref-preview-title">Reasoning Paths</div>
+                <div className="ref-preview-agency">{graphPaths.length} evidence path{graphPaths.length !== 1 ? "s" : ""} traversed by the AI</div>
+              </div>
+              <button className="ref-preview-close" onClick={() => setGraphPopoutOpen(false)} aria-label="Close">✕</button>
+            </div>
+            <div className="ref-preview-body ref-preview-body--graphrag">
+              <GraphPathsPanel paths={graphPaths} defaultOpen />
+            </div>
+            <div className="ref-preview-footer">
+              <button className="ref-preview-use-btn" onClick={() => setGraphPopoutOpen(false)}>Done</button>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Reference Preview Popover */}
-      {selectedRef && (
+      {selectedRef && (() => {
+        const raw = selectedRef.excerpt ?? "";
+        // Strip separator lines (===, ---, ~~~) and collect clean non-empty lines
+        const lines = raw
+          .split(/\r\n|\r|\n/)
+          .map(l => l.trim())
+          .filter(l => l.length > 0 && !/^[=\-~]{3,}$/.test(l));
+        // Bucket into sections: ALL-CAPS short lines are headings
+        type KbSection = { heading: string | null; lines: string[] };
+        const sections: KbSection[] = [];
+        let cur: KbSection = { heading: null, lines: [] };
+        for (const l of lines) {
+          const isHeader = l === l.toUpperCase() && l.length <= 72 && /[A-Z]{3}/.test(l);
+          if (isHeader) {
+            if (cur.lines.length > 0 || cur.heading) sections.push(cur);
+            cur = { heading: l, lines: [] };
+          } else {
+            cur.lines.push(l);
+          }
+        }
+        if (cur.lines.length > 0 || cur.heading) sections.push(cur);
+        const docName = selectedRef.title.split(" — ")[0];
+        const docSub  = selectedRef.title.includes(" — ")
+          ? selectedRef.title.split(" — ").slice(1).join(" — ") : null;
+        return (
         <>
           <div className="ref-preview-overlay" onClick={() => setSelectedRef(null)} />
           <div className="ref-preview-card" role="dialog" aria-label="Reference preview">
@@ -1071,40 +1204,63 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analy
                 <div className="ref-preview-source-badge">
                   <IconFileText size={12} /> Knowledge Base
                 </div>
-                <div className="ref-preview-title">
-                  {selectedRef.title.split(" — ")[0]}
-                </div>
-                {selectedRef.title.includes(" — ") && (
-                  <div className="ref-preview-agency">
-                    {selectedRef.title.split(" — ").slice(1).join(" — ")}
-                  </div>
-                )}
+                <div className="ref-preview-title">{docName}</div>
+                {docSub && <div className="ref-preview-agency">{docSub}</div>}
               </div>
               <button className="ref-preview-close" onClick={() => setSelectedRef(null)} aria-label="Close">✕</button>
             </div>
-            {selectedRef.excerpt && (
-              <div className="ref-preview-body">
-                <p className="ref-preview-excerpt">{selectedRef.excerpt}</p>
-              </div>
-            )}
+            <div className="ref-preview-body ref-preview-body--kb">
+              {sections.slice(0, 5).map((sec, si) => (
+                <div key={si} className={`ref-kb-section${sec.heading ? "" : " ref-kb-section--no-heading"}`}>
+                  {sec.heading && <div className="ref-kb-heading">{sec.heading}</div>}
+                  {sec.lines.slice(0, 6).map((line, li) => (
+                    <p key={li} className="ref-preview-excerpt">{line}</p>
+                  ))}
+                </div>
+              ))}
+            </div>
             <div className="ref-preview-footer">
               {selectedRef.url && (
                 <a href={selectedRef.url} target="_blank" rel="noopener noreferrer" className="ref-preview-link">
                   View Source ↗
                 </a>
               )}
-              <button className="ref-preview-use-btn" onClick={() => setSelectedRef(null)}>
-                Done
-              </button>
+              <button className="ref-preview-use-btn" onClick={() => setSelectedRef(null)}>Done</button>
             </div>
           </div>
         </>
-      )}
+        );
+      })()}
     </aside>
   );
 }
 
-export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: { onSwitchToScan?: () => void; onSwitchToAdmin?: () => void; tourButton?: ReactNode }) {
+// ─── Attachment picker data ─────────────────────────────────────────────────
+interface AttachDoc {
+  id: string;
+  label: string;
+  desc: string;
+  source: "work-iq" | "foundry-iq";
+  kind?: "doc" | "calendar" | "email" | "teams";
+  /** Full content to inject into prompt when pinned */
+  content?: string;
+}
+
+const LOCAL_WORK_IQ_DOCS: AttachDoc[] = [
+  { id: "city-profile", label: "City Profile 2026", desc: "Demographics, budget, Aa2 Moody\u2019s rating, CRS Class 7", source: "work-iq" },
+  { id: "cip", label: "Capital Improvement Plan 2026\u20132030", desc: "15 priority projects \u00b7 $89.4M total \u00b7 $34.4M grant pursuit", source: "work-iq" },
+  { id: "bric", label: "FEMA BRIC \u2014 Buffalo Creek 2025", desc: "Flood warning system, green infrastructure, $3.4M application", source: "work-iq" },
+  { id: "northwood", label: "Northwood Stormwater SMC 2024", desc: "AWARDED $5.5M stormwater wetland & road reconstruction", source: "work-iq" },
+  { id: "raise", label: "RAISE Aptakisic/IL-83 2024", desc: "$5M request \u00b7 intersection, adaptive signals, protected bike lane", source: "work-iq" },
+];
+
+const FOUNDRY_IQ_DOCS: AttachDoc[] = [
+  { id: "fiq-city", label: "City Profile 2026", desc: "Foundry IQ vector index \u00b7 demographics & financials", source: "foundry-iq" },
+  { id: "fiq-cip", label: "Capital Improvement Plan", desc: "Foundry IQ vector index \u00b7 projects & budgets", source: "foundry-iq" },
+  { id: "fiq-past-apps", label: "Past Grant Applications", desc: "Foundry IQ vector index \u00b7 BRIC, SMC, RAISE precedents", source: "foundry-iq" },
+];
+
+export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, autoScan, onScanTriggered }: { onSwitchToScan?: () => void; onSwitchToAdmin?: () => void; tourButton?: ReactNode; autoScan?: boolean; onScanTriggered?: () => void }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [threadId, setThreadId] = useState<string | undefined>();
@@ -1114,7 +1270,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
   const [previewData, setPreviewData] = useState<ReportPayload | null>(null);
   const [agentDrawer, setAgentDrawer] = useState<DrawerView>(null);
   const [heroAmt, setHeroAmt] = useState(0);
-  const [heroGrants, setHeroGrants] = useState<HeroGrantResult[]>(HERO_GRANTS_DEFAULT);
+  const [heroGrants, setHeroGrants] = useState<HeroGrantResult[] | null>(null);
   const [heroTotal, setHeroTotal] = useState(8.7);
   const [heroProgramCount, setHeroProgramCount] = useState(3);
   const [generatingPackage, setGeneratingPackage] = useState<string | null>(null);
@@ -1126,22 +1282,80 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
   const [monitorTab, setMonitorTab] = useState<"health" | "evals">("health");
   const [fetchedUrl, setFetchedUrl] = useState<FetchedUrl | null>(null);
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
+  const [attachedDocs, setAttachedDocs] = useState<AttachDoc[]>([]);
+  const [showAttachPicker, setShowAttachPicker] = useState(false);
+  const [attachPickerTab, setAttachPickerTab] = useState<"all" | "sharepoint" | "meetings" | "emails" | "teams" | "foundry-iq">("all");
+  const [spDocs, setSpDocs] = useState<AttachDoc[]>([]);
+  const [m365Signals, setM365Signals] = useState<AttachDoc[]>([]);
+  const [wsInputs, setWsInputs] = useState<AttachDoc[]>([]);
+  const [attachSearch, setAttachSearch] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const attachBtnRef = useRef<HTMLButtonElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const isAtBottomRef = useRef(true);
+  const hasAutoScannedRef = useRef(false);
 
   // Detect if the input looks like a URL
   const detectedUrl = /^https?:\/\/\S{10,}/.test(input.trim()) ? input.trim() : null;
 
   // Fetch live grant data for hero cards once on mount
   useEffect(() => {
-    fetchHeroGrants().then((data) => {
-      if (!data) return;
-      setHeroGrants(data.grants);
-      setHeroTotal(data.totalMillion);
-      if (typeof data.programCount === "number") setHeroProgramCount(data.programCount);
-    });
+    fetchHeroGrants()
+      .then((data) => {
+        if (!data) { setHeroGrants(HERO_GRANTS_DEFAULT); return; }
+        setHeroGrants(data.grants);
+        setHeroTotal(data.totalMillion);
+        if (typeof data.programCount === "number") setHeroProgramCount(data.programCount);
+      })
+      .catch(() => setHeroGrants(HERO_GRANTS_DEFAULT));
+  }, []);
+
+  // Load live SharePoint files for the Work IQ attach picker
+  useEffect(() => {
+    import("../api").then(({ fetchCityContext }) =>
+      fetchCityContext()
+        .then((ctx) => {
+          if (ctx.source === "sharepoint" && ctx.filesRead.length > 0) {
+            setSpDocs(ctx.filesRead.map((name) => ({
+              id: `sp-${name}`,
+              label: name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " "),
+              desc: `SharePoint · ${ctx.libraryName ?? "City Grant Intelligence"}`,
+              source: "work-iq" as const,
+              kind: "doc" as const,
+            })));
+          }
+          // Populate live M365 signals
+          const signals: AttachDoc[] = [];
+          (ctx.calendarEvents ?? []).forEach((e, i) => signals.push({
+            id: `cal-${i}`,
+            label: e,
+            desc: "📅 Outlook Calendar",
+            source: "work-iq" as const,
+            kind: "calendar" as const,
+            content: `Calendar event: ${e}`,
+          }));
+          (ctx.mailSignals ?? []).forEach((e, i) => signals.push({
+            id: `mail-${i}`,
+            label: e,
+            desc: "✉️ Outlook Mail",
+            source: "work-iq" as const,
+            kind: "email" as const,
+            content: `Email signal: ${e}`,
+          }));
+          (ctx.teamsInsights ?? []).forEach((e, i) => signals.push({
+            id: `teams-${i}`,
+            label: e.length > 60 ? e.slice(0, 60) + "…" : e,
+            desc: "💬 Microsoft Teams",
+            source: "work-iq" as const,
+            kind: "teams" as const,
+            content: `Teams message: ${e}`,
+          }));
+          if (signals.length > 0) setM365Signals(signals);
+        })
+        .catch(() => {/* fallback to LOCAL_WORK_IQ_DOCS */})
+    );
   }, []);
 
   // Animate the hero pipeline counter when on landing state
@@ -1179,6 +1393,33 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
     return () => clearInterval(id);
   }, [showSettings, refreshMonitor]);
 
+  // Close attachment picker on outside click
+  useEffect(() => {
+    if (!showAttachPicker) return;
+    function handleOutside(e: MouseEvent) {
+      if (
+        pickerRef.current && !pickerRef.current.contains(e.target as Node) &&
+        attachBtnRef.current && !attachBtnRef.current.contains(e.target as Node)
+      ) {
+        setShowAttachPicker(false);
+        setAttachSearch("");
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [showAttachPicker]);
+
+  const toggleAttachment = useCallback((doc: AttachDoc) => {
+    setAttachedDocs((prev) => {
+      const exists = prev.some((d) => d.id === doc.id);
+      return exists ? prev.filter((d) => d.id !== doc.id) : [...prev, doc];
+    });
+  }, []);
+
+  const removeAttachment = useCallback((id: string) => {
+    setAttachedDocs((prev) => prev.filter((d) => d.id !== id));
+  }, []);
+
   // Derive workspace data from the latest assistant message
   const latestAssistant = [...messages].reverse().find((m) => m.role === "assistant");
   const wsSteps = latestAssistant?.reasoningSteps ?? [];
@@ -1192,16 +1433,222 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
   const wsCompetitorStreaming = latestAssistant?.competitorStreaming ?? false;
   const wsRefinementStreaming = latestAssistant?.refinementStreaming ?? false;
   const wsGraphPaths = latestAssistant?.graphPaths;
+  const wsTierInfo = latestAssistant?.tierInfo;
+
+  // ─── City Portfolio Scan — Phase 1: show inline setup form ────────────────
+  const handleTriggerScanSetup = () => {
+    if (isLoading) return;
+    isAtBottomRef.current = true;
+    const userMsgId = crypto.randomUUID();
+    const setupMsgId = crypto.randomUUID();
+    setMessages((prev) => [
+      ...prev.filter((m) => !m.streaming),
+      { id: userMsgId, role: "user", content: "Scan my city — full portfolio analysis" } as Message,
+      { id: setupMsgId, role: "assistant", content: "", isScanSetup: true, scanSetupConfirmed: false } as Message,
+    ]);
+  };
+
+  // ─── City Portfolio Scan — Phase 2: run scan with confirmed profile ─────────
+  const handleRunScan = async (profile: CityProfile, setupMsgId?: string) => {
+    if (isSendingRef.current) return;
+    isSendingRef.current = true;
+    isAtBottomRef.current = true;
+
+    // Mark the setup card as confirmed so it collapses
+    if (setupMsgId) {
+      setMessages((prev) =>
+        prev.map((m) => m.id === setupMsgId ? { ...m, scanSetupConfirmed: true } : m)
+      );
+    }
+
+    const assistantId = crypto.randomUUID();
+    const initData: CityProfileScanData = {
+      cityName: `${profile.cityName}, ${profile.state}`,
+      status: "Launching 5 parallel grant analyses…",
+      completedCount: 0,
+      totalCount: 8,
+      grants: [],
+      totalOpportunity: 0,
+      done: false,
+    };
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: assistantId,
+        role: "assistant",
+        content: "",
+        streaming: true,
+        statusLog: [],
+        startedAt: Date.now(),
+        widget: { type: "city_scan" as const, data: initData },
+      } as Message,
+    ]);
+    setIsLoading(true);
+
+    try {
+      await streamScan(profile, {
+        onStatus: (msg) => {
+          const m = msg.match(/launching\s+(\d+)\s*parallel|(\d+)\s*\/\s*(\d+)/i);
+          const newTotal = m ? parseInt(m[1] ?? m[3], 10) : 0;
+          setMessages((prev) =>
+            prev.map((msg2) => {
+              if (msg2.id !== assistantId || msg2.widget?.type !== "city_scan") return msg2;
+              return {
+                ...msg2,
+                widget: {
+                  type: "city_scan" as const,
+                  data: {
+                    ...msg2.widget.data,
+                    status: msg,
+                    ...(newTotal > 3 ? { totalCount: newTotal } : {}),
+                  },
+                },
+              };
+            })
+          );
+        },
+        onPortfolioItem: (item) => {
+          setMessages((prev) =>
+            prev.map((msg2) => {
+              if (msg2.id !== assistantId || msg2.widget?.type !== "city_scan") return msg2;
+              const cur = msg2.widget.data;
+              const newGrant: PipelineGrant = {
+                rank: cur.grants.length + 1,
+                name: item.grantName,
+                agency: item.agency,
+                amount: item.fundingAmount,
+                matchScore: item.matchScore,
+                deadline: item.deadline,
+                focusArea: item.focusArea,
+                grantsGovUrl: item.grantsGovUrl,
+                fundingVerified: item.fundingVerified,
+              };
+              const sorted = [...cur.grants, newGrant]
+                .sort((a, b) => b.matchScore - a.matchScore)
+                .map((g, i) => ({ ...g, rank: i + 1 }));
+              return {
+                ...msg2,
+                widget: {
+                  type: "city_scan" as const,
+                  data: {
+                    ...cur,
+                    completedCount: cur.completedCount + 1,
+                    grants: sorted,
+                    totalOpportunity: cur.totalOpportunity + item.fundingAmount,
+                    status: `${cur.completedCount + 1} / ${cur.totalCount} grants analyzed`,
+                  },
+                },
+              };
+            })
+          );
+        },
+        onPortfolioComplete: ({ grants, totalOpportunity }) => {
+          setMessages((prev) =>
+            prev.map((msg2) => {
+              if (msg2.id !== assistantId || msg2.widget?.type !== "city_scan") return msg2;
+              const pipeline: PipelineGrant[] = [...grants]
+                .sort((a, b) => b.matchScore - a.matchScore)
+                .map((g, i) => ({
+                  rank: i + 1,
+                  name: g.grantName,
+                  agency: g.agency,
+                  amount: g.fundingAmount,
+                  matchScore: g.matchScore,
+                  deadline: g.deadline,
+                  focusArea: g.focusArea,
+                  grantsGovUrl: g.grantsGovUrl,
+                  fundingVerified: g.fundingVerified,
+                }));
+              return {
+                ...msg2,
+                widget: {
+                  type: "city_scan" as const,
+                  data: {
+                    ...msg2.widget.data,
+                    grants: pipeline,
+                    totalOpportunity,
+                    completedCount: grants.length,
+                    totalCount: grants.length,
+                    status: `${grants.length} grants analyzed`,
+                  },
+                },
+              };
+            })
+          );
+        },
+        onDone: () => {
+          setMessages((prev) =>
+            prev.map((msg2) => {
+              if (msg2.id !== assistantId) return msg2;
+              const w = msg2.widget?.type === "city_scan" ? msg2.widget.data : null;
+              return {
+                ...msg2,
+                streaming: false,
+                completedAt: Date.now(),
+                widget: w ? { type: "city_scan" as const, data: { ...w, done: true } } : msg2.widget,
+              };
+            })
+          );
+          setIsLoading(false);
+          isSendingRef.current = false;
+        },
+        onError: (err) => {
+          setMessages((prev) =>
+            prev.map((msg2) =>
+              msg2.id === assistantId ? { ...msg2, content: `Scan error: ${err}`, streaming: false } : msg2
+            )
+          );
+          setIsLoading(false);
+          isSendingRef.current = false;
+        },
+      });
+    } catch {
+      setMessages((prev) =>
+        prev.map((msg2) =>
+          msg2.id === assistantId ? { ...msg2, content: "Connection error — please try again.", streaming: false } : msg2
+        )
+      );
+    } finally {
+      setIsLoading(false);
+      isSendingRef.current = false;
+    }
+  };
+
+  // Auto-trigger scan when the parent mounts with autoScan=true (nav tab click)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!autoScan || hasAutoScannedRef.current) return;
+    hasAutoScannedRef.current = true;
+    onScanTriggered?.();
+    const t = setTimeout(() => handleTriggerScanSetup(), 200);
+    return () => clearTimeout(t);
+  }, []); // run once on mount
 
   const handleSend = async (text?: string) => {
-    const message = text ?? input.trim();
-    if (!message || isLoading || isSendingRef.current) return;
+    const baseMessage = text ?? input.trim();
+    if (!baseMessage || isLoading || isSendingRef.current) return;
+
+    // Detect "scan my city" intent — route to inline portfolio scanner
+    if (/scan\s+(my\s+)?(city|buffalo|portfolio)|portfolio\s+scan|run\s+.*scan/i.test(baseMessage)) {
+      setInput("");
+      handleTriggerScanSetup();
+      return;
+    }
     isSendingRef.current = true;
     setInput("");
+    // Prepend pinned doc context for user-typed messages (not hero card prompts)
+    const docPrefix = attachedDocs.length > 0 && !text
+      ? `[Pinned Work IQ context:\n${attachedDocs.map((d) => d.content ?? d.label).join("\n")}]\n\n`
+      : "";
+    const message = docPrefix + baseMessage;
+    if (attachedDocs.length > 0) setWsInputs(attachedDocs);
+    setAttachedDocs([]);
+    setShowAttachPicker(false);
     // User initiated a new message — always scroll to show the response
     isAtBottomRef.current = true;
 
-    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: message };
+    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: baseMessage };
     const assistantId = crypto.randomUUID();
     const assistantMsg: Message = {
       id: assistantId,
@@ -1498,16 +1945,19 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
 
   return (
     <div className="chat-interface chat-interface--col">
+      <a href="#main-content" className="skip-nav">Skip to main content</a>
       <AppHeader
         active="chat"
         onNavigate={(t) => { if (t === "scan") onSwitchToScan?.(); else if (t === "admin") onSwitchToAdmin?.(); }}
         actions={
           <>
             {tourButton}
-            <button className="cowork-header-icon-btn" title="New chat" onClick={handleNewChat}><IconNewChat size={16} /></button>
+            <button className="cowork-header-icon-btn" title="New chat" aria-label="Start new chat" onClick={handleNewChat}><IconNewChat size={16} /></button>
             <button
               className={`cowork-header-icon-btn${showSettings ? " cowork-header-icon-btn--active" : ""}`}
               title="Intelligence Hub"
+              aria-label="Open Intelligence Hub"
+              aria-expanded={showSettings}
               onClick={() => setShowSettings(s => !s)}
             ><IconSettings size={16} /></button>
           </>
@@ -1685,10 +2135,14 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
       {/* Main column */}
       <div className="cowork-main-col">
         {/* Chat messages */}
-        <main className="chat-main">
+        <main id="main-content" className="chat-main">
           <div
             className="chat-messages"
             ref={messagesContainerRef}
+            role="log"
+            aria-label="Conversation messages"
+            aria-live="polite"
+            aria-atomic="false"
             onScroll={() => {
               const el = messagesContainerRef.current;
               if (!el) return;
@@ -1698,28 +2152,38 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
             {messages.length === 0 ? (
               <div className="chat-empty">
                 {/* Animated hero */}
-                <div className="hero-section">
-                  <div className="hero-live-badge">
+                <section className="hero-section" aria-label="Live federal grant intelligence for Buffalo Grove, IL">
+                  <div className="hero-live-badge" aria-hidden="true">
                     <span className="hero-live-dot" />
                     Live Grant Intelligence
                   </div>
                   <div className="hero-pipeline">
-                    <div className="hero-pipeline-amount">{formatHeroAmount(heroAmt)}</div>
-                    <div className="hero-pipeline-sub">
+                    <h1 className="hero-pipeline-amount" aria-label={`${formatHeroAmount(heroAmt)} in live federal grant funding`}>{formatHeroAmount(heroAmt)}</h1>
+                    <p className="hero-pipeline-sub">
                       in live federal grant funding open right now, across {heroProgramCount} program{heroProgramCount === 1 ? "" : "s"} your projects qualify for
-                    </div>
+                    </p>
                   </div>
                   <div className="hero-grant-cards">
-                    {heroGrants.map((g) => (
-                      <button key={g.name} className="hero-grant-card" onClick={() => handleSend(g.prompt)}>
+                    {heroGrants === null ? (
+                      Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="hero-grant-card hero-grant-card--skeleton">
+                          <div className="hero-skeleton-line hero-skeleton-line--title" />
+                          <div className="hero-skeleton-line hero-skeleton-line--sub" />
+                          <div className="hero-skeleton-bar" />
+                          <div className="hero-skeleton-line hero-skeleton-line--meta" />
+                        </div>
+                      ))
+                    ) : heroGrants.map((g) => (
+                      <button key={g.name} className="hero-grant-card" onClick={() => handleSend(g.prompt)}
+                        aria-label={`Analyze ${g.name} by ${g.agency}: ${g.match}% ${g.live ? "relevance" : "match"}, ${g.funding ?? "funding varies"}${g.daysLeft !== null ? `, ${g.daysLeft} days to deadline` : ""}`}>
                         {g.live && (
-                          <div className="hero-grant-live">
+                          <div className="hero-grant-live" aria-hidden="true">
                             <span className="hero-grant-live-dot" />LIVE · Grants.gov
                           </div>
                         )}
                         <div className="hero-grant-name">{g.name}</div>
                         <div className="hero-grant-agency">{g.agency}</div>
-                        <div className="hero-grant-bar-outer">
+                        <div className="hero-grant-bar-outer" role="presentation" aria-hidden="true">
                           <div className="hero-grant-bar-inner" style={{ width: `${g.match}%` }} />
                         </div>
                         <div className="hero-grant-meta">
@@ -1736,6 +2200,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                             className="hero-grant-verify"
                             role="link"
                             tabIndex={0}
+                            aria-label={`Verify ${g.name} on Grants.gov (opens in new tab)`}
                             onClick={(e) => { e.stopPropagation(); window.open(g.url!, "_blank", "noopener,noreferrer"); }}
                             onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); window.open(g.url!, "_blank", "noopener,noreferrer"); } }}
                           >
@@ -1744,14 +2209,19 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                         )}
                       </button>
                     ))}
-                    {/* Full CIP scan card — always uses computed total */}
-                    <button className="hero-grant-card" onClick={() => handleSend(FULL_CIP_CARD.prompt)}>
+                    {/* Full CIP scan card — triggers inline portfolio scanner */}
+                    <button className="hero-grant-card hero-grant-card--scan" onClick={() => handleTriggerScanSetup()}
+                      aria-label={`Run full Capital Improvement Plan scan — ${formatHeroAmount(heroTotal)} total opportunity across multiple federal agencies`}>
+                      <div className="hero-grant-scan-badge" aria-hidden="true">
+                        <span className="hero-grant-live-dot" />SCAN MY CITY
+                      </div>
                       <div className="hero-grant-name">{FULL_CIP_CARD.name}</div>
                       <div className="hero-grant-agency">{FULL_CIP_CARD.agency}</div>
                       <div className="hero-grant-meta hero-grant-meta--scan">
-                        <span>Full CIP scan</span>
+                        <span>5 parallel agents</span>
                         <span>{formatHeroAmount(heroTotal)}</span>
                       </div>
+                      <div className="hero-grant-scan-sub">Surface every matching grant in ~60s</div>
                     </button>
                   </div>
                   <p className="hero-desc">
@@ -1761,16 +2231,16 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                     <span className="hero-safety-icon">🛡</span>
                     <span>Architecturally never auto-submits. If evidence is insufficient, we tell you — we never bluff.</span>
                   </div>
-                  <div className="hero-trust-strip">
-                    <span className="hero-trust-item"><IconSparkle size={13} /> 5 specialist agents</span>
-                    <span className="hero-trust-dot" />
-                    <span className="hero-trust-item"><IconSearch size={13} /> Grounded in Foundry IQ</span>
-                    <span className="hero-trust-dot" />
-                    <span className="hero-trust-item"><IconCheck size={13} /> Every claim cited to source</span>
-                    <span className="hero-trust-dot" />
-                    <span className="hero-trust-item"><IconScales size={13} /> Self-critique loop</span>
+                  <div className="hero-trust-strip" aria-label="System trust indicators">
+                    <span className="hero-trust-item"><IconSparkle size={13} aria-hidden="true" /> 5 specialist agents</span>
+                    <span className="hero-trust-dot" aria-hidden="true" />
+                    <span className="hero-trust-item"><IconSearch size={13} aria-hidden="true" /> Grounded in Foundry IQ</span>
+                    <span className="hero-trust-dot" aria-hidden="true" />
+                    <span className="hero-trust-item"><IconCheck size={13} aria-hidden="true" /> Every claim cited to source</span>
+                    <span className="hero-trust-dot" aria-hidden="true" />
+                    <span className="hero-trust-item"><IconScales size={13} aria-hidden="true" /> Self-critique loop</span>
                   </div>
-                </div>
+                </section>
               </div>
             ) : (
               messages.map((msg) => (
@@ -1851,21 +2321,17 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                           />
                         )}
 
-                        {/* Provenance — grouped with process metadata, above the widget */}
-                        {msg.tierInfo && !msg.streaming && (
-                          <div className="tier-badge-wrapper">
-                            <TierBadge
-                              tier={msg.tierInfo.tier}
-                              label={msg.tierInfo.label}
-                              guardrailsPassed={msg.tierInfo.guardrailsPassed}
-                              violations={msg.tierInfo.violations}
-                            />
-                          </div>
+                        {/* Tier provenance badge — shows which LLM tier ran and guardrails status */}
+                        {msg.tierInfo && (
+                          <TierBadge
+                            tier={msg.tierInfo.tier}
+                            label={msg.tierInfo.label}
+                            guardrailsPassed={msg.tierInfo.guardrailsPassed}
+                            violations={msg.tierInfo.violations}
+                          />
                         )}
 
-                        {msg.graphPaths && msg.graphPaths.length > 0 && !msg.streaming && (
-                          <GraphPathsPanel paths={msg.graphPaths} />
-                        )}
+                        {/* GraphRAG paths: accessible via References sidebar — click the GraphRAG entry to open popout */}
 
                         {/* ── VALUE SECTION ── Widget */}
                         {msg.widget?.type === "grant_match" && (
@@ -1883,6 +2349,59 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                             cityName={msg.widget.data.cityName}
                             totalOpportunity={msg.widget.data.totalOpportunity}
                           />
+                        )}
+
+                        {/* ── Inline Scan Setup Card (Phase 1 — form before scan runs) ── */}
+                        {msg.isScanSetup && (
+                          <InlineScanSetupCard
+                            disabled={msg.scanSetupConfirmed}
+                            onConfirm={(profile) => {
+                              setMessages((prev) =>
+                                prev.map((m) => m.id === msg.id ? { ...m, scanSetupConfirmed: true } : m)
+                              );
+                              void handleRunScan(profile, msg.id);
+                            }}
+                          />
+                        )}
+
+                        {/* ── City Portfolio Scan widget (Phase 2 — streaming results) ── */}
+                        {msg.widget?.type === "city_scan" && (
+                          <CityProfileScanWidget
+                            data={msg.widget.data as CityProfileScanData}
+                            onAnalyze={(grant) =>
+                              handleSend(
+                                `Deep dive: Analyze ${grant.name} for ${(msg.widget!.data as CityProfileScanData).cityName} — full eligibility assessment, gap analysis, and winning strategy with citations`
+                              )
+                            }
+                          />
+                        )}
+
+                        {/* Follow-up chips after city scan */}
+                        {msg.widget?.type === "city_scan" && !msg.streaming && (msg.widget.data as CityProfileScanData).done && (
+                          <div className="followup-chips">
+                            <span className="followup-chips-label">Explore your portfolio</span>
+                            {(msg.widget.data as CityProfileScanData).grants[0] && (
+                              <button
+                                className="followup-chip"
+                                onClick={() => {
+                                  const top = (msg.widget!.data as CityProfileScanData).grants[0];
+                                  const city = (msg.widget!.data as CityProfileScanData).cityName;
+                                  handleSend(`Deep dive: Analyze ${top.name} for ${city} — full eligibility, gaps, and winning narrative`);
+                                }}
+                              >
+                                Deep dive: #{1} Grant →
+                              </button>
+                            )}
+                            <button className="followup-chip" onClick={() => handleSend("Which 3 grants in this portfolio have the best win odds AND can be stacked together for maximum funding?")}>
+                              Best stacking combo
+                            </button>
+                            <button className="followup-chip" onClick={() => handleSend("Build a 90-day application action plan for the top 3 grants in this portfolio — include responsible departments and milestones")}>
+                              90-day action plan
+                            </button>
+                            <button className="followup-chip" onClick={() => handleSend("Which grants in this portfolio have deadlines in the next 60 days? Prioritize by match score.")}>
+                              Upcoming deadlines
+                            </button>
+                          </div>
                         )}
 
                         {/* ── ACTION SECTION ── Quick actions + follow-up chips */}
@@ -2012,24 +2531,199 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                 <button className="url-fetch-dismiss" onClick={() => { setFetchedUrl(null); setInput(""); }} title="Clear">✕</button>
               </div>
             )}
+
+            {/* Attachment picker popover — floats above the input wrapper */}
+            {showAttachPicker && (() => {
+              type PickerTab = "all" | "sharepoint" | "meetings" | "emails" | "teams" | "foundry-iq";
+              const spItems = (spDocs.length > 0 ? spDocs : LOCAL_WORK_IQ_DOCS);
+              const calItems = m365Signals.filter((d) => d.kind === "calendar");
+              const mailItems = m365Signals.filter((d) => d.kind === "email");
+              const teamsItems = m365Signals.filter((d) => d.kind === "teams");
+
+              const TABS: { id: PickerTab; label: string; count?: number }[] = [
+                { id: "all", label: "All" },
+                { id: "sharepoint", label: "SharePoint", count: spItems.length },
+                { id: "meetings", label: "Meetings", count: calItems.length },
+                { id: "emails", label: "Emails", count: mailItems.length },
+                ...(teamsItems.length > 0 ? [{ id: "teams" as PickerTab, label: "Teams", count: teamsItems.length }] : []),
+                { id: "foundry-iq", label: "Foundry IQ" },
+              ];
+
+              const q = attachSearch.toLowerCase();
+              const filt = (items: AttachDoc[]) =>
+                !q ? items : items.filter((d) => d.label.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q));
+
+              const renderItem = (doc: AttachDoc) => {
+                const isSelected = attachedDocs.some((d) => d.id === doc.id);
+                const icon = doc.kind === "calendar" ? "📅"
+                  : doc.kind === "email" ? "✉️"
+                  : doc.kind === "teams" ? "💬"
+                  : doc.source === "foundry-iq" ? null
+                  : null;
+                return (
+                  <button
+                    key={doc.id}
+                    className={`attach-picker-item${isSelected ? " attach-picker-item--selected" : ""}`}
+                    onClick={() => toggleAttachment(doc)}
+                  >
+                    <span className="picker-item-icon">
+                      {icon
+                        ? <span className="picker-item-emoji">{icon}</span>
+                        : doc.source === "foundry-iq"
+                          ? <IconDatabase size={15} />
+                          : <IconFileText size={15} />
+                      }
+                    </span>
+                    <span className="picker-item-body">
+                      <span className="picker-item-label">{doc.label}</span>
+                      <span className="picker-item-desc">{doc.desc}</span>
+                    </span>
+                    {isSelected && <span className="picker-item-check"><IconCheck size={13} /></span>}
+                  </button>
+                );
+              };
+
+              const renderSection = (label: string, items: AttachDoc[], groupClass?: string) =>
+                items.length > 0 ? (
+                  <>
+                    <div className={`picker-group-label${groupClass ? ` ${groupClass}` : ""}`}>{label}</div>
+                    {items.map(renderItem)}
+                  </>
+                ) : null;
+
+              let listContent: React.ReactNode;
+              if (attachPickerTab === "sharepoint") {
+                listContent = filt(spItems).map(renderItem);
+              } else if (attachPickerTab === "meetings") {
+                listContent = filt(calItems).length > 0
+                  ? filt(calItems).map(renderItem)
+                  : <div className="picker-empty">No upcoming grant-related meetings found</div>;
+              } else if (attachPickerTab === "emails") {
+                listContent = filt(mailItems).length > 0
+                  ? filt(mailItems).map(renderItem)
+                  : <div className="picker-empty">No grant-related emails found</div>;
+              } else if (attachPickerTab === "teams") {
+                listContent = filt(teamsItems).length > 0
+                  ? filt(teamsItems).map(renderItem)
+                  : <div className="picker-empty">No Teams messages found</div>;
+              } else if (attachPickerTab === "foundry-iq") {
+                listContent = filt(FOUNDRY_IQ_DOCS).map(renderItem);
+              } else {
+                // "all" — grouped
+                listContent = (<>
+                  {renderSection("SharePoint", filt(spItems))}
+                  {renderSection("Meetings", filt(calItems), "picker-group-label--meetings")}
+                  {renderSection("Emails", filt(mailItems), "picker-group-label--emails")}
+                  {teamsItems.length > 0 && renderSection("Teams", filt(teamsItems), "picker-group-label--teams")}
+                  {renderSection("Foundry IQ", filt(FOUNDRY_IQ_DOCS), "picker-group-label--foundry")}
+                </>);
+              }
+
+              return (
+                <div className="attach-picker-popover" ref={pickerRef}>
+                  <div className="attach-picker-search-row">
+                    <span className="attach-picker-search-icon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                      </svg>
+                    </span>
+                    <input
+                      className="attach-picker-search"
+                      placeholder="Search…"
+                      value={attachSearch}
+                      onChange={(e) => setAttachSearch(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="attach-picker-tabs-row">
+                    {TABS.map((t) => (
+                      <button
+                        key={t.id}
+                        className={`attach-picker-tab${attachPickerTab === t.id ? " attach-picker-tab--active" : ""}`}
+                        onClick={() => setAttachPickerTab(t.id)}
+                      >
+                        {t.label}
+                        {t.count !== undefined && t.count > 0 && (
+                          <span className="attach-picker-tab-count">{t.count}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="attach-picker-list">
+                    {listContent}
+                  </div>
+                </div>
+              );
+            })()}
+
             <div className="input-wrapper">
-              <textarea
-                ref={inputRef}
-                className="chat-input"
-                value={input}
-                onChange={(e) => { setInput(e.target.value); if (!e.target.value.trim()) setFetchedUrl(null); }}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask about a grant, paste a URL or announcement text, or ask 'what grants does Buffalo Grove qualify for?'"
-                rows={1}
-                disabled={isLoading}
-              />
-              <div className="input-actions">
+              {attachedDocs.length > 0 && (
+                <div className="attached-docs-bar">
+                  {attachedDocs.map((d) => (
+                    <span
+                      key={d.id}
+                      className={`attached-doc-pill${d.source === "foundry-iq" ? " attached-doc-pill--foundry" : ""}${d.kind && d.kind !== "doc" ? " attached-doc-pill--signal" : ""}`}
+                    >
+                      {d.kind === "calendar" ? <span className="pill-emoji">📅</span>
+                        : d.kind === "email" ? <span className="pill-emoji">✉️</span>
+                        : d.kind === "teams" ? <span className="pill-emoji">💬</span>
+                        : <span className="pill-dot" />}
+                      <span className="pill-label">{d.label}</span>
+                      <button className="pill-remove" onClick={() => removeAttachment(d.id)} aria-label={`Remove ${d.label}`}>×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="input-row">
+                <textarea
+                  ref={inputRef}
+                  id="chat-input"
+                  className="chat-input"
+                  value={input}
+                  onChange={(e) => { setInput(e.target.value); if (!e.target.value.trim()) setFetchedUrl(null); }}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask about a grant, paste a URL or announcement text, or ask 'what grants does Buffalo Grove qualify for?'"
+                  aria-label="Grant analysis prompt. Press Enter to send, Shift+Enter for newline."
+                  rows={1}
+                  disabled={isLoading}
+                />
+                <div className="input-actions">
+                  <button
+                    className="send-btn"
+                    onClick={() => handleSend()}
+                    disabled={isLoading || !input.trim()}
+                    aria-label={isLoading ? "Sending…" : "Send message"}
+                  >
+                    {isLoading ? <span className="send-spinner" aria-hidden="true" /> : <span aria-hidden="true">&#x2191;</span>}
+                  </button>
+                </div>
+              </div>
+              <div className="input-toolbar">
                 <button
-                  className="send-btn"
-                  onClick={() => handleSend()}
-                  disabled={isLoading || !input.trim()}
+                  ref={attachBtnRef}
+                  className={`attach-btn${showAttachPicker ? " attach-btn--active" : ""}`}
+                  onClick={() => { setShowAttachPicker((prev) => !prev); setAttachSearch(""); }}
+                  title="Attach documents as context"
+                  aria-label="Attach documents as context"
+                  aria-expanded={showAttachPicker}
+                  aria-haspopup="listbox"
                 >
-                  {isLoading ? <span className="send-spinner" /> : "\u2191"}
+                  <IconPaperclip size={13} />
+                  <span>Attach</span>
+                </button>
+                <button
+                  className="source-chip source-chip--work-iq"
+                  aria-label="Attach Work IQ files from SharePoint"
+                  onClick={() => { setAttachPickerTab("all"); setShowAttachPicker(true); setAttachSearch(""); }}
+                >
+                  Work IQ Files
+                </button>
+                <button
+                  className="source-chip source-chip--foundry"
+                  aria-label="Attach Foundry IQ knowledge base documents"
+                  onClick={() => { setAttachPickerTab("foundry-iq"); setShowAttachPicker(true); setAttachSearch(""); }}
+                >
+                  Foundry IQ
                 </button>
               </div>
             </div>
@@ -2046,6 +2740,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
         citations={wsCitations}
         graphPaths={wsGraphPaths}
         artifacts={artifacts}
+        inputs={wsInputs}
         widget={wsWidget}
         analysisText={wsAnalysisText}
         isLoading={isLoading}
@@ -2056,6 +2751,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
         reviewStreaming={wsReviewStreaming}
         competitorStreaming={wsCompetitorStreaming}
         refinementStreaming={wsRefinementStreaming}
+        tierInfo={wsTierInfo}
         onOpenPreview={setPreviewData}
         onOpenDrawer={setAgentDrawer}
       />

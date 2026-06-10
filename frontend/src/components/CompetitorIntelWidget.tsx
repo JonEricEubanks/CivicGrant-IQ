@@ -78,6 +78,25 @@ function CompetitorCard({ c, index }: { c: CompetitorProfile; index: number }) {
 }
 
 export function CompetitorIntelWidget({ data, isStreaming = false }: Props) {
+  // Honest unavailable state — no fabricated intel shown
+  if (data.unavailable) {
+    return (
+      <div className="ci-widget">
+        <div className="ci-header">
+          <div className="ci-badge">
+            <span className="ci-badge-icon"><IconTarget size={14} /></span>
+            Competitive Intelligence
+          </div>
+        </div>
+        <div style={{ padding: "24px 16px", textAlign: "center", color: "#6b7280" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "8px" }}>⚠️</div>
+          <strong style={{ display: "block", color: "#374151", marginBottom: "4px" }}>Competitive Intel Agent Unavailable</strong>
+          <span style={{ fontSize: "0.85rem" }}>LLM service unreachable — no fabricated competitive analysis shown.<br />Re-run when service recovers.</span>
+        </div>
+      </div>
+    );
+  }
+
   const levelColor = LEVEL_COLORS[data.competitionLevel];
 
   return (

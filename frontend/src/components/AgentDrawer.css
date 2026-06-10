@@ -52,7 +52,7 @@
   padding: 0 18px;
   height: 56px;
   flex-shrink: 0;
-  background: #0e3a6e;
+  background: linear-gradient(135deg, #1a3a5c 0%, #1a6fba 100%);
 }
 
 .ad-header-left {
@@ -64,6 +64,9 @@
 .ad-header-emoji {
   font-size: 18px;
   line-height: 1;
+  color: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
 }
 
 .ad-header-text {
@@ -81,7 +84,7 @@
 
 .ad-header-sub {
   font-size: 10px;
-  color: #93c5fd;
+  color: rgba(255,255,255,0.65);
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -105,16 +108,12 @@
   color: #ffffff;
 }
 
-/* Accent line — uses CSS variable for per-agent color */
+/* Accent line */
 .ad-accent-line {
   height: 2px;
-  background: linear-gradient(
-    to right,
-    var(--ad-accent, #3b82f6) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(to right, #1a6fba 0%, #c8dff5 60%, transparent 100%);
   flex-shrink: 0;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 /* Content scroll area */

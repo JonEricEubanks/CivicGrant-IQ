@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 150" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="fbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#004E8C"/>
+      <stop offset="0.55" stop-color="#0078D4"/>
+      <stop offset="1" stop-color="#6E40C9"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .flow{fill:none;stroke-width:2;stroke-dasharray:6 8;animation:dash 0.9s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-14}}
+  </style>
+
+  <rect width="1200" height="150" fill="url(#fbg)"/>
+
+  <line x1="0" y1="8" x2="1200" y2="8" class="flow" stroke="#50E6FF" opacity="0.5"/>
+
+  <g opacity="0">
+    <text x="600" y="62" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">Six reasoning steps. Five specialist agents. One mission.</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <text x="600" y="100" text-anchor="middle" font-size="26" font-weight="800" fill="#50E6FF">Help every city win the funding it deserves.
+      <animate attributeName="opacity" values="1;0.75;1" dur="3s" begin="1.2s" repeatCount="indefinite"/>
+    </text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0.5s" fill="freeze"/>
+  </g>
+
+  <!-- five pulsing agent dots -->
+  <g>
+    <circle cx="540" cy="124" r="4" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0s" repeatCount="indefinite"/></circle>
+    <circle cx="570" cy="124" r="4" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0.3s" repeatCount="indefinite"/></circle>
+    <circle cx="600" cy="124" r="4" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0.6s" repeatCount="indefinite"/></circle>
+    <circle cx="630" cy="124" r="4" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="0.9s" repeatCount="indefinite"/></circle>
+    <circle cx="660" cy="124" r="4" fill="#50E6FF"><animate attributeName="opacity" values="1;0.25;1" dur="1.5s" begin="1.2s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <line x1="0" y1="142" x2="1200" y2="142" class="flow" stroke="#50E6FF" opacity="0.5"/>
+</svg>

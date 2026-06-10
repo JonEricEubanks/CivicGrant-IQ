@@ -1,0 +1,602 @@
+FEDERAL MUNICIPAL GRANT PROGRAMS MASTER INDEX
+CivicGrant IQ Knowledge Base | FY2026 Edition
+Applicable to: All U.S. Municipalities, Counties, Townships, and Special Districts
+
+Last Updated: January 2026 | Source: Grants.gov, Federal Register, Program websites
+
+=============================================================================
+SECTION 1: U.S. DEPARTMENT OF TRANSPORTATION (USDOT) PROGRAMS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+RAISE DISCRETIONARY GRANTS (Rebuilding American Infrastructure with Sustainability and Equity)
+─────────────────────────────────────────────────────────────────────────────
+CFDA / Assistance Listing: 20.933
+Agency: USDOT / Office of the Secretary
+Authorization: IIJA Section 21201; annual appropriation
+FY2025 Program Funding: $1.5 billion
+Typical Award Range: $1M – $25M for rural; up to $25M for urban; no statutory max
+Match Requirement: None required; competitive applicants typically show 20%+ local/state match
+Application Cycle: Annual; NOFO typically published December–February; deadline March–May
+Eligible Applicants: States, counties, municipalities, transit agencies, port authorities, MPOs, tribal governments
+Eligible Activities: Road reconstruction, bridge replacement, multimodal connectors, port improvements,
+  pedestrian/bicycle facilities, transit access, railroad grade separation, smart infrastructure
+Evaluation Criteria (FY2025 priorities): Safety, environmental sustainability, quality of life, equity,
+  economic strength, state of good repair, innovation, partnerships
+Key Requirements:
+  - Benefit-Cost Analysis (BCA) required; use USDOT BCA Toolkit v6
+  - ADA Transition Plan (current)
+  - Environmental review (NEPA)
+  - Demonstrated local support (resolutions, letters)
+  - Geographic distribution: ≥50% must go to rural areas; ≥50% to urban areas
+Small City Notes: Cities under 200,000 population apply in the "rural" category. Rural awards
+  are less competitive than urban — 150–200 rural applicants vs. 400+ urban.
+Website: transportation.gov/RAISEgrants
+Key Contact: RAISE@dot.gov
+
+─────────────────────────────────────────────────────────────────────────────
+MEGA — NATIONAL INFRASTRUCTURE PROJECT ASSISTANCE
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.940
+Agency: USDOT FHWA / USDOT
+FY2025 Funding: $1.0 billion
+Typical Award: $50M – $500M
+Match: 10% minimum federal share cap (applicant covers 90% — very limited)
+Note: For transformational, large-scale projects only. Not appropriate for cities < 500,000.
+
+─────────────────────────────────────────────────────────────────────────────
+INFRA GRANTS — NATIONALLY SIGNIFICANT MULTIMODAL FREIGHT & HIGHWAY PROJECTS
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.932
+Agency: USDOT FHWA
+FY2025 Funding: $1.55 billion
+Typical Award: Large, highway and freight focus; minimum $25M; typically $100M+
+Best for: Large highway freight corridors, interstate ramps, port road access
+
+─────────────────────────────────────────────────────────────────────────────
+SAFE STREETS & ROADS FOR ALL (SS4A)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.939
+Agency: USDOT FHWA
+Authorization: IIJA Section 24102
+FY2025 Funding: $1.0 billion
+Award Range: $100K–$25M; two tracks: Action Plan grants ($100K–$5M) and Implementation ($1M–$25M)
+Match: 80% federal / 20% local match for implementation; planning grants may be 100% federal
+Application Cycle: Annual; NOFO typically June–August
+Eligible: States, local governments, MPOs, tribal governments
+Eligible Activities: Vision Zero plans, road safety action plans, safety improvements (signals,
+  crosswalks, speed calming, bike lanes), design changes proven to reduce fatalities
+Key Note: This is the primary program for Vision Zero and pedestrian/cyclist safety projects.
+  Implementation grants have lower competition than RAISE for safety-specific projects.
+Website: transportation.gov/SS4A
+
+─────────────────────────────────────────────────────────────────────────────
+HIGHWAY SAFETY IMPROVEMENT PROGRAM (HSIP)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.205 (sub-allocation by state DOT)
+Agency: FHWA / State DOT
+Authorization: 23 USC 148; IIJA Section 11108
+Annual Funding: ~$3.5 billion nationally (formula to states, sub-allocated to locals)
+Award Range: Varies by state; typically $100K–$5M per project
+Match: 90% federal / 10% local
+Application: Through state DOT; most states have annual call for projects
+Eligible: Roadway segments with documented crash history (typically ≥ 3 crashes/5 years)
+Eligible Activities: Signal upgrades, intersection reconstruction, median barriers,
+  cable rail, rumble strips, curve delineation, pedestrian safety
+Key Note: Most competitive for crash-heavy locations with documented injury/fatal crashes.
+  Data required: 5-year crash history, ADT, LOS.
+
+─────────────────────────────────────────────────────────────────────────────
+CONGESTION MITIGATION & AIR QUALITY (CMAQ)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.205 (sub-allocation by MPO/state)
+Agency: FHWA / MPO
+Authorization: 23 USC 149; IIJA Section 11113
+Annual Funding: ~$2.5 billion nationally (formula by nonattainment/maintenance area)
+Award Range: $500K–$10M typical; accessed through MPO call for projects
+Match: 80% federal / 20% local (some states vary)
+Application: Through MPO (Metropolitan Planning Organization) Call for Projects, typically annual
+Eligible: Cities in ozone or PM2.5 nonattainment or maintenance areas
+Eligible Activities: Signal timing coordination, bicycle/pedestrian infrastructure,
+  transit improvements, idle reduction, alternative fuel vehicles, freight efficiency
+Key Note: Only available in air quality nonattainment/maintenance areas.
+  Chicago MSA (including Buffalo Grove) qualifies (PM2.5 nonattainment).
+
+─────────────────────────────────────────────────────────────────────────────
+TRANSPORTATION ALTERNATIVES PROGRAM (TAP) / ITEP
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.205 (sub-allocation)
+Agency: FHWA / State DOT / MPO
+Authorization: 23 USC 133(h); IIJA Section 11109
+Annual Funding: ~$1.8 billion nationally
+Award Range: $200K–$3M typical; highly variable by state
+Match: 80% federal / 20% local
+Application: State DOT or MPO call for projects; typically 2–3 year cycles
+Eligible Activities: Bike lanes, shared-use paths, sidewalks, trail connections,
+  safe routes to school, historic transportation preservation, ADA transition
+Key Note: Illinois program called ITEP (Illinois Transportation Enhancement Program).
+  Administered jointly by IDOT and MPOs.
+
+─────────────────────────────────────────────────────────────────────────────
+PROTECT GRANT PROGRAM (Promoting Resilient Operations for Transformative, Efficient, and
+Cost-saving Transportation)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.936
+Agency: FHWA
+Authorization: IIJA Section 11105
+FY2025 Funding: $8.7 billion over 5 years; ~$1.4B/year
+Award Range: Formula (to states, then localities) + discretionary ($100M+ large projects)
+Match: 80% federal / 20% local
+Application: Formula funds allocated by state DOT; competitive grants through FHWA NOFO
+Eligible Activities: Culverts, stormwater drainage, bridge scour protection,
+  wildfire/flooding/earthquake resilience improvements to transportation infrastructure
+Key Note: Excellent for road/bridge climate resilience. Can fund drainage improvements
+  that also support stormwater management.
+
+─────────────────────────────────────────────────────────────────────────────
+CARBON REDUCTION PROGRAM (CRP)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 20.205
+Agency: FHWA / State DOT
+Authorization: IIJA Section 11403
+Annual Funding: $1.6 billion/year (formula to states)
+Award Range: Sub-allocated by state; typically $250K–$5M
+Match: 80% federal / 20% local
+Eligible Activities: Electric vehicle charging infrastructure on public roads,
+  pedestrian/bicycle facilities, transit infrastructure, traffic signal coordination
+Key Note: High priority in Illinois; IDOT running annual call for CRP projects.
+
+─────────────────────────────────────────────────────────────────────────────
+FTA FORMULA PROGRAMS (5307, 5311, 5310)
+─────────────────────────────────────────────────────────────────────────────
+Section 5307 (Urbanized Area Formula):
+  Eligibility: UZAs ≥ 50,000 population; transit agencies
+  Annual Funding: ~$5B nationally; formula by ridership + population
+  Eligible: Operating assistance, preventive maintenance, capital projects
+  Match: 80% federal / 20% local (operating: 50/50)
+
+Section 5311 (Rural Area Formula):
+  Eligibility: Areas < 50,000 population
+  Annual Funding: ~$750M nationally
+  Eligible: Rural transit operating/capital
+
+Section 5310 (Enhanced Mobility for Seniors & Individuals with Disabilities):
+  Annual Funding: ~$310M
+  Eligible: Non-profits, transit agencies
+  Eligible Activities: ADA-accessible vehicles, mobility management
+
+=============================================================================
+SECTION 2: FEDERAL EMERGENCY MANAGEMENT AGENCY (FEMA) / DHS PROGRAMS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+BRIC — BUILDING RESILIENT INFRASTRUCTURE & COMMUNITIES
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 97.047
+Agency: FEMA / DHS
+Authorization: Robert T. Stafford Act §203; Bipartisan Budget Act 2018
+FY2025 Program Funding: $1.0 billion
+Typical Award Range: $100K – $50M; average $3–8M per project
+Match Requirement: 25% non-federal cost share
+Application Cycle: Annual; NOFO August–October; subapplication via state HSEMD; deadline January
+Eligible Applicants: States (primary applicant); local governments through state
+  (sub-applicants must go through state emergency management office)
+Eligible Activities:
+  - Flood control and resilience (green infrastructure, levees, detention basins)
+  - Wildfire risk reduction
+  - Utility hardening (generators, lift stations, water/wastewater)
+  - Early warning systems (flood gauges, sirens)
+  - Hazardous materials risk reduction
+  - Building codes adoption and enforcement
+  - Stormwater management improvements
+  - Coastal resilience
+Key Requirements:
+  - Community must be active NFIP participant (no lapsed policies)
+  - Current FEMA-approved Local Hazard Mitigation Plan (LHMP)
+  - Benefit-Cost Analysis (BCA) ratio ≥ 1.0 (use Hazus-MH or BCA Toolkit)
+  - Scope must be in current LHMP
+Priority Scoring: CRS Class participation (+), equity/Justice40 designation (+),
+  post-disaster community (-warning: HMGP is separate for post-disaster)
+Small City Notes: Excellent program for any city with NFIP participation and LHMP.
+  Suburban cities often win because they have strong match capacity and bond ratings.
+Website: fema.gov/bric
+
+─────────────────────────────────────────────────────────────────────────────
+HMGP — HAZARD MITIGATION GRANT PROGRAM
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 97.039
+Agency: FEMA / DHS
+Trigger: Post-disaster; activated after Presidential major disaster declaration
+Available Funding: 15% of total FEMA disaster assistance per declaration
+Award Range: Varies by project; typically $250K – $25M
+Match: 25% non-federal cost share
+Eligible Activities: Same as BRIC; additionally property acquisition/buyout,
+  structure elevation (flood), wind retrofit, safe rooms
+Key Note: Only available to communities in declared disaster areas.
+  Active declarations: usafacts.org/articles/fema-disaster-declarations/
+
+─────────────────────────────────────────────────────────────────────────────
+FEMA NOFO — PRE-DISASTER MITIGATION (PDM) / FLOOD MITIGATION ASSISTANCE (FMA)
+─────────────────────────────────────────────────────────────────────────────
+FMA — FLOOD MITIGATION ASSISTANCE:
+  CFDA: 97.029
+  Agency: FEMA
+  FY2025 Funding: $800M (IIJA boosted this significantly)
+  Award Range: No statutory cap; average $1–15M
+  Match: 25% non-federal; 12.5% for severe repetitive loss properties
+  Eligible: NFIP-participating communities; projects to reduce flood risk to NFIP-insured structures
+  Eligible Activities: Structure acquisition, structure elevation, dry floodproofing,
+    drainage improvements, green infrastructure to reduce flood insurance claims
+  Key Note: FMA prioritizes repetitive flood-loss properties first.
+
+=============================================================================
+SECTION 3: U.S. ENVIRONMENTAL PROTECTION AGENCY (EPA) PROGRAMS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+CLEAN WATER STATE REVOLVING FUND (CWSRF)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 66.458
+Agency: EPA / State Environmental Agency
+Authorization: Clean Water Act Section 603
+Annual Funding: ~$1.6B/year federal capitalization (states leverage 5:1–20:1 with bonds)
+Loan/Grant Type: Low-interest loans (1–2.5%); principal forgiveness available for small/disadvantaged communities
+Repayment Period: Up to 30 years (20 years standard)
+Eligible Applicants: Municipalities, utilities, special districts
+Eligible Activities:
+  - Publicly owned treatment works (POTW) upgrades
+  - Stormwater management (CSO/SSO elimination, green infrastructure)
+  - Non-point source pollution control
+  - Watershed protection projects
+  - Estuary restoration
+Application: Through state environmental agency (e.g., IEPA in Illinois, TCEQ in Texas)
+Key Note: Not a competitive grant — applied for through state revolving fund; projects
+  placed on state priority list. Advantage: financing (not requiring full payback like bonds).
+  Principal forgiveness (= grant) available for disadvantaged communities.
+
+─────────────────────────────────────────────────────────────────────────────
+DRINKING WATER STATE REVOLVING FUND (DWSRF)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 66.468
+Agency: EPA / State Agency
+Annual Funding: ~$1.1B/year federal capitalization
+Similar structure to CWSRF; focused on drinking water infrastructure
+Eligible: Public water systems
+Eligible Activities: Water main replacement, treatment upgrades, storage, distribution
+IIJA Lead Service Line Funding: $15 billion over 5 years for lead service line replacement
+  — all public water systems with lead service lines are eligible; priority forgiveness
+
+─────────────────────────────────────────────────────────────────────────────
+EPA ENVIRONMENTAL JUSTICE (EJ) GRANTS
+─────────────────────────────────────────────────────────────────────────────
+Environmental Justice Collaborative Problem-Solving (EJCPS):
+  CFDA: 66.306; Award: $200K–$1M; competitive; for EJ communities
+Environmental Justice Government-to-Government (EJG2G):
+  CFDA: 66.312; Award: $100K–$600K; for tribal/state/local governments in EJ areas
+Thriving Communities Technical Assistance Centers (TCTACs):
+  Regional assistance for disadvantaged communities applying for environmental grants
+
+─────────────────────────────────────────────────────────────────────────────
+BROWNFIELDS GRANTS (EPA)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 66.818 (Assessment), 66.819 (Cleanup)
+Agency: EPA
+FY2025 Funding: $200M (IIJA significantly boosted)
+Award Range: Assessment: up to $500K; Cleanup: up to $500K per site
+Match: 20% required for cleanup grants
+Eligible: Municipalities, non-profits, tribes for brownfield site assessment and cleanup
+Key Note: Excellent for communities with abandoned industrial sites, vacant lots,
+  or contaminated properties. Often combined with EDA for redevelopment.
+
+=============================================================================
+SECTION 4: U.S. DEPARTMENT OF HOUSING & URBAN DEVELOPMENT (HUD) PROGRAMS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+COMMUNITY DEVELOPMENT BLOCK GRANT (CDBG)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 14.218 (Entitlement), 14.228 (State / Non-Entitlement)
+Agency: HUD / State Agency
+FY2025 Funding: ~$3.3 billion
+Entitlement Cities: Cities ≥ 50,000 population OR principal cities of MSAs receive
+  direct annual allocations from HUD (formula: poverty, housing age, population)
+Non-Entitlement Communities: Cities < 50,000 apply to state CDBG program
+  (each state has own NOFO, priorities, and award process)
+Award Range: Entitlement: $400K–$100M+ (formula); Non-Entitlement: $50K–$2M (competitive)
+Match: None required (but leverage encouraged)
+LMI Requirement: At least 70% of CDBG expenditures must meet a National Objective:
+  - Benefit low/moderate income persons (LMI — household income ≤ 80% AMI)
+  - Eliminate slum/blight conditions
+  - Urgent need (disaster response)
+Eligible Activities: Affordable housing rehabilitation, public facilities (community centers,
+  senior centers, parks in LMI areas), public services (up to 15% cap), economic development,
+  infrastructure in LMI census tracts, code enforcement, clearance/demolition
+Key Note: Non-entitlement cities must demonstrate LMI benefit through area benefit
+  (census tract ≥ 51% LMI households) or limited clientele (serving LMI individuals).
+State Programs: Illinois DCEO CDBG; Texas GLO CDBG; California HCD CDBG
+
+─────────────────────────────────────────────────────────────────────────────
+HOME INVESTMENT PARTNERSHIPS PROGRAM
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 14.239
+Agency: HUD
+FY2025 Funding: ~$1.5 billion
+Purpose: Expand affordable housing — homeownership, rental, rehabilitation
+Eligible: Participating Jurisdictions (PJs) — cities ≥ 65,000 or consortia
+Match: 25% required from non-federal sources (waived for distressed)
+Eligible Activities: New construction, rehabilitation, down-payment assistance,
+  tenant-based rental assistance (TBRA), Community Housing Development Organizations (CHDOs)
+
+─────────────────────────────────────────────────────────────────────────────
+CHOICE NEIGHBORHOODS INITIATIVE
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 14.889
+Agency: HUD
+FY2025 Funding: $100M
+Award Range: Planning grants $500K; Implementation grants $30–50M
+Purpose: Transform distressed public/HUD-assisted housing and surrounding neighborhoods
+Eligible: PHAs, local governments, non-profits; must have distressed HUD-assisted housing
+
+=============================================================================
+SECTION 5: U.S. DEPARTMENT OF AGRICULTURE (USDA) PROGRAMS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+RURAL DEVELOPMENT — WATER & ENVIRONMENTAL PROGRAMS
+─────────────────────────────────────────────────────────────────────────────
+Water & Waste Water Direct Loans & Grants (CFDA: 10.760):
+  Eligibility: Communities with ≤ 10,000 population in rural areas
+  Award Range: Loans up to $50M; grants up to $2M (for lowest-income communities)
+  Purpose: Water/wastewater system construction, repair, and replacement
+  Income Criteria: Grants available when MHI ≤ 80% of state nonmetro median income
+
+Water & Waste Water Guaranteed Loans (CFDA: 10.761):
+  Eligibility: Communities with ≤ 10,000 population
+  Award Range: Up to $50M guaranteed loan through approved lenders
+
+─────────────────────────────────────────────────────────────────────────────
+RURAL DEVELOPMENT — COMMUNITY FACILITIES
+─────────────────────────────────────────────────────────────────────────────
+Community Facilities Direct Loan & Grant (CFDA: 10.766):
+  Eligibility: Rural areas and towns ≤ 20,000 population
+  Award Range: Grants up to $500K–$3M depending on income level; loans any amount
+  Grant eligibility based on MHI:
+    - If MHI ≤ 90% of state nonmetro median → highest grant percentage (up to 75%)
+    - If MHI 91–100% of state nonmetro median → reduced grant
+    - If MHI > 100% → loans only (no grant)
+  Eligible Facilities: Libraries, hospitals, fire stations, community centers,
+    schools, childcare, municipal buildings, emergency services
+  Application: Through local USDA Rural Development office; no competitive NOFO;
+    application accepted year-round (subject to funding availability)
+
+─────────────────────────────────────────────────────────────────────────────
+RURAL BUSINESS DEVELOPMENT GRANTS (RBDG)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 10.351
+Eligibility: Rural areas ≤ 50,000 population
+Award Range: $10K–$500K
+Purpose: Technical and financial assistance for small rural businesses,
+  rural entrepreneurs, economic development planning
+Application: Annual NOFO; through USDA State Rural Development office
+
+─────────────────────────────────────────────────────────────────────────────
+RECONNECT PROGRAM (Broadband)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 10.886
+Agency: USDA Rural Development
+IIJA Funding: $2.0 billion
+Award Range: $100K–$25M per project
+Eligibility: Rural areas where 90%+ of households lack 100/20 Mbps service
+Purpose: Build broadband infrastructure in unserved/underserved rural areas
+Match: 25% minimum (higher match = better scoring)
+
+─────────────────────────────────────────────────────────────────────────────
+RURAL ENERGY FOR AMERICA PROGRAM (REAP)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 10.868
+Eligibility: Agricultural producers + rural small businesses + rural utilities in
+  areas ≤ 50,000 population
+Award Range: Grants up to 50% of project cost; loans up to 75%
+Purpose: Renewable energy systems, energy efficiency improvements
+
+=============================================================================
+SECTION 6: U.S. ECONOMIC DEVELOPMENT ADMINISTRATION (EDA) PROGRAMS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+PUBLIC WORKS & ECONOMIC ADJUSTMENT ASSISTANCE
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 11.300 (Public Works), 11.307 (Economic Adjustment)
+Agency: EDA / U.S. Department of Commerce
+Annual Funding: ~$500M
+Award Range: $250K–$10M for Public Works; larger for Economic Adjustment
+Match: 50% federal / 50% local; may be waived for severely distressed communities
+Eligible: Regions with economic distress (unemployment ≥ 1.5× national or
+  per-capita income ≤ 80% national average)
+Eligible Activities: Infrastructure that supports economic development
+  (industrial park roads, utility extensions, port access, broadband, tech parks)
+Key Note: EDA requires economic distress designation (apply through EDA Regional Office).
+  Best for communities with manufacturing decline, plant closures, or persistent poverty.
+Application: Rolling applications accepted; contact EDA regional office
+
+─────────────────────────────────────────────────────────────────────────────
+BUILD TO SCALE (B2S) — formerly i6 Challenge
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 11.303
+Purpose: Regional entrepreneurship and innovation ecosystem development
+Award Range: $300K–$2M per award
+Eligible: Non-profits, universities, local governments promoting innovation
+
+=============================================================================
+SECTION 7: U.S. DEPARTMENT OF ENERGY (DOE) PROGRAMS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+GRID RESILIENCE & INNOVATION PARTNERSHIPS (GRIP)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 81.143
+Authorization: IIJA Section 40103
+Total IIJA Funding: $10.5 billion
+Award Range: $5M–$500M
+Match: 100% cost-share required (50/50 federal/non-federal)
+Eligible: Utilities, municipalities with municipal utilities, states
+Eligible Activities: Grid hardening, smart meters, microgrids, transmission upgrades,
+  storm hardening, wildfire risk reduction on power lines
+Key Note: Municipal utilities and communities with electric infrastructure may apply.
+
+─────────────────────────────────────────────────────────────────────────────
+ENERGY EFFICIENCY & CONSERVATION BLOCK GRANT (EECBG)
+─────────────────────────────────────────────────────────────────────────────
+CFDA: 81.128
+Authorization: IIJA Section 40552
+IIJA Funding: $550M (formula + competitive)
+Award Range: Formula: varies by population; competitive: $500K–$10M
+Eligible: States, local governments, tribes, utilities
+Eligible Activities: Energy audits of public buildings, LED street lights,
+  municipal fleet electrification, renewable energy on public facilities,
+  building energy codes development
+Key Note: Formula funds go to cities ≥ 35,000 population. Smaller cities apply
+  through the state program.
+
+=============================================================================
+SECTION 8: INFRASTRUCTURE INVESTMENT & JOBS ACT (IIJA/BIL) SUMMARY
+=============================================================================
+
+The Infrastructure Investment and Jobs Act (PL 117-58), signed November 2021,
+provides $1.2 trillion over 5 years, of which $550 billion is NEW investment.
+Key municipal-relevant programs:
+
+TRANSPORTATION (Title I-IV):
+  - RAISE Discretionary Grants: $7.5B
+  - Safe Streets & Roads for All (SS4A): $5B
+  - Bridge Investment Program: $12.5B
+  - PROTECT: $8.7B
+  - Carbon Reduction: $6.4B
+  - CMAQ: $11.5B
+  - TAP: $9B
+
+WATER & ENVIRONMENT:
+  - Lead Service Line Replacement (DWSRF): $15B
+  - Water Contamination (CWSRF + PFAS): $11.7B
+  - Flood Mitigation Assistance (FMA): $3.5B
+  - BRIC: $1B/year
+
+BROADBAND:
+  - BEAD (via states): $42.45B
+  - ReConnect (USDA): $2B
+  - Middle Mile: $1B
+
+ENERGY:
+  - Grid Resilience: $10.5B
+  - EECBG: $550M
+  - EV Charging (NEVI): $5B (formula to states)
+
+For every single one of these IIJA programs, the application portal is:
+  - Grants.gov (search by CFDA or program name)
+  - SAM.gov (verify active registration first)
+  - Federal agency program pages (USDOT/FEMA/EPA/USDA/DOE websites)
+
+=============================================================================
+SECTION 9: INFLATION REDUCTION ACT (IRA) CLIMATE & ENERGY PROGRAMS
+=============================================================================
+
+The Inflation Reduction Act (PL 117-169, August 2022) provides ~$369B for
+climate and clean energy investment. Key municipal programs:
+
+GREENHOUSE GAS REDUCTION FUND (GGRF):
+  Total: $27B; administered by EPA
+  - National Clean Investment Fund: $14B to nonprofit lenders
+  - Clean Communities Investment Accelerator: $6B for low-income/tribal
+  - Solar for All: $7B for rooftop solar in low-income communities
+  Municipalities access through EPA-selected intermediary lenders
+
+ENVIRONMENTAL JUSTICE (IRA Section 60201+):
+  - EPA EJ Grants: $3B
+  - Thriving Communities Technical Assistance: $400M
+
+CLEAN ENERGY INVESTMENT FOR MUNICIPALITIES:
+  IRA provides direct-pay (refundable tax credits) for municipalities:
+  - 30% ITC for rooftop solar on municipal buildings
+  - 30% for EV charging infrastructure (municipal fleets)
+  - Additional 10% for Energy Communities (coal/fossil fuel regions)
+  - Additional 10% for Domestic Content (American-made equipment)
+  Key: Municipalities can receive direct payment of the credit amount as cash
+    under IRA Section 6417 (Direct Pay) — no private partnership required.
+
+CLEAN VEHICLE CREDITS:
+  - Commercial Clean Vehicle Credit: Up to $40K per heavy-duty vehicle
+    (municipal trucks, transit buses)
+  - Municipal transit agencies: EV bus funding through FTA programs
+
+=============================================================================
+SECTION 10: HEALTH & HUMAN SERVICES (HHS) PROGRAMS
+=============================================================================
+
+COMMUNITY SERVICES BLOCK GRANT (CSBG):
+  CFDA: 93.569
+  Purpose: Services for low-income persons; administered through state CAA network
+  Eligible: Community Action Agencies and eligible entities
+  Annual Funding: ~$750M
+
+AGING PROGRAMS (Older Americans Act):
+  CFDA: 93.044, 93.045, 93.052
+  Agency: HHS/ACL
+  Purpose: Senior centers, meals, transportation, caregiver support
+  Eligible: Area Agencies on Aging; municipalities with senior centers
+
+CDC PREVENTION GRANTS:
+  Various CFDAs for public health infrastructure, obesity prevention,
+  tobacco cessation, substance use disorder programs
+
+=============================================================================
+SECTION 11: DEPARTMENT OF JUSTICE (DOJ) PROGRAMS
+=============================================================================
+
+BYRNE JUSTICE ASSISTANCE GRANT (JAG):
+  CFDA: 16.738
+  Annual Funding: ~$250M (formula + competitive)
+  Eligible: States, localities (formula based on population and crime statistics)
+  Eligible Activities: Law enforcement personnel, equipment, training, technology,
+    crime prevention, drug/substance abuse prevention, corrections
+
+COPS HIRING PROGRAM:
+  CFDA: 16.710
+  Purpose: Fund police officer positions for 3 years
+  Award: Up to $125,000/officer (3-year salary + benefits)
+
+COMMUNITY VIOLENCE INTERVENTION (CVI):
+  DOJ Competitive grants for community-based violence prevention programs
+
+=============================================================================
+SECTION 12: HOW TO SEARCH FOR GRANTS (ANY CITY)
+=============================================================================
+
+PRIMARY RESOURCES:
+  1. Grants.gov — All federal grant opportunities (search by agency, CFDA, keyword)
+  2. SAM.gov — Registration and contract opportunities
+  3. USA Spending (usaspending.gov) — Track what similar cities have received
+  4. State grants portal — Every state has a grants catalog (e.g., Illinois GATA, Texas TPASS)
+  5. CFDA (now Assistance Listings) — Comprehensive database at sam.gov/content/assistance-listings
+
+USEFUL SEARCH STRATEGIES ON GRANTS.GOV:
+  - Search by CFDA number (most precise)
+  - Filter by eligible applicant: "Local Government"
+  - Filter by category: Transportation, Environment, Community Development
+  - Set status: "Posted" (open) + subscription alerts for new NOFOs
+
+STATE-BY-STATE CDBG ADMINISTRATORS:
+  Illinois: DCEO (dceo.illinois.gov)
+  Texas: GLO (glo.texas.gov)
+  California: HCD (hcd.ca.gov)
+  Florida: DEO (floridajobs.org)
+  New York: HCR (hcr.ny.gov)
+  Ohio: ODSA (development.ohio.gov)
+  Pennsylvania: DCED (dced.pa.gov)
+  Michigan: MEDC (michiganbusiness.org)
+  Georgia: DCA (dca.ga.gov)
+  North Carolina: Commerce (nccommerce.com)
+
+RESEARCH COMPARABLE CITY AWARDS:
+  - USASpending.gov: Search by recipient city name → see all federal awards received
+  - Search "similar awards" by CFDA + state for comparable city grant amounts
+  - Benchmark: What did comparable cities in your state receive for the same program?

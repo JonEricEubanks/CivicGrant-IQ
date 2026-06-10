@@ -46,12 +46,14 @@ export const config = {
   graphTenantId: process.env.GRAPH_TENANT_ID ?? "",
   graphClientId: process.env.GRAPH_CLIENT_ID ?? "",
   graphClientSecret: process.env.GRAPH_CLIENT_SECRET ?? "",
-  graphSiteHostname: process.env.GRAPH_SITE_HOSTNAME ?? "communityessentials.sharepoint.com",
-  graphSitePath: process.env.GRAPH_SITE_PATH ?? "/sites/Clerk",
-  graphLibraryName: process.env.GRAPH_LIBRARY_NAME ?? "City Grant Intelligence",
+  graphSiteHostname: process.env.GRAPH_SITE_HOSTNAME ?? "",
+  graphSitePath: process.env.GRAPH_SITE_PATH ?? "",
+  graphLibraryName: process.env.GRAPH_LIBRARY_NAME ?? "",
+  // Optional: a specific M365 user UPN to pull calendar events and mail from
+  graphUserUpn: process.env.GRAPH_USER_UPN ?? "",
 
   // Azure Resource details (for reference — set in .env, never hardcode)
   subscriptionId: process.env.AZURE_SUBSCRIPTION_ID ?? "",
-  resourceGroup: process.env.AZURE_RESOURCE_GROUP ?? "rg-skillsfest",
+  resourceGroup: process.env.AZURE_RESOURCE_GROUP ?? "",
   location: process.env.AZURE_LOCATION ?? "eastus2",
 };

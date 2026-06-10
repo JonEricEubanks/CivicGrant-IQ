@@ -70,6 +70,8 @@ scanRouter.post("/", async (req: Request, res: Response) => {
       send("status", {
         message: `${collected.length}/5 analyzed — ${item.grantName.split("(")[0].trim()} (${item.matchScore}% match)`,
       });
+    }, (activity) => {
+      send("scan_activity", activity);
     });
 
     // Final ranked portfolio summary

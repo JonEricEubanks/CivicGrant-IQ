@@ -1,0 +1,425 @@
+METROPOLITAN & SUBURBAN CITY GRANT LANDSCAPE
+CivicGrant IQ Knowledge Base | FY2026 Edition
+Applicable to: Cities 50,000–1,000,000+ population, Suburban municipalities in MSAs
+
+=============================================================================
+SECTION 1: THE SUBURBAN ADVANTAGE IN FEDERAL GRANT COMPETITIONS
+=============================================================================
+
+Suburban and mid-size cities occupy a unique and powerful position in the
+federal grant landscape. They are:
+  - Large enough to have professional staff, capital reserves, and bond ratings
+  - Small enough to generate compelling benefit-cost ratios (less existing infrastructure)
+  - Less bureaucratically complex than major metros (faster project delivery)
+  - Often overlooked by federal agencies who assume "suburban = wealthy = doesn't need help"
+
+THE COMPETITIVE EDGE OF SUBURBAN CITIES:
+1. FINANCIAL CREDIBILITY: Investment-grade bond ratings (Aa1, Aa2, A1) signal to
+   federal reviewers that the city can execute and won't default on match commitments.
+   A Moody's Aa2 or S&P AA rating is equivalent to a major Fortune 500 company's credit.
+
+2. PROJECT READINESS: Suburban cities with CIPs often have projects at 30–60% design,
+   environmental permits initiated, and right-of-way secured. Federal programs score
+   readiness highly — a project that can break ground in 18 months vs. 3+ years scores better.
+
+3. MATCH CAPACITY: Capital reserves of 15–20% of budget = credible, committed local match.
+   Federal reviewers compare "available reserves" to "required match" — show the math.
+
+4. TRACK RECORD: Prior federal awards with zero audit findings are a scoring differentiator.
+   "Buffalo Grove has received and fully complied with $X in prior federal awards" closes deals.
+
+5. PARTNER LEVERAGE: Suburban cities coordinate with counties, MPOs, transit agencies.
+   Multi-governmental partnerships (3+ entities) consistently outscore solo applications.
+
+6. DATA RICHNESS: Suburban cities in metro areas have abundant crash data, traffic counts,
+   census data, environmental monitoring — the evidence basis federal reviewers require.
+
+=============================================================================
+SECTION 2: HUD ENTITLEMENT PROGRAMS (Cities 50,000+)
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+COMMUNITY DEVELOPMENT BLOCK GRANT (CDBG) — ENTITLEMENT
+─────────────────────────────────────────────────────────────────────────────
+Threshold: Cities ≥ 50,000 population OR principal cities of MSAs receive direct HUD allocation
+Annual Allocation: Formula-based; typical suburban entitlement city: $300K–$3M/year
+  Formula factors: Population (30%), poverty rate (30%), housing age pre-1940 (20%), other (20%)
+  Example allocations: Chicago $58M; Naperville IL ~$700K; Aurora IL ~$2.5M; Buffalo Grove (below threshold, state CDBG)
+
+WHAT ENTITLEMENT STATUS MEANS:
+  - Annual guaranteed allocation from HUD (no competition)
+  - Must submit 5-Year Consolidated Plan + Annual Action Plan to HUD
+  - Must adhere to 70% LMI benefit rule, public participation requirements
+  - Must maintain Analysis of Impediments to Fair Housing (AI) or Assessment of Fair Housing (AFH)
+
+STRATEGIC USE OF CDBG IN SUBURBAN ENTITLEMENT CITIES:
+  Public Facilities (25%): Community centers, senior centers, parks in LMI census tracts
+  Housing (35%): Homeowner rehabilitation, code enforcement, emergency repairs for LMI households
+  Economic Development (20%): Façade grants, commercial district improvements, business loans
+  Public Services (15% cap): Senior services, homeless assistance, youth programming
+  Planning & Admin (20% cap): Consolidated Plan updates, fair housing activities
+
+─────────────────────────────────────────────────────────────────────────────
+HOME INVESTMENT PARTNERSHIPS (HOME)
+─────────────────────────────────────────────────────────────────────────────
+Threshold: Participating Jurisdictions (PJs) = cities ≥ 65,000 + suburban consortia
+Annual Allocation: Similar formula to CDBG; typical mid-size city: $300K–$2M/year
+Required: 25% match from non-federal sources
+Required CHDO Set-Aside: 15% of HOME allocation must go to Community Housing Development Organizations (CHDOs)
+Best Uses:
+  - Down-payment assistance programs for first-time LMI homebuyers
+  - Homeowner rehabilitation for low-income households
+  - Affordable rental housing development partnerships
+  - Tenant-based rental assistance (TBRA)
+
+─────────────────────────────────────────────────────────────────────────────
+HOUSING TRUST FUND (HTF)
+─────────────────────────────────────────────────────────────────────────────
+Recipients: States (not localities directly)
+Purpose: Affordable housing for extremely low income (≤ 30% AMI) and very low income (≤ 50% AMI)
+Benefit for cities: States pass through to developers building in your city
+Strategy: Engage state housing finance agency to include your city in HTF allocations
+
+=============================================================================
+SECTION 3: TRANSPORTATION PROGRAMS FOR SUBURBAN METRO CITIES
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+MPO PROGRAMMING — THE GATEWAY TO FEDERAL TRANSPORTATION FUNDS
+─────────────────────────────────────────────────────────────────────────────
+CRITICAL INSIGHT: Most federal transportation dollars flow through Metropolitan
+Planning Organizations (MPOs), NOT directly to cities. A city must work with its
+MPO to get projects onto the Transportation Improvement Program (TIP/STIP) before
+federal funds can be used.
+
+HOW MPO PROGRAMMING WORKS:
+  1. City develops project concept with technical justification (crash data, traffic counts, BCA)
+  2. City submits project to MPO call for projects (STP, CMAQ, TAP — annual or biannual cycles)
+  3. MPO technical committee scores and ranks projects
+  4. Projects selected by MPO policy board for inclusion in TIP
+  5. TIP projects are programmed into state STIP (Statewide TIP)
+  6. Project becomes eligible for federal funds; city applies to state DOT for NOFA
+
+KEY MPOs BY METRO AREA:
+  Chicago: CMAP (Chicago Metropolitan Agency for Planning) — serves northeast Illinois
+    Programs: STP-Urban, CMAQ, TAP; Call for Projects every 2–3 years
+    Website: cmap.illinois.gov/programs/transportation-alternatives
+  Dallas-Fort Worth: NCTCOG (North Central Texas Council of Governments)
+  Houston: H-GAC (Houston-Galveston Area Council)
+  Atlanta: ARC (Atlanta Regional Commission) — not to be confused with Appalachian RC
+  Denver: DRCOG (Denver Regional Council of Governments)
+  Seattle: PSRC (Puget Sound Regional Council)
+  Phoenix: MAG (Maricopa Association of Governments)
+  Boston: MAPC (Metropolitan Area Planning Council)
+  Los Angeles: SCAG (Southern California Association of Governments)
+  New York: NYMTC, NJTPA, CTDOT for tri-state
+  Philadelphia: DVRPC (Delaware Valley Regional Planning Commission)
+  Minneapolis: Met Council
+  St. Louis: East-West Gateway Council of Governments
+  Columbus: MORPC (Mid-Ohio Regional Planning Commission)
+
+WHAT TO SUBMIT TO MPO:
+  - Project purpose and need statement (problem statement with data)
+  - Crash analysis (5-year crash data by type: fatal, injury, PDO)
+  - Traffic volume counts (ADT, peak hour)
+  - Pavement condition data (PCI scores) if resurfacing
+  - Preliminary cost estimate by work type
+  - Environmental screening (potential issues: historic, wetlands, floodplain)
+  - Local match commitment (% of total project cost)
+
+─────────────────────────────────────────────────────────────────────────────
+RAISE GRANTS — STRONG FIT FOR SUBURBAN CITIES
+─────────────────────────────────────────────────────────────────────────────
+(See FEDERAL-MajorGrantPrograms for full RAISE details)
+Suburban Sweet Spot: $3M–$15M projects that don't need MEGA scale but exceed STP threshold
+Examples of winning suburban RAISE applications:
+  - Intersection reconstruction (high-crash, dual left turns, adaptive signals)
+  - Multimodal connector to transit station (pedestrian, bike, bus access)
+  - Railroad grade separation (at-grade crossing elimination)
+  - Downtown streetscape + pedestrian safety improvements
+  - Freight access road to industrial park
+
+─────────────────────────────────────────────────────────────────────────────
+SAFE STREETS & ROADS FOR ALL (SS4A) — IDEAL FOR SUBURBS
+─────────────────────────────────────────────────────────────────────────────
+Why SS4A is perfect for suburban cities:
+  - Funding available for BOTH planning (Vision Zero action plan) AND implementation
+  - Lower competition than RAISE for safety-specific projects
+  - Excellent for suburbs that want to start with a safety study then implement
+  - Priority given to communities with pedestrian/cyclist fatalities or near-misses
+  - Strong equity scoring: can document vulnerable road users (school zones, senior centers)
+
+Two-Step Strategy:
+  1. Apply for SS4A Action Plan grant ($100K–$5M for planning/study) — lower competition
+  2. Use the completed Action Plan as the roadmap for SS4A Implementation grant ($1M–$25M)
+
+─────────────────────────────────────────────────────────────────────────────
+STATE DOT PROGRAMS (Suburban Access)
+─────────────────────────────────────────────────────────────────────────────
+Every state has multiple programs funneling federal funds to local roads.
+For suburban cities, key access points:
+
+Illinois (IDOT) Programs:
+  - STP-Urban (via CMAP): Pavement, bridges, safety improvements in urban areas
+  - HSIP: Safety improvements at high-crash locations; 90/10 federal/local match
+  - ITEP: Transportation enhancement; trails, pedestrian, bike, scenic byways
+  - BUILD Illinois Bonds: State infrastructure bonds for local roads
+  - Rebuild Illinois (Rebuild): $4.1B capital program; competitive local road grants
+  Illinois Local Roads Program: Contact IDOT District Office for local road funding
+
+Texas (TxDOT) Programs:
+  - Off-System Bridge Program: Bridge replacement/rehabilitation
+  - Transportation Development Credit: Flexible local funding mechanism
+  - Urban Transportation Program: For cities in urbanized areas
+  - Surface Transportation Block Grant (STBG): Administered through TxDOT districts
+
+California (Caltrans) Programs:
+  - Active Transportation Program (ATP): Bike/pedestrian, state-administered
+  - Local Partnership Program: Match state funds with local sales tax revenues
+  - Solutions for Congested Corridors (SCCP): $250M/year for corridor improvements
+  - HSIP Local: Highway safety for local agencies
+
+Florida (FDOT) Programs:
+  - Transportation Regional Incentive Program (TRIP): Regional significance projects
+  - County Incentive Grant Program (CIGP): County road improvements
+  - Small County Outreach Program (SCOP): For small counties < 100K population
+
+=============================================================================
+SECTION 4: WATER & ENVIRONMENTAL PROGRAMS FOR METRO CITIES
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+EPA CLEAN WATER SRF — METRO CITY STRATEGIES
+─────────────────────────────────────────────────────────────────────────────
+For cities in metro areas, CWSRF is typically used for:
+  - Combined Sewer Overflow (CSO) Long-Term Control Plan projects
+  - Separate Sewer Overflow (SSO) elimination
+  - Green Infrastructure (bioswales, permeable pavement, rain gardens — "green" CWSRF)
+  - Stormwater master plan implementation
+  - Watershed protection projects
+
+DWSRF LEAD SERVICE LINE REPLACEMENT:
+  IIJA: $15B over 5 years for lead service line replacement
+  Priority: Communities with lead service lines (LSLs) — especially pre-1986 housing
+  How to apply: Through state DWSRF program; submit to state project priority list
+  Key note: Federal law now requires all PWS to inventory LSLs and pursue replacement
+  Chicago region: IEPA administering; submit to IEPA annually (October deadline typical)
+
+─────────────────────────────────────────────────────────────────────────────
+FEMA BRIC FOR SUBURBAN METRO CITIES
+─────────────────────────────────────────────────────────────────────────────
+Suburban cities with flood risk are IDEAL BRIC applicants:
+  Strengths: CRS participation (common in suburbs), active NFIP, current LHMP,
+    strong match capacity, documented flood history
+  Best project types:
+    - Flood early warning systems (stream gauges, emergency alert upgrades)
+    - Green infrastructure (constructed wetlands, bioretention, detention basins)
+    - Utility hardening (backup generators for lift stations, pump hardening)
+    - Culvert upsizing (undersized culverts causing repeated flood damage)
+  Key scoring factor: CRS class participation adds priority points
+  How to apply: Through state emergency management (IEMA in IL, TEM in TX, etc.)
+
+─────────────────────────────────────────────────────────────────────────────
+ARMY CORPS OF ENGINEERS PROGRAMS
+─────────────────────────────────────────────────────────────────────────────
+Section 205 (Small Flood Control Projects):
+  Award: Up to $10M per project
+  Federal share: 65% federal / 35% local
+  Purpose: Flood damage reduction in areas too small for major civil works projects
+  Application: Through Army Corps District office; annual authorization cycle
+  Eligible: Stream channelization, detention basins, floodplain management
+
+Section 408 Permits:
+  NOT a grant — a modification permit to federal project (e.g., a Corps-built levee)
+  Required if city wants to modify infrastructure near or within a federal project
+
+Project Partnership Agreements (PPA):
+  For major flood control: Full project development; can include NEPA and design
+  Study Authority: Small General Investigations (SGI) for watershed studies
+
+=============================================================================
+SECTION 5: ECONOMIC DEVELOPMENT GRANTS FOR METRO SUBURBS
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+EDA GRANTS FOR SUBURBAN COMMUNITIES
+─────────────────────────────────────────────────────────────────────────────
+EDA Public Works:
+  Note: Traditional EDA programs favor distressed communities, but suburbs can qualify
+    if they have a distressed sub-area OR a post-disaster economic impact
+  EDA Supplemental Empowerment Zone grants: If community has EZ/Promise Zone designation
+  EDA STEM Talent Challenge: For metro regions building STEM workforce pipeline
+  IEDP (Investments for Economic Diversification): Manufacturing, tech, R&D investment support
+
+EDA TECH HUBS (CHIPS Act Section 10622):
+  Total: $10B over 5 years
+  Purpose: Build regional tech ecosystems in communities outside traditional coastal hubs
+  Key: Requires regional consortium (city + university + private sector + workforce)
+  Best for: Mid-size metros not currently established tech hubs
+
+─────────────────────────────────────────────────────────────────────────────
+OPPORTUNITY ZONE INVESTMENT STRATEGY
+─────────────────────────────────────────────────────────────────────────────
+Suburbs often have OZ-designated census tracts (commercial strips, transit-adjacent areas)
+Strategy: Market the OZ designation to attract private investment into brownfields,
+  mixed-use development, affordable housing
+Key: Not a direct grant — cities can leverage OZ + CDBG + HOME + State TIF + EDA brownfields
+
+─────────────────────────────────────────────────────────────────────────────
+BROWNFIELD REDEVELOPMENT (EPA + EDA)
+─────────────────────────────────────────────────────────────────────────────
+EPA Brownfields Assessment Grant: Up to $500K to assess contaminated sites
+EPA Brownfields Cleanup Grant: Up to $500K per site for cleanup
+EPA Brownfields Multipurpose Grant: Up to $800K (combined assessment + cleanup)
+EDA Brownfields Redevelopment: Can add economic development element after cleanup
+State brownfield programs: Many states have supplemental funding (IL Clean Illinois, TX VCP)
+Strategy: Package EPA Brownfields + EDA + OZ + LIHTC into a comprehensive redevelopment deal
+
+=============================================================================
+SECTION 6: TECHNOLOGY & SMART CITY GRANTS
+=============================================================================
+
+NSF SMART & CONNECTED COMMUNITIES (S&CC):
+  CFDA: 47.070
+  Award Range: $1M–$2.5M
+  Purpose: Develop and test technology-driven solutions to urban challenges
+  Eligible: Municipal governments partnered with a university (NSF requires academic partner)
+  Focus: Smart infrastructure (traffic sensors, IoT, predictive maintenance),
+    data analytics, accessibility technology, emergency management AI
+  Competition: Moderate — 30–50 applicants; strong if city has tech infrastructure
+  Deadline: Annual NOFO; typically October–January
+
+DOT AUTOMATION DISCRETIONARY GRANT (ADGP):
+  Purpose: Pilot automated vehicle and advanced technology on public roads
+  Award: $500K–$5M
+  Best for: Progressive cities testing AV shuttles, smart intersections
+
+DEPARTMENT OF ENERGY CITIES INITIATIVE:
+  DOE Better Climate Challenge: Commit to 50% GHG reduction; receive technical assistance
+  DOE Grid Modernization: Smart grid pilots for municipal utilities
+  DOE Energy Efficiency Block Grant (EECBG): Energy audits, LED street lights, EV fleet
+
+NTIA DIGITAL EQUITY:
+  IIJA Funding: $2.75B
+  Purpose: Address digital divide — devices, digital literacy, connectivity for LMI households
+  Eligible: States, local governments, non-profits
+  Strategy: Apply for Digital Equity Capacity Grants through state NTIA-designated entity
+
+=============================================================================
+SECTION 7: HOUSING PROGRAMS FOR SUBURBAN CITIES
+=============================================================================
+
+AFFORDABLE HOUSING CHALLENGE FOR SUBURBS:
+  Many suburban cities face workforce housing shortages (teacher, first-responder affordability)
+  Key barrier: Zoning restrictions (single-family only) may conflict with some HUD programs
+  Solution: HUD AFFH (Affirmatively Furthering Fair Housing) requirements in CDBG/HOME
+    cities require removing exclusionary zoning barriers
+
+LIHTC (LOW INCOME HOUSING TAX CREDITS):
+  Administered by State Housing Finance Agency (HFA) via Qualified Allocation Plan (QAP)
+  Award: 9% or 4% tax credits for affordable rental housing development
+  City Role: Approve sites, provide municipal support letters, offer land/fee waivers
+  Key: City doesn't apply — developer applies; city positions itself as supportive jurisdiction
+
+HOME DOWN-PAYMENT ASSISTANCE (DPA):
+  HUD HOME funds used for down-payment assistance to LMI homebuyers
+  Cities can run their own DPA programs or partner with county
+  Income limit: ≤ 80% AMI for beneficiaries
+
+SECTION 8 PROJECT-BASED VOUCHERS (PBV):
+  PHAs can attach project-based vouchers to new affordable developments
+  Suburban cities: Partner with PHA to bring PBVs into your jurisdiction (increases housing supply)
+
+FEDERAL HOME LOAN BANK (FHLB) AFFORDABLE HOUSING PROGRAM:
+  Member banks can sponsor affordable housing grants through FHLB
+  Award: $750K–$5M per project through FHLB competitive program
+  Access: Engage local community bank that is an FHLB member
+
+=============================================================================
+SECTION 8: STATE-BY-STATE PROGRAM HIGHLIGHTS (METRO SUBURBS)
+=============================================================================
+
+ILLINOIS SUBURBAN CITY GRANT LANDSCAPE:
+  Key State Programs:
+    - Illinois Commerce Commission Infrastructure Grants (water/sewer)
+    - Rebuild Illinois: $4.1B bond program; local road, bridge, transit
+    - DCEO CDBG: Non-entitlement cities apply to DCEO; priority: downtown revitalization
+    - Illinois Housing Development Authority (IHDA): LIHTC, HOME, TIF-backed housing
+    - Illinois Environmental Protection Agency (IEPA): CWSRF/DWSRF, NPS grants
+    - IDOT STP/CMAQ via CMAP: Transportation improvements in northeast Illinois
+  Regional: Chicago Metropolitan Agency for Planning (CMAP) — ONE Metropolitan Chicago Plan
+  Unique: Illinois requires cities to complete a "grant certification" with GATA (Grant Accountability and Transparency Act) before applying to any state grant
+
+TEXAS SUBURBAN CITY GRANT LANDSCAPE:
+  Key State Programs:
+    - TxDOT Transportation Alternatives Program: Bike/ped, historic
+    - TCEQ Water/Wastewater Financial Assistance (SWQAP)
+    - Texas General Land Office (GLO) CDBG: Disaster recovery, infrastructure
+    - Texas Water Development Board (TWDB): SRF financing + some grants
+    - Comptroller Texas Enterprise Fund: Economic development (competitive/negotiated)
+  Unique: Texas has extensive municipal utility district (MUD) structures — many infrastructure
+    grants go through MUDs or regional water authorities rather than cities directly
+
+CALIFORNIA SUBURBAN CITY GRANT LANDSCAPE:
+  Key State Programs:
+    - Caltrans Active Transportation Program (ATP): $400M/year for bike/ped
+    - California Water Boards CWSRF/DWSRF: Substantial funding with equity focus
+    - HCD CDBG: Non-entitlement community development
+    - California Strategic Growth Council: Climate adaptation, infill, transit-oriented development
+    - CDFW Proposition 68: Parks and natural lands
+    - AB 617 Community Air Protection: EJ communities with air pollution
+  Unique: Prop 68 ($4B bond) and Prop 1 (water bond) provide state-specific funding outside federal
+
+FLORIDA SUBURBAN CITY GRANT LANDSCAPE:
+  Key State Programs:
+    - FDOT TRIP (Transportation Regional Incentive Program): Regional significance
+    - CDBG via DEO: Housing, economic development for small/non-entitlement cities
+    - FDEP SRF: Water/wastewater revolving fund
+    - Florida Resilient Florida Grant Program: Flood protection, sea level rise adaptation
+    - Visit Florida + DEOS Tourism Development: Tourism-adjacent infrastructure
+  Unique: Florida Resiliency Grant (FL Senate created specifically for flood adaptation)
+
+NEW YORK SUBURBAN CITY GRANT LANDSCAPE:
+  Key State Programs:
+    - New York State DOT Pave NY: Local road resurfacing
+    - EFC (Environmental Facilities Corp) SRF: Water/wastewater
+    - NY Homes & Community Renewal: CDBG, HOME, LIHTC
+    - NY Works Capital Program: Broad infrastructure investment (allocated to localities)
+    - NYSERDA: Energy efficiency, renewable energy for municipalities
+  Unique: CHIPS (Consolidated Highway Improvement Program) — $438M/year to counties/cities
+
+OHIO SUBURBAN CITY GRANT LANDSCAPE:
+  Key State Programs:
+    - Ohio PWIA (Public Works Integrating Authority): Public infrastructure for small/mid cities
+    - ODSA CDBG: Non-entitlement cities
+    - Ohio EPA SRF: Water/wastewater
+    - Ohio DOT Urban Paving: Local road improvements
+    - Third Frontier: Technology commercialization and economic development
+  Unique: Ohio Public Works Commission (OPWC) — highly efficient infrastructure funding
+    specifically for small/mid-size Ohio communities; very responsive to local applications
+
+=============================================================================
+SECTION 9: GRANT COMPETITION ANALYSIS BY PROGRAM
+=============================================================================
+
+LOW COMPETITION (< 100 applicants nationally for suburban cities):
+  - USDA Community Facilities (rolling, non-competitive)
+  - SS4A Action Plan grants (< 100 suburban applicants)
+  - HSIP through state DOT (state-level competition, typically 20–80 projects/state)
+  - CWSRF/DWSRF (non-competitive; project priority list)
+  - PROTECT formula (allocated to states; sub-allocated to localities)
+
+MEDIUM COMPETITION (100–300 applicants nationally):
+  - RAISE rural category (approximately 200 rural/suburban applicants)
+  - FEMA BRIC (state-level competition, ~20–50 projects per state)
+  - TAP/ITEP (state-level, ~30–100 projects per state)
+  - STP-Urban via MPO (regional competition, ~20–60 projects per cycle)
+
+HIGH COMPETITION (300+ applicants nationally):
+  - RAISE urban category (400–600 applicants for 30–50 urban awards)
+  - EDA Public Works (200–400 applications nationally)
+  - HUD Choice Neighborhoods (50–80 applications for 2–4 awards)
+  - NSF Smart Cities (50–100 applications for 8–12 awards)
+
+STRATEGY: Target LOW and MEDIUM competition programs first to build track record,
+then leverage track record in HIGH competition programs.

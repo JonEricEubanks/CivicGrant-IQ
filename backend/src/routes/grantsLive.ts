@@ -45,10 +45,11 @@ async function fetchEstimatedFunding(id: string): Promise<number | null> {
   }
 }
 // Funding category codes we care about for municipal infrastructure
-// RA = Disaster Prevention and Relief, T = Science and Technology, C = Business/Commerce,
-// ENV = Environmental Quality, H = Health, HO = Housing, T = Transportation
-// The most relevant: RA (disaster/resiliency), ENV (environment), T (transportation)
-const RELEVANT_CATEGORIES = "RA|ENV|T|AR";
+// RA = Disaster Prevention and Relief, ENV = Environmental Quality, T = Transportation,
+// AR = Agriculture, HO = Housing, CD = Community Development, H = Health,
+// C = Business/Commerce, I = Income Security, LJL = Law Justice Legal, SCI = Science
+// The default covers most municipal use cases; callers can override via ?categories=
+const DEFAULT_CATEGORIES = "RA|ENV|T|AR|HO|CD";
 
 interface GrantsGovHit {
   id: string;
@@ -105,6 +106,7 @@ grantsLiveRouter.get("/", async (req: Request, res: Response) => {
   const rows = Math.min(20, Math.max(1, Number(req.query.rows ?? 10)));
   const status = (req.query.status as string | undefined) ?? "forecasted|posted";
   const withFunding = req.query.withFunding === "1" || req.query.withFunding === "true";
+  const rawCategories = (req.query.categories as string | undefined) ?? DEFAULT_CATEGORIES;
 
   // Sanitize keywords — strip any HTML/JS injection attempts
   const keyword = rawKeywords
@@ -113,12 +115,15 @@ grantsLiveRouter.get("/", async (req: Request, res: Response) => {
     .trim()
     .slice(0, 200);
 
+  // Sanitize categories — only allow pipe-separated uppercase alphanumeric codes
+  const categories = rawCategories.replace(/[^A-Z|]/g, "").slice(0, 60) || DEFAULT_CATEGORIES;
+
   const body = {
     keyword,
     oppStatuses: status,
     rows,
     sortBy: "closeDate|asc",    // soonest-closing first — most actionable for users
-    fundingCategories: RELEVANT_CATEGORIES,
+    fundingCategories: categories,
   };
 
   try {
@@ -153,20 +158,27 @@ grantsLiveRouter.get("/", async (req: Request, res: Response) => {
       grantsGovUrl: `https://www.grants.gov/search-results-detail/${h.id}`,
     }));
 
+    // Drop grants whose close date has already passed — never show expired opportunities
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const openGrants = grants.filter((g) => {
+      if (!g.closeDate) return true; // no date = rolling/open
+      return new Date(g.closeDate) >= today;
+    });
+
     // Optionally enrich with real program funding from the detail endpoint.
-    if (withFunding && grants.length > 0) {
-      const fundings = await Promise.all(grants.map((g) => fetchEstimatedFunding(g.id)));
-      grants.forEach((g, i) => {
+    if (withFunding && openGrants.length > 0) {
+      const fundings = await Promise.all(openGrants.map((g) => fetchEstimatedFunding(g.id)));
+      openGrants.forEach((g, i) => {
         g.estimatedFunding = fundings[i];
       });
     }
 
     res.json({
       totalHits: data.hitCount ?? grants.length,
-      returned: grants.length,
+      returned: openGrants.length,
       keyword,
       source: "grants.gov",
-      grants,
+      grants: openGrants,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";

@@ -12,6 +12,73 @@ html, body, #root {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Accessibility: skip navigation link ─────────────────────────────── */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  background: #0e3a6e;
+  color: #ffffff;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 0 0 6px 0;
+  text-decoration: none;
+  transition: top 0.1s;
+}
+.skip-nav:focus {
+  top: 0;
+  outline: 3px solid #f0b42a;
+  outline-offset: 2px;
+}
+
+/* ── Accessibility: global focus-visible ring ────────────────────────── */
+/* Applied to all focusable elements via keyboard navigation */
+:focus-visible {
+  outline: 3px solid #1a6fba;
+  outline-offset: 2px;
+}
+
+/* Suppress focus ring on mouse click (only show for keyboard) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Buttons and interactive elements — stronger ring for visibility */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid #1a6fba;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Accessibility: reduced-motion preference ────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Accessibility: visually-hidden helper (screen-reader only) ──────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f5f9ff; }
 ::-webkit-scrollbar-thumb { background: #c8dff5; border-radius: 3px; }

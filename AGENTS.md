@@ -78,7 +78,7 @@ The frontend uses `"verbatimModuleSyntax": true` (see `tsconfig.app.json`). This
 
 ### Azure Resource Constraints
 - **All Azure resources deploy to `eastus2`** — required for AI Search agentic retrieval
-- Resource group `rg-skillsfest` (sub `b8f90e47-b8ee-45f1-9442-d3b4f8fd0695`) is the logical container; the RG itself is `northcentralus`
+- Resource group `rg-skillsfest` is the logical container; the RG itself is `northcentralus`
 - AI Search must be **Standard tier** for agentic retrieval
 
 ### Env Variables

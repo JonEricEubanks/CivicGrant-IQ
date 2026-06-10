@@ -22,6 +22,12 @@ export interface CityContext {
   riskSignals: string[];
   matchableGrants: string[];
   narrative: string;
+  /** Upcoming grant-related calendar events pulled from Microsoft 365 (Calendars.Read) */
+  calendarEvents?: string[];
+  /** Recent grant coordination signals from Teams channels (ChannelMessage.Read.All) */
+  teamsInsights?: string[];
+  /** Recent grant-related emails (Mail.Read) */
+  mailSignals?: string[];
   error?: string;
 }
 
@@ -183,6 +189,97 @@ async function fetchItemFields(driveId: string, itemId: string): Promise<SpItemF
     );
   } catch {
     return {};
+  }
+}
+
+// ─── Work IQ: Microsoft 365 live signals — calendar, Teams, mail ─────────────
+// These functions use the same ClientSecretCredential used for SharePoint.
+// Required app permissions (admin-consented):
+//   Calendars.Read, ChannelMessage.Read.All (Teams), Mail.Read
+// All calls degrade gracefully — a permission error returns [] without aborting.
+
+const GRANT_KEYWORDS = /grant|nofo|rfp|application|deadline|funding|cdbg|bric|raise|fema|idot|epa|dot|hud|arpa/i;
+
+/** Pull upcoming grant-related calendar events (next 90 days) from a user mailbox. */
+async function fetchGrantCalendarEvents(): Promise<string[]> {
+  const upn = config.graphUserUpn;
+  if (!upn) return [];
+  try {
+    const now = new Date();
+    const end = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+    const start = now.toISOString();
+    const finish = end.toISOString();
+    interface CalEvent { subject?: string; start?: { dateTime?: string }; end?: { dateTime?: string }; bodyPreview?: string }
+    const data = await graphGet<{ value: CalEvent[] }>(
+      `/users/${encodeURIComponent(upn)}/calendarView?startDateTime=${start}&endDateTime=${finish}&$select=subject,start,end,bodyPreview&$top=25&$orderby=start/dateTime`
+    );
+    return (data.value ?? [])
+      .filter((e) => GRANT_KEYWORDS.test(e.subject ?? "") || GRANT_KEYWORDS.test(e.bodyPreview ?? ""))
+      .map((e) => {
+        const when = e.start?.dateTime ? new Date(e.start.dateTime).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+        return `${e.subject ?? "Event"}${when ? ` (${when})` : ""}`;
+      })
+      .slice(0, 8);
+  } catch (err) {
+    console.debug("[WorkIQ] Calendar fetch skipped:", (err as Error).message?.slice(0, 80));
+    return [];
+  }
+}
+
+/** Pull recent grant-related Teams channel messages across all joined teams. */
+async function fetchGrantTeamsMessages(): Promise<string[]> {
+  try {
+    interface Team { id: string; displayName?: string }
+    interface Channel { id: string; displayName?: string }
+    interface Message { id: string; body?: { content?: string }; from?: { user?: { displayName?: string } }; createdDateTime?: string }
+    // Requires Team.ReadBasic.All application permission in addition to ChannelMessage.Read.All
+    const teams = await graphGet<{ value: Team[] }>("/teams?$top=10&$select=id,displayName");
+    const insights: string[] = [];
+    for (const team of (teams.value ?? []).slice(0, 5)) {
+      const channels = await graphGet<{ value: Channel[] }>(`/teams/${team.id}/channels?$select=id,displayName`);
+      for (const ch of (channels.value ?? [])) {
+        if (!GRANT_KEYWORDS.test(ch.displayName ?? "") && !GRANT_KEYWORDS.test(team.displayName ?? "")) continue;
+        const msgs = await graphGet<{ value: Message[] }>(
+          `/teams/${team.id}/channels/${ch.id}/messages?$top=10&$select=id,body,from,createdDateTime`
+        );
+        for (const msg of (msgs.value ?? []).slice(0, 5)) {
+          const text = (msg.body?.content ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+          if (text.length < 20) continue;
+          const who = msg.from?.user?.displayName ?? "Team";
+          insights.push(`[${team.displayName} · ${ch.displayName}] ${who}: ${text.slice(0, 120)}`);
+        }
+        if (insights.length >= 6) break;
+      }
+      if (insights.length >= 6) break;
+    }
+    return insights.slice(0, 6);
+  } catch (err) {
+    console.debug("[WorkIQ] Teams fetch skipped:", (err as Error).message?.slice(0, 80));
+    return [];
+  }
+}
+
+/** Pull recent grant-related emails from a user mailbox. */
+async function fetchGrantMail(): Promise<string[]> {
+  const upn = config.graphUserUpn;
+  if (!upn) return [];
+  try {
+    interface MailMsg { subject?: string; from?: { emailAddress?: { name?: string } }; receivedDateTime?: string; bodyPreview?: string }
+    // Note: $orderby cannot be combined with $search in Graph API (400 SearchWithOrderBy)
+    const data = await graphGet<{ value: MailMsg[] }>(
+      `/users/${encodeURIComponent(upn)}/messages?$search="grant"&$top=8&$select=subject,from,receivedDateTime,bodyPreview`
+    );
+    return (data.value ?? [])
+      .filter((m) => GRANT_KEYWORDS.test(m.subject ?? ""))
+      .map((m) => {
+        const from = m.from?.emailAddress?.name ?? "Unknown";
+        const when = m.receivedDateTime ? new Date(m.receivedDateTime).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+        return `Email from ${from}${when ? ` (${when})` : ""}: "${m.subject ?? ""}"`;
+      })
+      .slice(0, 5);
+  } catch (err) {
+    console.debug("[WorkIQ] Mail fetch skipped:", (err as Error).message?.slice(0, 80));
+    return [];
   }
 }
 
@@ -370,8 +467,20 @@ export async function getCityContext(forceRefresh = false): Promise<CityContext>
     context = localKbContext("Microsoft Graph is not configured. Set GRAPH_TENANT_ID, GRAPH_CLIENT_ID, and GRAPH_CLIENT_SECRET.");
   } else {
     try {
-      const { docs, siteUrl } = await loadSharePointDocuments();
-      context = await distillContext(docs, siteUrl);
+      // Run SharePoint doc load and live M365 signals in parallel for speed
+      const [{ docs, siteUrl }, calendarEvents, teamsInsights, mailSignals] = await Promise.all([
+        loadSharePointDocuments(),
+        fetchGrantCalendarEvents(),
+        fetchGrantTeamsMessages(),
+        fetchGrantMail(),
+      ]);
+      const base = await distillContext(docs, siteUrl);
+      context = {
+        ...base,
+        calendarEvents: calendarEvents.length ? calendarEvents : undefined,
+        teamsInsights: teamsInsights.length ? teamsInsights : undefined,
+        mailSignals: mailSignals.length ? mailSignals : undefined,
+      };
     } catch (err) {
       context = localKbContext((err as Error).message);
     }
@@ -386,5 +495,23 @@ export function formatCityContextForPrompt(context?: CityContext | null): string
   const projects = context.activeProjects.length
     ? context.activeProjects.map((p) => `- ${p.name}${p.budget ? ` (${p.budget})` : ""}${p.status ? ` — ${p.status}` : ""}`).join("\n")
     : "- No active projects extracted yet.";
-  return `## LIVE WORK IQ CITY CONTEXT (${context.source === "sharepoint" ? "Microsoft 365 SharePoint" : "local KB fallback"})\nPulled At: ${context.pulledAt}\nDocument Library: ${context.libraryName ?? "Unknown"}\nFiles Read: ${context.filesRead.slice(0, 12).join(", ") || "none"}\nPriority Themes: ${context.priorityThemes.join(", ") || "none extracted"}\nFunding Types: ${context.fundingTypes.join(", ") || "none extracted"}\nRisk Signals: ${context.riskSignals.join(", ") || "none extracted"}\nMatchable Grants: ${context.matchableGrants.join(", ") || "none extracted"}\nActive Projects:\n${projects}\nCity Narrative Signal: ${context.narrative || "No narrative extracted."}\n\nUse this Work IQ context to influence grant ranking, project matching, gap analysis, and narrative personalization. Still cite the retrieved municipal documents and say INSUFFICIENT EVIDENCE when a claim is not grounded.`;
+
+  const m365Source = context.source === "sharepoint" ? "Microsoft 365 SharePoint + Work IQ" : "local KB fallback";
+  const liveSignals: string[] = [];
+
+  if (context.calendarEvents?.length) {
+    liveSignals.push(`Upcoming Grant Calendar Events (next 90 days):\n${context.calendarEvents.map((e) => `  - ${e}`).join("\n")}`);
+  }
+  if (context.teamsInsights?.length) {
+    liveSignals.push(`Teams Grant Coordination Activity:\n${context.teamsInsights.map((t) => `  - ${t}`).join("\n")}`);
+  }
+  if (context.mailSignals?.length) {
+    liveSignals.push(`Recent Grant-Related Emails:\n${context.mailSignals.map((m) => `  - ${m}`).join("\n")}`);
+  }
+
+  const liveBlock = liveSignals.length
+    ? `\nLIVE MICROSOFT 365 SIGNALS (Work IQ):\n${liveSignals.join("\n\n")}`
+    : "";
+
+  return `## LIVE WORK IQ CITY CONTEXT (${m365Source})\nPulled At: ${context.pulledAt}\nDocument Library: ${context.libraryName ?? "Unknown"}\nFiles Read: ${context.filesRead.slice(0, 12).join(", ") || "none"}\nPriority Themes: ${context.priorityThemes.join(", ") || "none extracted"}\nFunding Types: ${context.fundingTypes.join(", ") || "none extracted"}\nRisk Signals: ${context.riskSignals.join(", ") || "none extracted"}\nMatchable Grants: ${context.matchableGrants.join(", ") || "none extracted"}\nActive Projects:\n${projects}${liveBlock}\nCity Narrative Signal: ${context.narrative || "No narrative extracted."}\n\nUse this Work IQ context to influence grant ranking, project matching, gap analysis, and narrative personalization. Still cite the retrieved municipal documents and say INSUFFICIENT EVIDENCE when a claim is not grounded.`;
 }

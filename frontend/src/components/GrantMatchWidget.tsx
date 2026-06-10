@@ -59,16 +59,22 @@ function MatchGauge({ score }: { score: number }) {
     return () => clearTimeout(timer);
   }, [score]);
 
+  const scoreLabel = score >= 70 ? "Strong match" : score >= 45 ? "Moderate match" : "Low match";
+  const gaugeId = `gauge-title-${score}`;
+
   return (
     <div className="gauge-wrapper">
-      <svg width="130" height="130" viewBox="0 0 130 130">
+      <svg width="130" height="130" viewBox="0 0 130 130"
+        role="img"
+        aria-labelledby={gaugeId}>
+        <title id={gaugeId}>{score}% match score — {scoreLabel}</title>
         <defs>
           <linearGradient id={`gaugeGrad-${score}`} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={color} stopOpacity="0.75" />
             <stop offset="100%" stopColor={color} stopOpacity="1" />
           </linearGradient>
         </defs>
-        <circle cx="65" cy="65" r={r} fill="none" stroke="#eef2f7" strokeWidth="11" />
+        <circle cx="65" cy="65" r={r} fill="none" stroke="#eef2f7" strokeWidth="11" aria-hidden="true" />
         <circle
           cx="65" cy="65" r={r}
           fill="none"
@@ -79,9 +85,10 @@ function MatchGauge({ score }: { score: number }) {
           strokeLinecap="round"
           transform="rotate(-90 65 65)"
           style={{ transition: "stroke-dashoffset 1.4s cubic-bezier(0.34,1.56,0.64,1)", filter: `drop-shadow(0 2px 6px ${color}55)` }}
+          aria-hidden="true"
         />
       </svg>
-      <div className="gauge-center">
+      <div className="gauge-center" aria-hidden="true">
         <span className="gauge-score" style={{ color }}>{animated}%</span>
         <span className="gauge-label">Match</span>
       </div>
@@ -101,11 +108,11 @@ export function GrantMatchWidget({ data, isRefined, refinementImprovements, refi
   const urgencyColors = { critical: "#ef4444", moderate: "#f59e0b", good: "#22c55e" };
 
   return (
-    <div className="grant-match-widget">
+    <div className="grant-match-widget" role="region" aria-label={`Grant match analysis for ${data.grantName}`}>
       {/* Header */}
       <div className="widget-header">
         <div className="widget-badge"><IconChart size={13} color="#3b82f6" style={{ verticalAlign: "middle", marginRight: 4 }} />Grant Analysis</div>
-        <div className="widget-title">{data.grantName}</div>
+        <h2 className="widget-title">{data.grantName}</h2>
         <div className="widget-agency">{data.agency}</div>
       </div>
 
@@ -173,15 +180,18 @@ export function GrantMatchWidget({ data, isRefined, refinementImprovements, refi
           <h4 className="section-title"><IconAlert size={13} color="#f59e0b" style={{ verticalAlign: "middle", marginRight: 4 }} />Eligibility Gaps ({data.gaps.length})</h4>
           <div className="gaps-list">
             {data.gaps.map((g, i) => (
-              <div key={i} className="gap-card" style={{ borderLeftColor: SEVERITY_COLORS[g.severity] }}>
+              <div key={i} className="gap-card" style={{ borderLeftColor: SEVERITY_COLORS[g.severity] }}
+                role="listitem"
+                aria-label={`${g.severity} severity gap: ${g.title}`}>
                 <div className="gap-header">
-                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: SEVERITY_COLORS[g.severity], display: "inline-block", flexShrink: 0 }} />
+                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: SEVERITY_COLORS[g.severity], display: "inline-block", flexShrink: 0 }} aria-hidden="true" />
                   <strong>{g.title}</strong>
-                  <span className="gap-badge" style={{ background: SEVERITY_COLORS[g.severity] + "22", color: SEVERITY_COLORS[g.severity] }}>
+                  <span className="gap-badge" style={{ background: SEVERITY_COLORS[g.severity] + "22", color: SEVERITY_COLORS[g.severity] }}
+                    aria-label={`${g.severity} severity`}>
                     {g.severity}
                   </span>
                 </div>
-                <p className="gap-suggestion"><span style={{ color: "#3b82f6" }}>&#x25B8;</span> {g.suggestion}</p>
+                <p className="gap-suggestion"><span style={{ color: "#3b82f6" }} aria-hidden="true">&#x25B8;</span> {g.suggestion}</p>
               </div>
             ))}
           </div>

@@ -87,6 +87,25 @@ function ScoreGauge({ score }: { score: number }) {
 }
 
 export function RedTeamWidget({ data, isStreaming = false }: Props) {
+  // Honest unavailable state — no fabricated scores shown
+  if (data.unavailable) {
+    return (
+      <div className="redteam-widget">
+        <div className="rt-header">
+          <div className="rt-badge">
+            <span className="rt-badge-icon">⚖</span>
+            Red Team Review
+          </div>
+        </div>
+        <div style={{ padding: "24px 16px", textAlign: "center", color: "#6b7280" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "8px" }}>⚠️</div>
+          <strong style={{ display: "block", color: "#374151", marginBottom: "4px" }}>Red Team Agent Unavailable</strong>
+          <span style={{ fontSize: "0.85rem" }}>LLM service unreachable — no fabricated review shown.<br />Re-run when service recovers.</span>
+        </div>
+      </div>
+    );
+  }
+
   const verdictClass =
     data.reviewerVerdict.toLowerCase().startsWith("approve") && !data.reviewerVerdict.toLowerCase().includes("condition")
       ? "verdict--approve"

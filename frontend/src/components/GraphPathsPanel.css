@@ -1,281 +1,334 @@
-.graph-paths-panel {
+/* ═══════════════════════════════════════════════════════
+   GraphPathsPanel — inline GraphRAG evidence viewer
+   Matches CivicGrant IQ design language:
+     navy #1a3a5c  blue #1a6fba  light-blue bg #e8f1fb
+     border #c8dff5  text #111827  secondary #374151
+═══════════════════════════════════════════════════════ */
+
+.gpp {
   margin-top: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background: #f8fafc;
+  border: 1px solid #c8dff5;
+  border-radius: 10px;
+  background: #ffffff;
   overflow: hidden;
-  font-size: 0.8rem;
+  font-family: inherit;
 }
 
-.graph-paths-panel__toggle {
+/* When embedded in the popout, remove outer chrome */
+.gpp--embedded {
+  margin-top: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.gpp-body--embedded {
+  border-top: none;
+}
+
+/* ── Toggle bar (collapsed state) ── */
+.gpp-toggle {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.75rem;
-  background: none;
+  gap: 8px;
+  padding: 9px 12px;
+  background: #f5f9ff;
   border: none;
   cursor: pointer;
   text-align: left;
-  color: #475569;
-  font-size: 0.8rem;
-  font-weight: 500;
+  transition: background 0.12s;
 }
+.gpp-toggle:hover { background: #e8f1fb; }
 
-.graph-paths-panel__toggle:hover {
-  background: #f1f5f9;
-}
-
-.graph-paths-panel__icon {
-  color: #6366f1;
+.gpp-toggle-icon {
+  color: #1a6fba;
   flex-shrink: 0;
   display: flex;
   align-items: center;
 }
 
-.graph-paths-panel__badges {
-  display: flex;
-  gap: 0.25rem;
-  margin-left: auto;
-}
-
-.graph-path-badge {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.1rem 0.35rem;
-  border-radius: 99px;
-}
-
-.graph-path-badge.graph-path--confirmed { background: #dcfce7; color: #16a34a; }
-.graph-path-badge.graph-path--likely    { background: #fef9c3; color: #ca8a04; }
-.graph-path-badge.graph-path--possible  { background: #fee2e2; color: #dc2626; }
-
-.graph-paths-panel__chevron {
-  font-size: 1rem;
-  color: #94a3b8;
-  transition: transform 0.15s;
-}
-
-.graph-paths-panel__chevron--open {
-  transform: rotate(90deg);
-}
-
-.graph-paths-panel__body {
-  padding: 0.5rem 0.75rem 0.75rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.graph-paths-panel__desc {
-  color: #64748b;
-  font-size: 0.75rem;
-  margin: 0 0 0.6rem;
-  line-height: 1.4;
-}
-
-/* Individual path */
-.graph-path {
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-  overflow: hidden;
-}
-
-.graph-path.graph-path--confirmed { border-left: 3px solid #16a34a; }
-.graph-path.graph-path--likely    { border-left: 3px solid #ca8a04; }
-.graph-path.graph-path--possible  { border-left: 3px solid #dc2626; }
-
-.graph-path__header {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.6rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
+.gpp-toggle-label {
   font-size: 0.78rem;
+  font-weight: 600;
+  color: #1a3a5c;
+  flex: 1;
 }
 
-.graph-path__header:hover {
-  background: #f8fafc;
+.gpp-toggle-badges {
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
-.graph-path__confidence-badge {
-  font-size: 0.67rem;
-  font-weight: 700;
-  padding: 0.1rem 0.3rem;
-  border-radius: 4px;
+.gpp-chevron {
+  font-size: 1rem;
+  color: #9ca3af;
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+.gpp-chevron--open { transform: rotate(90deg); }
+
+/* ── Confidence badges ── */
+.gpp-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 99px;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+.gpp-badge--confirmed { background: #dcfce7; color: #16a34a; border-color: #bbf7d0; }
+.gpp-badge--likely    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.gpp-badge--possible  { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+
+/* ── Body (expanded) ── */
+.gpp-body {
+  border-top: 1px solid #c8dff5;
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gpp-subtitle {
+  font-size: 0.74rem;
+  color: #4b6a8a;
+  line-height: 1.45;
+  margin: 0 0 2px;
+}
+
+/* ── Path card ── */
+.gpp-path {
+  border: 1px solid #c8dff5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gpp-path-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  background: #f5f9ff;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+.gpp-path-header:hover { background: #e8f1fb; }
+
+.gpp-path-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
-.graph-path__confidence-badge--confirmed { background: #dcfce7; color: #15803d; }
-.graph-path__confidence-badge--likely    { background: #fef9c3; color: #a16207; }
-.graph-path__confidence-badge--possible  { background: #fee2e2; color: #b91c1c; }
-
-.graph-path__grant-label {
-  font-weight: 500;
-  color: #1e293b;
+.gpp-path-name {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #1a3a5c;
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.graph-path__score {
-  font-weight: 700;
-  color: #475569;
-  font-size: 0.75rem;
+.gpp-path-score {
+  font-size: 0.78rem;
+  font-weight: 800;
   flex-shrink: 0;
 }
 
-.graph-path__hop-count {
-  color: #94a3b8;
-  font-size: 0.7rem;
+.gpp-path-hops {
+  font-size: 0.68rem;
+  color: #7da5c8;
   flex-shrink: 0;
 }
 
-.graph-path__chevron {
-  color: #94a3b8;
-  font-size: 1rem;
-  transition: transform 0.15s;
-  flex-shrink: 0;
+/* Score bar under path header */
+.gpp-path-bar-row {
+  padding: 0 10px 4px;
+  background: #f5f9ff;
+  border-bottom: 1px solid #c8dff5;
+}
+.gpp-path-bar-track {
+  height: 3px;
+  background: #dce9f5;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.gpp-path-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.9s cubic-bezier(0.34, 1.2, 0.64, 1);
 }
 
-.graph-path__chevron--open {
-  transform: rotate(90deg);
-}
-
-/* Hops */
-.graph-path__hops {
-  padding: 0.4rem 0.6rem 0.5rem;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+/* ── Hop rows ── */
+.gpp-hops {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  padding: 4px 0;
+  background: #ffffff;
 }
 
-.graph-hop {
-  border-left: 2px solid #e2e8f0;
-  padding-left: 0.5rem;
+.gpp-hop {
+  border-bottom: 1px solid #eef4fb;
 }
+.gpp-hop:last-child { border-bottom: none; }
 
-.graph-hop__connector {
+.gpp-hop-row {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 6px;
+  padding: 7px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s;
   flex-wrap: wrap;
-  color: #334155;
-  font-size: 0.75rem;
 }
+.gpp-hop-row:hover { background: #f5f9ff; }
+.gpp-hop--open .gpp-hop-row { background: #eef4fb; }
 
-.graph-hop__from {
-  font-weight: 600;
-  color: #6366f1;
-  font-size: 0.72rem;
-}
-
-.graph-hop__to {
-  font-weight: 600;
-  color: #0f766e;
-  font-size: 0.72rem;
-}
-
-.graph-hop__arrow {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-  color: #94a3b8;
-}
-
-.graph-hop__rel {
-  font-size: 0.67rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 500;
-  color: #94a3b8;
-}
-
-.graph-hop__arrow-svg {
-  color: #94a3b8;
-}
-
-.graph-hop__evidence {
-  margin-top: 0.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.graph-hop__evidence-text {
-  color: #475569;
-  font-size: 0.71rem;
-  line-height: 1.4;
-  font-style: italic;
-}
-
-.graph-hop__source {
-  color: #94a3b8;
-  font-size: 0.67rem;
-  font-weight: 500;
-}
-
-/* ── Source pill — always-visible compact citation ── */
-.graph-hop__source-pill {
+.gpp-hop-num {
   font-size: 0.6rem;
-  font-weight: 500;
-  color: #94a3b8;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 99px;
-  padding: 0.05rem 0.4rem;
-  margin-left: auto;
+  font-weight: 700;
+  color: #7da5c8;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.gpp-hop-rel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #1a6fba;
+  background: #e8f1fb;
+  border: 1px solid #c8dff5;
+  border-radius: 6px;
+  padding: 2px 7px;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-/* ── Clickable hop row ── */
-.graph-hop--clickable {
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.12s;
-  outline: none;
+.gpp-hop-arrow {
+  font-size: 0.7rem;
+  color: #7da5c8;
+  flex-shrink: 0;
 }
 
-.graph-hop--clickable:hover {
-  background: #f1f5f9;
+.gpp-hop-source {
+  font-size: 0.59rem;
+  font-weight: 500;
+  color: #7da5c8;
+  background: #f5f9ff;
+  border: 1px solid #c8dff5;
+  border-radius: 99px;
+  padding: 1px 6px;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
 
-.graph-hop--clickable:focus-visible {
-  box-shadow: 0 0 0 2px rgba(99,102,241,0.35);
+.gpp-hop-toggle {
+  font-size: 0.6rem;
+  color: #7da5c8;
+  flex-shrink: 0;
 }
 
-.graph-hop--open {
-  background: #f8fafc;
+/* Evidence reveal */
+.gpp-hop-evidence {
+  padding: 6px 12px 8px 32px;
+  background: #eef4fb;
+  border-top: 1px solid #c8dff5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gpp-hop-evidence-quote {
+  font-size: 0.72rem;
+  color: #1a3a5c;
+  line-height: 1.55;
+  padding-left: 8px;
+  border-left: 2px solid #1a6fba;
+  display: block;
+}
+.gpp-hop-evidence-src {
+  font-size: 0.64rem;
+  color: #1a6fba;
+  font-weight: 500;
 }
 
-/* ── Show-more button ── */
-.graph-hops-show-more {
+/* ── Node pills ── */
+.gpp-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 5px;
+  border-radius: 99px;
+  border: 1px solid;
+  font-size: 0.67rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gpp-node-pip {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.gpp-node--city    { background: rgba(26,111,186,0.08);  border-color: rgba(26,111,186,0.3);  color: #1a3a5c; }
+.gpp-node--city    .gpp-node-pip { background: #1a6fba; }
+.gpp-node--project { background: rgba(20,184,166,0.08);  border-color: rgba(20,184,166,0.3);  color: #0f5c55; }
+.gpp-node--project .gpp-node-pip { background: #14b8a6; }
+.gpp-node--grant   { background: rgba(245,158,11,0.09);  border-color: rgba(245,158,11,0.3);  color: #78350f; }
+.gpp-node--grant   .gpp-node-pip { background: #f59e0b; }
+.gpp-node--metric  { background: rgba(99,102,241,0.08);  border-color: rgba(99,102,241,0.3);  color: #3730a3; }
+.gpp-node--metric  .gpp-node-pip { background: #6366f1; }
+
+/* Show more */
+.gpp-show-more {
+  margin: 4px 10px 6px;
+  padding: 5px 12px;
   background: none;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed #c8dff5;
   border-radius: 6px;
-  color: #64748b;
   font-size: 0.7rem;
   font-weight: 600;
-  padding: 0.3rem 0.75rem;
+  color: #4b6a8a;
   cursor: pointer;
-  width: 100%;
+  width: calc(100% - 20px);
   text-align: center;
   transition: all 0.12s;
-  margin-top: 0.15rem;
   font-family: inherit;
 }
+.gpp-show-more:hover {
+  border-color: #1a6fba;
+  color: #1a6fba;
+  background: #e8f1fb;
+}
 
-.graph-hops-show-more:hover {
-  border-color: #6366f1;
-  color: #6366f1;
-  background: #f5f3ff;
+/* Legend */
+.gpp-legend {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 6px 10px 10px;
+  border-top: 1px solid #eef4fb;
+  margin-top: 2px;
+  background: #f5f9ff;
 }

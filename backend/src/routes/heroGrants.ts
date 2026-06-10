@@ -111,13 +111,37 @@ async function searchTheme(keyword: string): Promise<SearchHit[]> {
  * Grants.gov relevance ranking is noisy (unrelated grants sometimes rank high),
  * so pick the hit with the best keyword overlap. Tie-break toward grants that
  * have a real future close date so the card can show a live deadline.
+ * Also rejects grants that are clearly not for municipal governments
+ * (e.g. motor carrier safety, tribal-only, Indian health, commercial programs).
  */
+const MUNICIPAL_EXCLUSION_PATTERNS = [
+  /motor.?carrier/i,
+  /commercial.?vehicle/i,
+  /trucking/i,
+  /tribal\b/i,
+  /\btribe\b/i,
+  /indian.?health/i,
+  /\bnative.?american\b/i,
+  /bureau of indian/i,
+  /veterans.?affair/i,
+  /\bVA\b.{0,10}medical/i,
+  /coast.?guard/i,
+  /military/i,
+  /department of defense/i,
+];
+
+function isMunicipallyRelevant(title: string, agency: string): boolean {
+  const combined = `${title} ${agency}`;
+  return !MUNICIPAL_EXCLUSION_PATTERNS.some((re) => re.test(combined));
+}
+
 function pickBestHit(hits: SearchHit[], keyword: string): SearchHit | null {
   if (hits.length === 0) return null;
   let best: SearchHit | null = null;
   let bestScore = -1;
   for (const h of hits) {
     if (!h.title) continue;
+    if (!isMunicipallyRelevant(h.title, h.agency ?? h.agencyCode ?? "")) continue;
     const overlap = relevanceScore(keyword, h.title, h.agency ?? h.agencyCode ?? "");
     const hasDate = toIsoDate(h.closeDate) ? 4 : 0;
     const score = overlap + hasDate;
@@ -183,6 +207,7 @@ async function aggregateAvailableFunding(
     for (const h of hitLists[i]) {
       const id = h.id != null ? String(h.id) : "";
       if (!id || seen.has(id) || !h.title) continue;
+      if (!isMunicipallyRelevant(h.title, h.agency ?? h.agencyCode ?? "")) continue;
       const overlap = relevanceScore(keyword, h.title, h.agency ?? h.agencyCode ?? "");
       const hasFutureDate = (daysUntil(toIsoDate(h.closeDate)) ?? 0) > 0;
       // Only count grants that genuinely match a theme and are still open.

@@ -19,11 +19,22 @@ const INDEX_NAME = "civicgrant-index";
 const DOCS_DIR = path.join(__dirname, "docs");
 
 const DOCS = [
-  { id: "doc1", filename: "BG-CityProfile-2026.txt",                               title: "Buffalo Grove City Profile 2026" },
-  { id: "doc2", filename: "BG-CapitalImprovementPlan-2026-2030.txt",               title: "Buffalo Grove Capital Improvement Plan 2026-2030" },
-  { id: "doc3", filename: "BG-PastApplication-BRIC-BuffaloCreek-2025.txt",         title: "BG Past Application FEMA BRIC Buffalo Creek 2025" },
-  { id: "doc4", filename: "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt",  title: "BG Past Application Northwood Stormwater SMC 2024" },
-  { id: "doc5", filename: "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt",      title: "BG Past Application RAISE Aptakisic IL-83 2024" },
+  // ── Buffalo Grove primary documents ───────────────────────────────────────
+  { id: "doc1",  filename: "BG-CityProfile-2026.txt",                               title: "Buffalo Grove City Profile 2026" },
+  { id: "doc2",  filename: "BG-CapitalImprovementPlan-2026-2030.txt",               title: "Buffalo Grove Capital Improvement Plan 2026-2030" },
+  { id: "doc3",  filename: "BG-PastApplication-BRIC-BuffaloCreek-2025.txt",         title: "BG Past Application FEMA BRIC Buffalo Creek 2025" },
+  { id: "doc4",  filename: "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt",  title: "BG Past Application Northwood Stormwater SMC 2024" },
+  { id: "doc5",  filename: "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt",      title: "BG Past Application RAISE Aptakisic IL-83 2024" },
+  // ── Universal any-city intelligence ───────────────────────────────────────
+  { id: "doc6",  filename: "UNIVERSAL-CityGrantFramework-2026.txt",                 title: "Universal Municipal Grant Eligibility Framework 2026" },
+  { id: "doc7",  filename: "FEDERAL-MajorGrantPrograms-2026.txt",                   title: "Federal Grant Programs Master Index 2026" },
+  { id: "doc8",  filename: "SMALLCITY-RURAL-GrantGuide-2026.txt",                   title: "Small City & Rural Community Grant Guide 2026" },
+  { id: "doc9",  filename: "METRO-SUBURBAN-GrantLandscape-2026.txt",                title: "Metropolitan & Suburban City Grant Landscape 2026" },
+  // ── Hackathon-winning depth: scoring, timing, equity, stacking ────────────
+  { id: "doc10", filename: "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt",  title: "Federal Grant Scoring Rubrics & Winning Criteria 2026" },
+  { id: "doc11", filename: "GrantCalendar-FY2026-Deadlines.txt",                    title: "Federal Grant Calendar FY2026 — Deadlines & Open Opportunities" },
+  { id: "doc12", filename: "Equity-Justice40-GrantFraming-2026.txt",                title: "Equity, Justice40 & Environmental Justice Grant Framing 2026" },
+  { id: "doc13", filename: "MultiGrant-Stacking-Strategies.txt",                    title: "Multi-Grant Stacking Strategies for Municipal Projects" },
 ];
 
 async function searchFetch(path, method = "GET", body) {

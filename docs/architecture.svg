@@ -1,0 +1,288 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1010" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#004E8C"/>
+      <stop offset="0.55" stop-color="#0078D4"/>
+      <stop offset="1" stop-color="#6E40C9"/>
+    </linearGradient>
+    <linearGradient id="hub" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0078D4"/>
+      <stop offset="1" stop-color="#6E40C9"/>
+    </linearGradient>
+    <path id="f-analyze" d="M360,300 C460,330 500,390 540,432" fill="none"/>
+    <path id="f-ground" d="M668,440 C720,390 770,340 840,300" fill="none"/>
+    <path id="f-guard" d="M360,495 L506,505" fill="none"/>
+    <path id="f-ground2" d="M694,505 L840,512" fill="none"/>
+    <path id="f-fallback" d="M360,755 C450,700 500,640 545,585" fill="none"/>
+    <path id="f-spawn" d="M600,599 L600,733" fill="none"/>
+    <path id="f-know" d="M655,585 C720,650 770,700 840,755" fill="none"/>
+  </defs>
+  <style>
+    .flow{fill:none;stroke-width:2.5;stroke-dasharray:7 7;animation:dash 0.9s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-14}}
+    .card{fill:#ffffff;stroke:#E1DFDD;stroke-width:1;rx:10}
+    .ct{font-size:14px;font-weight:700;fill:#201F1E}
+    .cl{font-size:11.5px;fill:#484644}
+    .statn{font-size:24px;font-weight:800;fill:#0078D4}
+    .statl{font-size:10px;fill:#605E5C;letter-spacing:.4px}
+    .legend{font-size:11px;fill:#484644}
+    .chiptxt{font-size:9.5px;fill:#323130}
+  </style>
+
+  <!-- background -->
+  <rect width="1200" height="1010" fill="#F3F2F1"/>
+
+  <!-- header -->
+  <rect width="1200" height="96" fill="url(#hdr)"/>
+  <text x="600" y="42" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">🏛️ CivicGrant IQ — System Architecture</text>
+  <text x="600" y="70" text-anchor="middle" font-size="13" fill="#DCE9F7">Agents League @ AI Skills Fest 2026 · Reasoning Agents Track · Microsoft Foundry · Foundry IQ + Work IQ</text>
+
+  <!-- stats -->
+  <g>
+    <rect x="40" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <text x="128" y="138" text-anchor="middle" class="statn">5</text>
+    <text x="128" y="158" text-anchor="middle" class="statl">SPECIALIST AGENTS</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <rect x="228" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <text x="316" y="138" text-anchor="middle" class="statn">6</text>
+    <text x="316" y="158" text-anchor="middle" class="statl">REASONING STEPS</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.15s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <rect x="416" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <text x="504" y="138" text-anchor="middle" class="statn">17</text>
+    <text x="504" y="158" text-anchor="middle" class="statl">SSE EVENT TYPES</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.3s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <rect x="604" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <text x="692" y="138" text-anchor="middle" class="statn">17</text>
+    <text x="692" y="158" text-anchor="middle" class="statl">GUARDRAIL RULES</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.45s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <rect x="792" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <text x="880" y="138" text-anchor="middle" class="statn">3</text>
+    <text x="880" y="158" text-anchor="middle" class="statl">FALLBACK TIERS · NEVER DOWN</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.6s" fill="freeze"/>
+  </g>
+  <g opacity="0">
+    <rect x="980" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <text x="1068" y="138" text-anchor="middle" class="statn">49</text>
+    <text x="1068" y="158" text-anchor="middle" class="statl">TYPED GRAPH EDGES · 29 ENTITIES</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.75s" fill="freeze"/>
+  </g>
+
+  <!-- legend -->
+  <g>
+    <line x1="110" y1="190" x2="140" y2="190" class="flow" stroke="#0078D4"/>
+    <text x="148" y="194" class="legend">Analyze</text>
+    <line x1="330" y1="190" x2="360" y2="190" class="flow" stroke="#6E40C9"/>
+    <text x="368" y="194" class="legend">Spawn agents</text>
+    <line x1="560" y1="190" x2="590" y2="190" class="flow" stroke="#00B7C3"/>
+    <text x="598" y="194" class="legend">Ground / retrieve</text>
+    <line x1="790" y1="190" x2="820" y2="190" class="flow" stroke="#C19C00"/>
+    <text x="828" y="194" class="legend">Fallback</text>
+    <line x1="970" y1="190" x2="1000" y2="190" class="flow" stroke="#107C10"/>
+    <text x="1008" y="194" class="legend">Guard &amp; trace</text>
+  </g>
+
+  <!-- flow lines -->
+  <use href="#f-analyze" class="flow" stroke="#0078D4"/>
+  <use href="#f-ground" class="flow" stroke="#00B7C3"/>
+  <use href="#f-guard" class="flow" stroke="#107C10"/>
+  <use href="#f-ground2" class="flow" stroke="#00B7C3"/>
+  <use href="#f-fallback" class="flow" stroke="#C19C00"/>
+  <use href="#f-spawn" class="flow" stroke="#6E40C9"/>
+  <use href="#f-know" class="flow" stroke="#00B7C3"/>
+
+  <!-- travelling dots -->
+  <circle r="5" fill="#0078D4"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#f-analyze"/></animateMotion></circle>
+  <circle r="5" fill="#00B7C3"><animateMotion dur="2.6s" begin="0.6s" repeatCount="indefinite"><mpath href="#f-ground"/></animateMotion></circle>
+  <circle r="5" fill="#107C10"><animateMotion dur="2.2s" begin="0.3s" repeatCount="indefinite"><mpath href="#f-guard"/></animateMotion></circle>
+  <circle r="5" fill="#00B7C3"><animateMotion dur="2.2s" begin="1.1s" repeatCount="indefinite"><mpath href="#f-ground2"/></animateMotion></circle>
+  <circle r="5" fill="#C19C00"><animateMotion dur="2.8s" begin="0.9s" repeatCount="indefinite"><mpath href="#f-fallback"/></animateMotion></circle>
+  <circle r="5" fill="#6E40C9"><animateMotion dur="2s" begin="0.4s" repeatCount="indefinite"><mpath href="#f-spawn"/></animateMotion></circle>
+  <circle r="5" fill="#00B7C3"><animateMotion dur="2.8s" begin="1.5s" repeatCount="indefinite"><mpath href="#f-know"/></animateMotion></circle>
+
+  <!-- hub -->
+  <circle cx="600" cy="505" r="92" fill="none" stroke="#0078D4" stroke-width="2" opacity="0.5">
+    <animate attributeName="r" values="92;128" dur="2.4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0" dur="2.4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="505" r="92" fill="none" stroke="#6E40C9" stroke-width="2" opacity="0.5">
+    <animate attributeName="r" values="92;128" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="505" r="92" fill="url(#hub)"/>
+  <text x="600" y="472" text-anchor="middle" font-size="17" font-weight="800" fill="#fff">CivicGrant IQ</text>
+  <text x="600" y="494" text-anchor="middle" font-size="11.5" fill="#E8F1FB">Express + TypeScript</text>
+  <text x="600" y="512" text-anchor="middle" font-size="11.5" fill="#E8F1FB">POST /api/chat · SSE</text>
+  <text x="600" y="530" text-anchor="middle" font-size="11.5" fill="#E8F1FB">6-step reasoning chain</text>
+  <text x="600" y="548" text-anchor="middle" font-size="11.5" fill="#E8F1FB">GraphRAG evidence paths</text>
+
+  <!-- card: frontend -->
+  <g>
+    <rect x="55" y="225" width="305" height="130" rx="10" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="55" y="225" width="6" height="130" rx="3" fill="#61DAFB"/>
+    <text x="75" y="251" class="ct">🖥️ React 18 Frontend</text>
+    <text x="75" y="274" class="cl">Azure Static Web Apps · Vite · TypeScript</text>
+    <text x="75" y="294" class="cl">ChatInterface — streams 17 SSE event types</text>
+    <text x="75" y="314" class="cl">GraphPaths evidence-chain visualization</text>
+    <text x="75" y="334" class="cl">Match · Red Team · Competitor widgets</text>
+  </g>
+
+  <!-- card: azure services -->
+  <g>
+    <rect x="840" y="215" width="305" height="150" rx="10" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="840" y="215" width="6" height="150" rx="3" fill="#0078D4"/>
+    <text x="860" y="241" class="ct">☁️ Azure AI Services — eastus2</text>
+    <text x="860" y="264" class="cl">Microsoft Foundry + Foundry IQ</text>
+    <text x="860" y="284" class="cl">Azure OpenAI · gpt-4o-mini</text>
+    <text x="860" y="304" class="cl">Azure AI Search (KB fallback)</text>
+    <text x="860" y="324" class="cl">Microsoft Graph (Work IQ)</text>
+    <text x="860" y="344" class="cl">App Insights + OpenTelemetry</text>
+  </g>
+
+  <!-- card: guardrails -->
+  <g>
+    <rect x="55" y="435" width="305" height="120" rx="10" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="55" y="435" width="6" height="120" rx="3" fill="#107C10"/>
+    <text x="75" y="461" class="ct">🛡️ 17-Rule Guardrails</text>
+    <text x="75" y="484" class="cl">G01–G09 input — BLOCK pre-LLM</text>
+    <text x="75" y="504" class="cl">SSN / injection / DoS detection</text>
+    <text x="75" y="524" class="cl">G10–G17 output — reasoning completeness,</text>
+    <text x="75" y="542" class="cl">score range, citation grounding</text>
+  </g>
+
+  <!-- card: graphrag -->
+  <g>
+    <rect x="840" y="445" width="305" height="140" rx="10" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="840" y="445" width="6" height="140" rx="3" fill="#6E40C9"/>
+    <text x="860" y="471" class="ct">🔗 GraphRAG Engine</text>
+    <text x="860" y="494" class="cl">29 typed entities · 49 weighted edges</text>
+    <text x="860" y="514" class="cl">Multi-hop BFS evidence paths</text>
+    <text x="860" y="534" class="cl">Per-hop source citations</text>
+    <text x="860" y="554" class="cl">CONFIRMED ≥0.85 · LIKELY ≥0.65</text>
+    <text x="860" y="574" class="cl">Graph-first, LLM-second</text>
+  </g>
+
+  <!-- card: fallback -->
+  <g>
+    <rect x="55" y="700" width="305" height="125" rx="10" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="55" y="700" width="6" height="125" rx="3" fill="#C19C00"/>
+    <text x="75" y="726" class="ct">♻️ 3-Tier Never-Down Fallback</text>
+    <circle cx="82" cy="746" r="4" fill="#107C10"><animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite"/></circle>
+    <text x="94" y="750" class="cl">Tier 1 — Foundry Assistants API</text>
+    <circle cx="82" cy="770" r="4" fill="#C19C00"><animate attributeName="opacity" values="1;0.3;1" dur="1.6s" begin="0.5s" repeatCount="indefinite"/></circle>
+    <text x="94" y="774" class="cl">Tier 2 — Chat Completions + AI Search</text>
+    <circle cx="82" cy="794" r="4" fill="#D13438"><animate attributeName="opacity" values="1;0.3;1" dur="1.6s" begin="1s" repeatCount="indefinite"/></circle>
+    <text x="94" y="798" class="cl">Tier 3 — Deterministic mock engine</text>
+  </g>
+
+  <!-- card: fleet -->
+  <g>
+    <rect x="447" y="735" width="306" height="125" rx="10" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="447" y="735" width="6" height="125" rx="3" fill="#6E40C9"/>
+    <text x="467" y="761" class="ct">🤖 Five-Agent Fleet</text>
+    <circle cx="474" cy="781" r="3.5" fill="#6E40C9"><animate attributeName="opacity" values="1;0.2;1" dur="1.4s" repeatCount="indefinite"/></circle>
+    <text x="486" y="785" class="cl">Main 6-step analyst (GraphRAG)</text>
+    <circle cx="474" cy="803" r="3.5" fill="#6E40C9"><animate attributeName="opacity" values="1;0.2;1" dur="1.4s" begin="0.35s" repeatCount="indefinite"/></circle>
+    <text x="486" y="807" class="cl">Red Team GS-14 · gate: score &gt; 55%</text>
+    <circle cx="474" cy="825" r="3.5" fill="#6E40C9"><animate attributeName="opacity" values="1;0.2;1" dur="1.4s" begin="0.7s" repeatCount="indefinite"/></circle>
+    <text x="486" y="829" class="cl">Competitive Intel · Portfolio Scan ·</text>
+    <text x="486" y="847" class="cl">Narrative Refinement (critic → actor)</text>
+  </g>
+
+  <!-- card: knowledge -->
+  <g>
+    <rect x="840" y="700" width="305" height="125" rx="10" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="840" y="700" width="6" height="125" rx="3" fill="#00B7C3"/>
+    <text x="860" y="726" class="ct">📂 Knowledge Sources</text>
+    <text x="860" y="749" class="cl">SharePoint via Work IQ (auto-load)</text>
+    <text x="860" y="769" class="cl">PDF / DOCX extraction + LLM distillation</text>
+    <text x="860" y="789" class="cl">Local municipal KB — infra/docs/</text>
+    <text x="860" y="809" class="cl">grants.gov live feed</text>
+  </g>
+
+  <!-- the loop -->
+  <text x="600" y="895" text-anchor="middle" font-size="12" font-weight="700" fill="#605E5C" letter-spacing="1.5">THE LOOP — EVERY REQUEST</text>
+  <g>
+    <rect x="40" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="40" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="0s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="99" y="925" text-anchor="middle" class="chiptxt" font-weight="700">1 · Paste NOFO</text>
+    <text x="99" y="941" text-anchor="middle" class="chiptxt">user input</text>
+  </g>
+  <g>
+    <rect x="165" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="165" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="1.4s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="224" y="925" text-anchor="middle" class="chiptxt" font-weight="700">2 · Guardrails</text>
+    <text x="224" y="941" text-anchor="middle" class="chiptxt">G01–G09 input</text>
+  </g>
+  <g>
+    <rect x="290" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="290" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="2.8s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="349" y="925" text-anchor="middle" class="chiptxt" font-weight="700">3 · 6-step chain</text>
+    <text x="349" y="941" text-anchor="middle" class="chiptxt">GraphRAG + Work IQ</text>
+  </g>
+  <g>
+    <rect x="415" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="415" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="4.2s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="474" y="925" text-anchor="middle" class="chiptxt" font-weight="700">4 · Re-query KB</text>
+    <text x="474" y="941" text-anchor="middle" class="chiptxt">if &lt; 2 sources</text>
+  </g>
+  <g>
+    <rect x="540" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="540" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="5.6s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="599" y="925" text-anchor="middle" class="chiptxt" font-weight="700">5 · Spawn agents</text>
+    <text x="599" y="941" text-anchor="middle" class="chiptxt">Red Team + Intel &gt; 55%</text>
+  </g>
+  <g>
+    <rect x="665" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="665" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="7s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="724" y="925" text-anchor="middle" class="chiptxt" font-weight="700">6 · Refine</text>
+    <text x="724" y="941" text-anchor="middle" class="chiptxt">narrative synthesis</text>
+  </g>
+  <g>
+    <rect x="790" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="790" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="8.4s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="849" y="925" text-anchor="middle" class="chiptxt" font-weight="700">7 · Stream SSE</text>
+    <text x="849" y="941" text-anchor="middle" class="chiptxt">17 event types</text>
+  </g>
+  <g>
+    <rect x="915" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="915" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="9.8s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="974" y="925" text-anchor="middle" class="chiptxt" font-weight="700">8 · Output guard</text>
+    <text x="974" y="941" text-anchor="middle" class="chiptxt">G10–G17</text>
+  </g>
+  <g>
+    <rect x="1040" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
+    <rect x="1040" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
+      <animate attributeName="opacity" dur="12.6s" begin="11.2s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
+    </rect>
+    <text x="1099" y="925" text-anchor="middle" class="chiptxt" font-weight="700">9 · Trace</text>
+    <text x="1099" y="941" text-anchor="middle" class="chiptxt">App Insights · OTel</text>
+  </g>
+
+  <!-- footer -->
+  <rect y="970" width="1200" height="40" fill="#201F1E"/>
+  <text x="600" y="995" text-anchor="middle" font-size="12" fill="#C8C6C4">Live demo: proud-field-00978990f.7.azurestaticapps.net · Source: github.com/JonEricEubanks/CivicGrant-IQ · Built for Best Overall Agent</text>
+</svg>
