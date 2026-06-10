@@ -2225,7 +2225,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                     </button>
                   </div>
                   <p className="hero-desc">
-                    Analyzes your eligibility in 6 steps, scores the match, closes gaps, and generates a complete application package — powered by Microsoft Azure Foundry.
+                    Combines Work IQ signals from meetings, emails, Teams, and SharePoint with Foundry-grounded grant intelligence to score fit, close gaps, and generate a complete application strategy.
                   </p>
                   <div className="hero-safety-notice">
                     <span className="hero-safety-icon">🛡</span>
@@ -2233,6 +2233,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   </div>
                   <div className="hero-trust-strip" aria-label="System trust indicators">
                     <span className="hero-trust-item"><IconSparkle size={13} aria-hidden="true" /> 5 specialist agents</span>
+                    <span className="hero-trust-dot" aria-hidden="true" />
+                    <span className="hero-trust-item"><IconBuilding size={13} aria-hidden="true" /> Work IQ: meetings, emails, Teams, SharePoint</span>
                     <span className="hero-trust-dot" aria-hidden="true" />
                     <span className="hero-trust-item"><IconSearch size={13} aria-hidden="true" /> Grounded in Foundry IQ</span>
                     <span className="hero-trust-dot" aria-hidden="true" />
@@ -2682,7 +2684,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   value={input}
                   onChange={(e) => { setInput(e.target.value); if (!e.target.value.trim()) setFetchedUrl(null); }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask about a grant, paste a URL or announcement text, or ask 'what grants does Buffalo Grove qualify for?'"
+                  placeholder="Ask about a grant, or ask to use meetings/emails/Teams + Foundry docs to prioritize your next applications"
                   aria-label="Grant analysis prompt. Press Enter to send, Shift+Enter for newline."
                   rows={1}
                   disabled={isLoading}
@@ -2716,7 +2718,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   aria-label="Attach Work IQ files from SharePoint"
                   onClick={() => { setAttachPickerTab("all"); setShowAttachPicker(true); setAttachSearch(""); }}
                 >
-                  Work IQ Files
+                  Work IQ Signals
                 </button>
                 <button
                   className="source-chip source-chip--foundry"
@@ -2728,7 +2730,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
               </div>
             </div>
             <div className="input-hint">
-              Powered by Microsoft Foundry IQ · Sources cited · Paste any grant URL to auto-fetch · Press Enter to send
+              Work IQ context + Foundry IQ grounding · Sources cited · Paste any grant URL to auto-fetch · Press Enter to send
             </div>
           </div>
         </main>

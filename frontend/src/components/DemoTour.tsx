@@ -13,10 +13,10 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
   const driverRef = useRef<Driver | null>(null);
 
   function startTour() {
-    // Ensure we start on the chat tab
+    // Ensure we start on the chat view
     onNavigate("chat");
 
-    // Give React a tick to render the chat tab before initialising
+    // Give React a tick to render the chat view before initialising
     setTimeout(() => {
       const driverObj = driver({
         showProgress: true,
@@ -37,11 +37,11 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
               title:
                 '<span class="tour-badge">Hackathon Demo</span><br/>Welcome to CivicGrant IQ',
               description:
-                '<p class="tour-intro-sub">The AI that finds <strong>millions in federal grants</strong> your city qualifies for — right now.</p>' +
+                '<p class="tour-intro-sub">The municipal copilot that turns <strong>Work IQ signals + Foundry intelligence</strong> into fundable grant strategy.</p>' +
                 '<div class="tour-stat-row">' +
                 '<div class="tour-stat"><span class="tour-stat-num">$8.7M</span><span class="tour-stat-label">Avg opportunity identified per city</span></div>' +
-                '<div class="tour-stat"><span class="tour-stat-num">6-step</span><span class="tour-stat-label">AI reasoning chain per analysis</span></div>' +
-                '<div class="tour-stat"><span class="tour-stat-num">Live</span><span class="tour-stat-label">Real Grants.gov data, always fresh</span></div>' +
+                '<div class="tour-stat"><span class="tour-stat-num">M365</span><span class="tour-stat-label">Meetings, emails, Teams, SharePoint context</span></div>' +
+                '<div class="tour-stat"><span class="tour-stat-num">Foundry</span><span class="tour-stat-label">Grounded retrieval + orchestrated AI reasoning</span></div>' +
                 "</div>" +
                 '<p class="tour-cta-hint">Let\'s walk through the key features</p>',
               side: "over" as const,
@@ -55,25 +55,13 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             popover: {
               title: "CivicGrant IQ — Municipal Revenue Intelligence",
               description:
-                "A purpose-built AI agent that helps city governments discover, analyze, and win federal grants. Built in 48 hours for Agents League @ AISF 2026.",
+                "A purpose-built AI agent that helps city governments discover, analyze, and win federal grants.",
               side: "bottom" as const,
               align: "start" as const,
             },
           },
 
-          // ── Step 3: Foundry badge ────────────────────────────────────────
-          {
-            element: ".header-badge",
-            popover: {
-              title: "Powered by Microsoft Foundry IQ",
-              description:
-                "The entire intelligence stack runs on <strong>Azure AI Foundry</strong> — GPT-4o reasoning, Azure AI Search agentic retrieval, and real-time Grants.gov integration. Every answer is grounded in live federal data.",
-              side: "bottom" as const,
-              align: "end" as const,
-            },
-          },
-
-          // ── Step 4: Hero grant cards ─────────────────────────────────────
+          // ── Step 3: Hero grant cards ─────────────────────────────────────
           {
             element: ".hero-grant-cards",
             popover: {
@@ -85,54 +73,104 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             },
           },
 
-          // ── Step 5: Chat input area ──────────────────────────────────────
+          // ── Step 4: Chat input area ──────────────────────────────────────
           {
             element: ".chat-input-area",
             popover: {
-              title: "AI Grant Analyst — Ask Anything",
+              title: "AI Grant Analyst — Ask and Ground",
               description:
-                "Type any grant question in plain English. The agent follows a <strong>6-step reasoning chain</strong>: Parse → Match → Verify → Gaps → Narrative → Strategy. Every response includes citations from the live knowledge base.",
+                "Ask in plain English and the system runs a <strong>6-step chain</strong>: Parse → Match → Verify → Gaps → Narrative → Strategy. Responses include citations grounded in Foundry IQ and live grant sources.",
               side: "top" as const,
               align: "start" as const,
-              // Navigate to scan tab when the user clicks Next on this step
+            },
+          },
+
+          // ── Step 5: Foundry badge ────────────────────────────────────────
+          {
+            element: ".header-badge",
+            popover: {
+              title: "Foundry-Powered Intelligence Layer",
+              description:
+                "CivicGrant IQ runs on <strong>Azure AI Foundry</strong>: GPT-4o analysis, Azure AI Search retrieval, and grants orchestration. Foundry grounds every recommendation in trusted evidence before strategy is generated.",
+              side: "bottom" as const,
+              align: "end" as const,
+            },
+          },
+
+          // ── Step 6: Source chips / attach launcher ─────────────────────
+          {
+            element: ".input-toolbar",
+            popover: {
+              title: "Work IQ + Foundry Context Controls",
+              description:
+                "This is where users pin context from <strong>Work IQ</strong> (SharePoint docs, meetings, emails, Teams) and Foundry IQ knowledge. It demonstrates the Microsoft 365 + Power Platform side, not just LLM chat.",
+              side: "top" as const,
+              align: "start" as const,
               onNextClick: () => {
-                onNavigate("scan");
+                const attachBtn = document.querySelector<HTMLButtonElement>(".attach-btn");
+                if (!document.querySelector(".attach-picker-popover")) {
+                  attachBtn?.click();
+                }
+                setTimeout(() => driverObj.moveNext(), 280);
+              },
+            },
+          },
+
+          // ── Step 7: Attach picker tabs (meetings/emails/foundry) ──────
+          {
+            element: ".attach-picker-tabs-row",
+            popover: {
+              title: "Work IQ Signals in One Place",
+              description:
+                "Show this during demos: <strong>Meetings + Emails + Teams + SharePoint + Foundry IQ</strong> are all selectable context. This is the proof of real workflow intelligence, not generic prompt engineering.",
+              side: "top" as const,
+              align: "center" as const,
+              onNextClick: () => {
+                const attachBtn = document.querySelector<HTMLButtonElement>(".attach-btn");
+                if (document.querySelector(".attach-picker-popover")) {
+                  attachBtn?.click();
+                }
+                setTimeout(() => driverObj.moveNext(), 280);
+              },
+            },
+          },
+
+          // ── Step 8: Inline "Scan My City" launcher ──────────────────────
+          {
+            element: ".hero-grant-card--scan",
+            popover: {
+              title: 'Inline "Scan My City" Launcher',
+              description:
+                "Scan My City is now part of the chat experience. Click this card to open the inline setup and run a <strong>complete personalized portfolio analysis</strong> without leaving the conversation.",
+              side: "top" as const,
+              align: "start" as const,
+              onNextClick: () => {
+                const scanCard = document.querySelector<HTMLButtonElement>(".hero-grant-card--scan");
+                scanCard?.click();
                 setTimeout(() => driverObj.moveNext(), 350);
               },
             },
           },
 
-          // ── Step 6: Scan My City tab ─────────────────────────────────────
+          // ── Step 9: Inline scan setup card ───────────────────────────────
           {
-            element: ".header-tabs",
+            element: ".issc-root",
             popover: {
-              title: 'Tab 2: "Scan My City"',
+              title: "City Profile Builder (Inline)",
               description:
-                "Enter your city's profile and watch AI build a <strong>complete personalised grant portfolio</strong> in under 60 seconds. Parallel agent analyses run simultaneously across every focus area.",
-              side: "bottom" as const,
-              align: "start" as const,
-            },
-          },
-
-          // ── Step 7: Grant scanner form ───────────────────────────────────
-          {
-            element: ".grant-scanner",
-            popover: {
-              title: "City Profile Builder",
-              description:
-                "Fill in your city name, state, population, and current capital projects. CivicGrant IQ uses this profile to tailor every recommendation — matching real federal eligibility criteria, not generic keyword results.",
+                "This setup card lives directly in chat. Add city, state, municipality size, and projects, then launch parallel analysis grounded in Work IQ + Foundry evidence.",
               side: "right" as const,
               align: "start" as const,
             },
           },
 
-          // ── Step 8: Focus area chips ─────────────────────────────────────
+          // ── Step 10: Inline priority focus areas ─────────────────────────
           {
-            element: ".focus-section",
+            element: ".issc-chips",
             popover: {
-              title: "Priority Focus Areas — Smart Filtering",
+              title: "Priority Focus Areas (Inline)",
               description:
-                "Select your city's priorities: Transportation, Water & Sewer, Housing, Climate, and more. The AI immediately re-filters the <strong>live Grants.gov feed</strong> on the right to only show matching programs — no keyword guessing needed.",
+                "Select priority areas and the inline scanner auto-updates projects from Work IQ context, then aligns them to the <strong>live Grants.gov pipeline</strong> for operational fit.",
               side: "right" as const,
               align: "start" as const,
               onNextClick: () => {
@@ -142,13 +180,13 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             },
           },
 
-          // ── Step 9: Admin dashboard ──────────────────────────────────────
+          // ── Step 11: Admin dashboard ──────────────────────────────────────
           {
             element: ".admin-page",
             popover: {
-              title: 'Tab 3: Grant Pipeline Manager',
+              title: "Grant Pipeline Manager",
               description:
-                "Track every grant in your pipeline: application status, deadlines, match scores, and funding amounts. The admin AI assistant can draft status reports, flag upcoming deadlines, and answer compliance questions on demand.",
+                "Track application status, deadlines, win probability, and funding totals. This keeps delivery teams aligned while Foundry analysis and Work IQ context continue feeding decisions.",
               side: "top" as const,
               align: "start" as const,
               onNextClick: () => {
@@ -158,32 +196,34 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             },
           },
 
-          // ── Step 10: Chat main area (back on chat) ───────────────────
+          // ── Step 12: Chat main area (back on chat) ─────────────────────
           {
             element: ".chat-main",
             popover: {
               title: "Multi-Agent Orchestration",
               description:
-                "Behind every response, a <strong>team of specialised AI agents</strong> collaborate: a Grant Analyzer, a Red-Team reviewer, a Competitor Intelligence agent, and a Narrative Refiner. You get the best answer — not the first answer.",
+                "Behind each answer, <strong>specialized agents</strong> collaborate: grant analysis, retrieval verification, red-team review, competitive intel, and narrative refinement. Foundry orchestrates the flow and keeps outputs traceable.",
               side: "top" as const,
               align: "center" as const,
             },
           },
 
-          // ── Step 11: Final / win message ─────────────────────────────────
+          // ── Step 13: Final / win message ─────────────────────────────────
           {
             popover: {
               title: "That's CivicGrant IQ",
               description:
-                '<p class="tour-final-text">A full-stack municipal AI agent — live data, multi-step reasoning, real federal grant intelligence — built in 48 hours.</p>' +
+                '<p class="tour-final-text">A production-style municipal AI workflow: Work IQ context from daily operations, Foundry-grounded intelligence, and practical grant execution.</p>' +
                 '<div class="tour-tech-row">' +
                 '<span class="tour-tech-chip">Azure AI Foundry</span>' +
+                '<span class="tour-tech-chip">Microsoft 365 Work IQ</span>' +
+                '<span class="tour-tech-chip">Power Platform Signals</span>' +
                 '<span class="tour-tech-chip">GPT-4o</span>' +
                 '<span class="tour-tech-chip">Azure AI Search</span>' +
                 '<span class="tour-tech-chip">Grants.gov API</span>' +
                 '<span class="tour-tech-chip">React 18 + Vite</span>' +
                 "</div>" +
-                '<p class="tour-final-tagline">Ask the chat: <em>"What grants does Buffalo Grove qualify for right now?"</em></p>',
+                '<p class="tour-final-tagline">Try: <em>"Use my latest meetings, emails, and Foundry docs to prioritize the top 3 grants this quarter."</em></p>',
               side: "over" as const,
               align: "center" as const,
             },
