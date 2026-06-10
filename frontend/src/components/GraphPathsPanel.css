@@ -1,0 +1,281 @@
+.graph-paths-panel {
+  margin-top: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  overflow: hidden;
+  font-size: 0.8rem;
+}
+
+.graph-paths-panel__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.graph-paths-panel__toggle:hover {
+  background: #f1f5f9;
+}
+
+.graph-paths-panel__icon {
+  color: #6366f1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.graph-paths-panel__badges {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.graph-path-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.1rem 0.35rem;
+  border-radius: 99px;
+}
+
+.graph-path-badge.graph-path--confirmed { background: #dcfce7; color: #16a34a; }
+.graph-path-badge.graph-path--likely    { background: #fef9c3; color: #ca8a04; }
+.graph-path-badge.graph-path--possible  { background: #fee2e2; color: #dc2626; }
+
+.graph-paths-panel__chevron {
+  font-size: 1rem;
+  color: #94a3b8;
+  transition: transform 0.15s;
+}
+
+.graph-paths-panel__chevron--open {
+  transform: rotate(90deg);
+}
+
+.graph-paths-panel__body {
+  padding: 0.5rem 0.75rem 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.graph-paths-panel__desc {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin: 0 0 0.6rem;
+  line-height: 1.4;
+}
+
+/* Individual path */
+.graph-path {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.graph-path.graph-path--confirmed { border-left: 3px solid #16a34a; }
+.graph-path.graph-path--likely    { border-left: 3px solid #ca8a04; }
+.graph-path.graph-path--possible  { border-left: 3px solid #dc2626; }
+
+.graph-path__header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.78rem;
+}
+
+.graph-path__header:hover {
+  background: #f8fafc;
+}
+
+.graph-path__confidence-badge {
+  font-size: 0.67rem;
+  font-weight: 700;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.graph-path__confidence-badge--confirmed { background: #dcfce7; color: #15803d; }
+.graph-path__confidence-badge--likely    { background: #fef9c3; color: #a16207; }
+.graph-path__confidence-badge--possible  { background: #fee2e2; color: #b91c1c; }
+
+.graph-path__grant-label {
+  font-weight: 500;
+  color: #1e293b;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graph-path__score {
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.graph-path__hop-count {
+  color: #94a3b8;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.graph-path__chevron {
+  color: #94a3b8;
+  font-size: 1rem;
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+
+.graph-path__chevron--open {
+  transform: rotate(90deg);
+}
+
+/* Hops */
+.graph-path__hops {
+  padding: 0.4rem 0.6rem 0.5rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.graph-hop {
+  border-left: 2px solid #e2e8f0;
+  padding-left: 0.5rem;
+}
+
+.graph-hop__connector {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  color: #334155;
+  font-size: 0.75rem;
+}
+
+.graph-hop__from {
+  font-weight: 600;
+  color: #6366f1;
+  font-size: 0.72rem;
+}
+
+.graph-hop__to {
+  font-weight: 600;
+  color: #0f766e;
+  font-size: 0.72rem;
+}
+
+.graph-hop__arrow {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: #94a3b8;
+}
+
+.graph-hop__rel {
+  font-size: 0.67rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.graph-hop__arrow-svg {
+  color: #94a3b8;
+}
+
+.graph-hop__evidence {
+  margin-top: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.graph-hop__evidence-text {
+  color: #475569;
+  font-size: 0.71rem;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.graph-hop__source {
+  color: #94a3b8;
+  font-size: 0.67rem;
+  font-weight: 500;
+}
+
+/* ── Source pill — always-visible compact citation ── */
+.graph-hop__source-pill {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: #94a3b8;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 99px;
+  padding: 0.05rem 0.4rem;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Clickable hop row ── */
+.graph-hop--clickable {
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.12s;
+  outline: none;
+}
+
+.graph-hop--clickable:hover {
+  background: #f1f5f9;
+}
+
+.graph-hop--clickable:focus-visible {
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.35);
+}
+
+.graph-hop--open {
+  background: #f8fafc;
+}
+
+/* ── Show-more button ── */
+.graph-hops-show-more {
+  background: none;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: all 0.12s;
+  margin-top: 0.15rem;
+  font-family: inherit;
+}
+
+.graph-hops-show-more:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+  background: #f5f3ff;
+}

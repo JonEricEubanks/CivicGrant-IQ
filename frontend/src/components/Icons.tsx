@@ -207,3 +207,39 @@ export const IconTarget = ico([
   <circle key="c" cx="12" cy="12" r="2" />,
 ]);
 
+export const IconAward = ico([
+  <circle key="a" cx="12" cy="8" r="6" />,
+  <path key="b" d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />,
+]);
+
+// ─── Brand / product logos ───────────────────────────────────────────────
+
+/** CivicGrant IQ brand seal — circular badge with government building */
+export const IconBrandLogo = ({ size = 26 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 26 26" fill="none" aria-hidden="true">
+    <circle cx="13" cy="13" r="12" fill="#1a6fba" />
+    {/* Base platform */}
+    <rect x="6" y="19.5" width="14" height="1.5" rx="0.5" fill="white" />
+    {/* 3 columns */}
+    <rect x="7.5" y="14" width="2" height="5.5" rx="0.4" fill="white" />
+    <rect x="12" y="14" width="2" height="5.5" rx="0.4" fill="white" />
+    <rect x="16.5" y="14" width="2" height="5.5" rx="0.4" fill="white" />
+    {/* Pediment (triangle roof) */}
+    <path d="M6.5 14 L13 8.5 L19.5 14 Z" fill="white" />
+    {/* Flagpole dot */}
+    <circle cx="13" cy="7.5" r="1" fill="white" />
+    {/* Dollar accent ring */}
+    <circle cx="13" cy="13" r="11.5" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+  </svg>
+);
+
+/** Microsoft 4-colour squares logo — for "Powered by Microsoft …" badges */
+export const IconMicrosoft = ({ size = 14 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 21 21" aria-hidden="true">
+    <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+    <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+    <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+    <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+  </svg>
+);
+

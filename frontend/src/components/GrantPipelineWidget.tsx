@@ -9,6 +9,19 @@ export interface PipelineGrant {
   matchScore: number;
   deadline: string;
   focusArea: string;
+  /** When present, grant came from live grants.gov data — show link badge */
+  grantsGovUrl?: string;
+  /** True when amount is real published program funding, not an AI estimate */
+  fundingVerified?: boolean;
+}
+
+/** Format dollars as a compact "$X.XB" / "$XXXM" / "$X.XM" string. */
+function fmtAmount(n: number): string {
+  if (n >= 1_000_000_000) return `$${(n / 1_000_000_000).toFixed(2)}B`;
+  if (n >= 100_000_000) return `$${Math.round(n / 1_000_000)}M`;
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
+  return `$${n.toLocaleString()}`;
 }
 
 interface Props {
@@ -44,7 +57,7 @@ export function GrantPipelineWidget({ grants, cityName, totalOpportunity, onAnal
         <div className="pipeline-city">{cityName}</div>
         <div className="pipeline-total">
           <span className="pipeline-total-label">Total Opportunity</span>
-          <span className="pipeline-total-amount">${(totalOpportunity / 1_000_000).toFixed(1)}M</span>
+          <span className="pipeline-total-amount">{fmtAmount(totalOpportunity)}</span>
         </div>
       </div>
 
@@ -61,11 +74,25 @@ export function GrantPipelineWidget({ grants, cityName, totalOpportunity, onAnal
                   <span className="pipeline-agency">{g.agency}</span>
                   <span className="pipeline-focus">{g.focusArea}</span>
                   {urgent && <span className="pipeline-urgent-badge">⏰ {daysLeft}d left</span>}
+                  {g.grantsGovUrl && (
+                    <a
+                      className="pipeline-live-badge"
+                      href={g.grantsGovUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      🟢 Live on grants.gov ↗
+                    </a>
+                  )}
                 </div>
                 <BarProgress score={g.matchScore} delay={i * 120} />
               </div>
               <div className="pipeline-right">
-                <div className="pipeline-amount">${(g.amount / 1_000_000).toFixed(1)}M</div>
+                <div className="pipeline-amount">{fmtAmount(g.amount)}</div>
+                {g.fundingVerified && (
+                  <div className="pipeline-amount-verified" title="Real published program funding from Grants.gov">✓ verified</div>
+                )}
                 {onAnalyze && (
                   <button className="analyze-btn" onClick={() => onAnalyze(g)}>
                     Analyze →

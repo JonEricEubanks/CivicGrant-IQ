@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { CityProfile } from "../types";
+import { fetchCityContext } from "../api";
 import { IconBuilding, IconSearch, IconChevronDown } from "./Icons";
 import "./GrantScanner.css";
 
@@ -101,6 +102,9 @@ export function GrantScanner({ onScan, onFocusChange, isLoading, collapsed, onEx
   const [selectedProjects, setSelectedProjects] = useState<string[]>(DEFAULT_PROJECTS);
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Set<string>>(DEFAULT_OPEN_GROUPS);
+  const [useWorkIq, setUseWorkIq] = useState(false);
+  const [workIqLoading, setWorkIqLoading] = useState(false);
+  const [workIqSource, setWorkIqSource] = useState<string | null>(null);
 
   const toggleGroup = (label: string) => {
     setOpenGroups((prev) => {
@@ -123,6 +127,40 @@ export function GrantScanner({ onScan, onFocusChange, isLoading, collapsed, onEx
     setSelectedProjects((prev) =>
       prev.includes(item) ? prev.filter((p) => p !== item) : [...prev, item]
     );
+  };
+
+  const handleToggleWorkIq = async () => {
+    if (useWorkIq) {
+      setUseWorkIq(false);
+      setWorkIqSource(null);
+      return;
+    }
+    setWorkIqLoading(true);
+    try {
+      const ctx = await fetchCityContext();
+      const allItems = PROJECT_GROUPS.flatMap((g) => g.items);
+      const matched = new Set<string>();
+      for (const proj of ctx.activeProjects) {
+        const needle = proj.name.toLowerCase();
+        for (const item of allItems) {
+          const hay = item.toLowerCase();
+          // bidirectional keyword overlap
+          const needleWords = needle.split(/\s+/).filter((w) => w.length > 3);
+          if (hay.includes(needle) || needle.includes(hay) ||
+              needleWords.some((w) => hay.includes(w))) {
+            matched.add(item);
+          }
+        }
+      }
+      setSelectedProjects(matched.size > 0 ? Array.from(matched) : DEFAULT_PROJECTS);
+      setWorkIqSource(ctx.source);
+      setUseWorkIq(true);
+      if (!projectsOpen) setProjectsOpen(true);
+    } catch {
+      // silently fall back — manual selection remains
+    } finally {
+      setWorkIqLoading(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -213,20 +251,32 @@ export function GrantScanner({ onScan, onFocusChange, isLoading, collapsed, onEx
       </div>
 
       <div className="focus-section">
-        <button
-          type="button"
-          className="focus-section-header"
-          onClick={() => setFocusOpen((o) => !o)}
-          aria-expanded={focusOpen}
-        >
-          <span className="focus-section-title">Priority Focus Areas *</span>
+        <div className="focus-section-header-row">
+          <button
+            type="button"
+            className="focus-section-header"
+            onClick={() => setFocusOpen((o) => !o)}
+            aria-expanded={focusOpen}
+          >
+            <span className="focus-section-title">Priority Focus Areas *</span>
+            {focusAreas.length > 0 && (
+              <span className="project-group-badge">{focusAreas.length} selected</span>
+            )}
+            <span className={`project-group-chevron${focusOpen ? " project-group-chevron--open" : ""}`}>
+              <IconChevronDown size={13} aria-hidden />
+            </span>
+          </button>
           {focusAreas.length > 0 && (
-            <span className="project-group-badge">{focusAreas.length} selected</span>
+            <button
+              type="button"
+              className="section-clear-btn"
+              onClick={(e) => { e.stopPropagation(); setFocusAreas([]); onFocusChange?.([]); }}
+              aria-label="Clear all focus areas"
+            >
+              Clear
+            </button>
           )}
-          <span className={`project-group-chevron${focusOpen ? " project-group-chevron--open" : ""}`}>
-            <IconChevronDown size={13} aria-hidden />
-          </span>
-        </button>
+        </div>
         {focusOpen ? (
           <div className="focus-chips-expanded">
             {FOCUS_AREA_OPTIONS.map((area) => (
@@ -252,20 +302,34 @@ export function GrantScanner({ onScan, onFocusChange, isLoading, collapsed, onEx
       </div>
 
       <div className="focus-section">
-        <button
-          type="button"
-          className="focus-section-header"
-          onClick={() => setProjectsOpen((o) => !o)}
-          aria-expanded={projectsOpen}
-        >
-          <span className="focus-section-title">Active Projects &amp; Initiatives</span>
-          {selectedProjects.length > 0 && (
-            <span className="project-group-badge">{selectedProjects.length} selected</span>
-          )}
-          <span className={`project-group-chevron${projectsOpen ? " project-group-chevron--open" : ""}`}>
-            <IconChevronDown size={13} aria-hidden />
-          </span>
-        </button>
+        <div className="focus-section-header-row">
+          <button
+            type="button"
+            className="focus-section-header"
+            onClick={() => setProjectsOpen((o) => !o)}
+            aria-expanded={projectsOpen}
+          >
+            <span className="focus-section-title">Active Projects &amp; Initiatives</span>
+            {useWorkIq && (
+              <span className="workiq-badge">✦ Work IQ{workIqSource === "sharepoint" ? " (SharePoint)" : " (AI)"}</span>
+            )}
+            {selectedProjects.length > 0 && (
+              <span className="project-group-badge">{selectedProjects.length} selected</span>
+            )}
+            <span className={`project-group-chevron${projectsOpen ? " project-group-chevron--open" : ""}`}>
+              <IconChevronDown size={13} aria-hidden />
+            </span>
+          </button>
+          <button
+            type="button"
+            className={`workiq-toggle-btn${useWorkIq ? " workiq-toggle-btn--active" : ""}`}
+            onClick={(e) => { e.stopPropagation(); handleToggleWorkIq(); }}
+            disabled={workIqLoading}
+            title={useWorkIq ? "Switch to manual selection" : "Auto-fill using Work IQ city context"}
+          >
+            {workIqLoading ? "…" : useWorkIq ? "✦ Work IQ On" : "Use Work IQ"}
+          </button>
+        </div>
         {projectsOpen ? (
           <div className="projects-expanded">
             <div className="project-groups">

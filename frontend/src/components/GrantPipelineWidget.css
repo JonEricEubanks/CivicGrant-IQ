@@ -124,6 +124,23 @@
   border: 1px solid #fecaca;
 }
 
+.pipeline-live-badge {
+  font-size: 0.65rem;
+  background: #dcfce7;
+  color: #15803d;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 1px solid #bbf7d0;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pipeline-live-badge:hover {
+  background: #bbf7d0;
+  color: #14532d;
+}
+
 /* Bar */
 .bar-track {
   position: relative;
@@ -161,6 +178,15 @@
   font-size: 1rem;
   font-weight: 800;
   color: #16a34a;
+}
+
+.pipeline-amount-verified {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #15803d;
+  letter-spacing: 0.02em;
+  margin-top: 1px;
+  text-align: right;
 }
 
 .analyze-btn {

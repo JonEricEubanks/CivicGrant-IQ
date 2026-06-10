@@ -345,12 +345,12 @@ export const threadStore = {
 };
 
 const STEP_DEFS = [
-  { step: 1, label: "Parse the Grant" },
+  { step: 1, label: "Connect Work IQ + Parse Grant" },
   { step: 2, label: "Match City Projects" },
   { step: 3, label: "Verify Financial Capacity" },
   { step: 4, label: "Gap Analysis" },
   { step: 5, label: "Draft Project Narrative" },
-  { step: 6, label: "Application Strategy & Winning Edge" },
+  { step: 6, label: "Application Strategy" },
 ];
 
 /** Returns true once the given step's section has been fully written in the accumulated text. */

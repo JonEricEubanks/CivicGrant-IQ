@@ -35,6 +35,15 @@ interface GraphDriveItem {
   file?: { mimeType?: string };
 }
 
+interface SpItemFields {
+  DocumentType?: string;
+  Status?: string;
+  GrantProgram?: string;
+  ProjectName?: string;
+  Year?: number;
+  Category?: string;
+}
+
 interface GraphListResponse<T> {
   value: T[];
   "@odata.nextLink"?: string;
@@ -44,6 +53,7 @@ interface DocumentText {
   name: string;
   webUrl?: string;
   text: string;
+  fields?: SpItemFields;
 }
 
 const CACHE_MS = 30 * 60 * 1000;
@@ -166,6 +176,16 @@ async function extractText(name: string, buffer: Buffer, mimeType?: string): Pro
   return "";
 }
 
+async function fetchItemFields(driveId: string, itemId: string): Promise<SpItemFields> {
+  try {
+    return await graphGet<SpItemFields>(
+      `/drives/${driveId}/items/${itemId}/listItem/fields?$select=DocumentType,Status,GrantProgram,ProjectName,Year,Category`
+    );
+  } catch {
+    return {};
+  }
+}
+
 async function loadSharePointDocuments(): Promise<{ docs: DocumentText[]; siteUrl?: string }> {
   const { driveId, siteUrl } = await resolveSiteAndDrive();
   const files = await collectFiles(driveId);
@@ -175,9 +195,12 @@ async function loadSharePointDocuments(): Promise<{ docs: DocumentText[]; siteUr
     const ext = file.name.toLowerCase().split(".").pop() ?? "";
     if (!["txt", "md", "csv", "json", "docx", "pdf"].includes(ext)) continue;
     try {
-      const buffer = await graphDownload(`https://graph.microsoft.com/v1.0/drives/${driveId}/items/${file.id}/content`);
+      const [buffer, fields] = await Promise.all([
+        graphDownload(`https://graph.microsoft.com/v1.0/drives/${driveId}/items/${file.id}/content`),
+        fetchItemFields(driveId, file.id),
+      ]);
       const text = (await extractText(file.name, buffer, file.file?.mimeType)).replace(/\s+/g, " ").trim();
-      if (text) docs.push({ name: file.name, webUrl: file.webUrl, text: text.slice(0, MAX_TEXT_PER_FILE) });
+      if (text) docs.push({ name: file.name, webUrl: file.webUrl, text: text.slice(0, MAX_TEXT_PER_FILE), fields });
     } catch (err) {
       console.warn(`[WorkIQ] Failed to extract ${file.name}:`, (err as Error).message);
     }
@@ -257,18 +280,61 @@ async function distillContext(docs: DocumentText[], siteUrl?: string): Promise<C
     filesRead: docs.map((d) => d.name),
   };
   if (docs.length === 0) return deterministicContext(docs, base);
-  const corpus = docs.map((d) => `DOCUMENT: ${d.name}\n${d.text}`).join("\n\n---\n\n").slice(0, 24000);
+
+  // Classify each doc: rejected if status or filename signals a failed/rejected application
+  const REJECTED_STATUSES = new Set(["rejected", "denied", "closed", "withdrawn", "unsuccessful"]);
+  function isRejected(doc: DocumentText): boolean {
+    const status = (doc.fields?.Status ?? "").toLowerCase();
+    const name = doc.name.toLowerCase();
+    return REJECTED_STATUSES.has(status) ||
+      name.includes("reject") || name.includes("denied") || name.includes("unsuccessful");
+  }
+
+  function formatMetaLine(d: DocumentText): string {
+    const f = d.fields ?? {};
+    return [
+      `File: ${d.name}`,
+      f.DocumentType && `Type: ${f.DocumentType}`,
+      f.ProjectName && f.ProjectName !== "Not found" && `Project: ${f.ProjectName}`,
+      f.GrantProgram && f.GrantProgram !== "None" && `Grants: ${f.GrantProgram}`,
+      f.Category && `Category: ${f.Category}`,
+      f.Status && `Status: ${f.Status}`,
+      f.Year && `Year: ${f.Year}`,
+    ].filter(Boolean).join(" | ");
+  }
+
+  const activeDocs = docs.filter((d) => !isRejected(d));
+  const historicalDocs = docs.filter((d) => isRejected(d));
+
+  const activeMetaSummary = activeDocs
+    .filter((d) => d.fields && Object.keys(d.fields).length > 0)
+    .map(formatMetaLine).join("\n");
+
+  const historicalMetaSummary = historicalDocs
+    .filter((d) => d.fields && Object.keys(d.fields).length > 0)
+    .map(formatMetaLine).join("\n");
+
+  const metaBlock = [
+    activeMetaSummary && `ACTIVE / PLANNED DOCUMENTS (use for activeProjects and fundingTypes):\n${activeMetaSummary}`,
+    historicalMetaSummary && `HISTORICAL / REJECTED DOCUMENTS (use for riskSignals and lessons learned ONLY — do NOT include these in activeProjects):\n${historicalMetaSummary}`,
+  ].filter(Boolean).join("\n\n");
+
+  const corpus = [
+    metaBlock ? `SHAREPOINT METADATA SUMMARY:\n${metaBlock}\n\n---` : "",
+    ...activeDocs.map((d) => `DOCUMENT [ACTIVE]: ${d.name}\n${d.text}`),
+    ...historicalDocs.map((d) => `DOCUMENT [HISTORICAL/REJECTED]: ${d.name}\n${d.text}`),
+  ].filter(Boolean).join("\n\n---\n\n").slice(0, 24000);
   try {
     const res = await getOpenAI().chat.completions.create({
       model: config.foundryModelDeployment,
       messages: [
         {
           role: "system",
-          content: "Extract municipal grant intelligence from SharePoint documents. Return strict JSON only.",
+          content: "Extract municipal grant intelligence from SharePoint documents. Return strict JSON only. CRITICAL: activeProjects must only include projects from ACTIVE/PLANNED/SUBMITTED/AWARDED documents. HISTORICAL/REJECTED documents must only inform riskSignals — never activeProjects.",
         },
         {
           role: "user",
-          content: `From these municipal documents, produce JSON with keys: priorityThemes string[], activeProjects array of {name,budget,status}, fundingTypes string[], riskSignals string[], matchableGrants string[], narrative string under 200 words.\n\n${corpus}`,
+          content: `From these municipal documents, produce JSON with keys: priorityThemes string[], activeProjects array of {name,budget,status} (ACTIVE docs only), fundingTypes string[], riskSignals string[] (include lessons from rejected applications), matchableGrants string[], narrative string under 200 words.\n\n${corpus}`,
         },
       ],
       response_format: { type: "json_object" },

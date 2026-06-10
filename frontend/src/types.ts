@@ -5,6 +5,24 @@ export interface ReasoningStep {
   completed: boolean;
 }
 
+export interface GraphHop {
+  fromLabel: string;
+  rel: string;
+  toLabel: string;
+  evidence: string;
+  source: string;
+  weight: number;
+}
+
+export interface GraphPath {
+  grantId: string;
+  grantLabel: string;
+  hops: GraphHop[];
+  totalScore: number;
+  confidence: "CONFIRMED" | "LIKELY" | "POSSIBLE";
+  narrative: string;
+}
+
 export interface Citation {
   id: string;
   title: string;

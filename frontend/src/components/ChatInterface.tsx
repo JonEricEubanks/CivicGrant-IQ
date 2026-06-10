@@ -15,6 +15,7 @@ import { GrantRadarSkeleton } from "./GrantRadarSkeleton";
 import { AgentOrchestraBar } from "./AgentOrchestraBar";
 import { AppHeader } from "./AppHeader";
 import { TierBadge } from "./TierBadge";
+import { GraphPathsPanel } from "./GraphPathsPanel";
 import {
   IconBuilding, IconSearch, IconSettings, IconNewChat,
   IconCopy, IconCheck, IconBolt,
@@ -40,6 +41,7 @@ interface Message {
   refinedNarrative?: RefinedNarrativeResult;
   workIqContext?: WorkIqCityContext;
   tierInfo?: { tier: 1 | 2 | 3; label: string; guardrailsPassed: boolean; violations: number };
+  graphPaths?: import("../types").GraphPath[];
   reviewStreaming?: boolean;
   competitorStreaming?: boolean;
   refinementStreaming?: boolean;
@@ -98,15 +100,6 @@ function formatHeroAmount(millions: number): string {
   if (millions >= 100) return `$${Math.round(millions)}M+`;
   return `$${millions.toFixed(1)}M+`;
 }
-
-const STEP_LABELS = [
-  "Parse the Grant",
-  "Match City Projects",
-  "Verify Financial Capacity",
-  "Gap Analysis",
-  "Draft Project Narrative",
-  "Application Strategy",
-];
 
 // ─── Simple markdown renderer ─────────────────────────────────────────────
 function renderMarkdown(text: string) {
@@ -401,7 +394,7 @@ function getFollowUpChips(data: import("./GrantMatchWidget").GrantMatchData): Ar
 }
 
 // Generate a downloadable Grant Readiness Certificate HTML file
-function generateCertificate(data: import("./GrantMatchWidget").GrantMatchData): void {
+function generateCertificate(data: import("./GrantMatchWidget").GrantMatchData): string {
   const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   const tier = data.matchScore >= 70 ? "CONFIRMED ELIGIBLE" : data.matchScore >= 45 ? "LIKELY ELIGIBLE" : "POTENTIAL MATCH";
   const tierColor = data.matchScore >= 70 ? "#16a34a" : data.matchScore >= 45 ? "#b45309" : "#6b7280";
@@ -487,15 +480,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     </div>
   </div>
 </div></body></html>`;
-  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${data.grantName.replace(/[^a-z0-9 ]/gi, "_").replace(/\s+/g, "_")}_Readiness_Certificate.html`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 30000);
+  return html;
 }
 
 // ─── Tool call status line ───────────────────────────────────────────────
@@ -571,13 +556,19 @@ function FollowUpCard({ content = "", streaming, isFollowUp = true }: { content:
 
 // ─── Thought Process — vertical timeline ────────────────────────────────────
 function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStreaming: boolean }) {
-  const [open, setOpen] = useState(true);   // step list always visible by default
-  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set()); // each step's reasoning text collapsed until clicked
+  const [open, setOpen] = useState(true);
+  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
+
+  const completedCount = steps.filter(s => s.completed).length;
+  // Total expected steps = highest step number seen so far (dynamic — 3 for follow-ups, 6 for full analysis)
+  const totalSteps = steps.length > 0 ? Math.max(...steps.map(s => s.step)) : 6;
+  const allDone = !isStreaming && completedCount >= totalSteps;
+
+  // Collapse to the clean summary bar once all steps finish
+  useEffect(() => { if (allDone) setOpen(false); }, [allDone]);
 
   if (!steps.length) return null;
-  const completedCount = steps.filter(s => s.completed).length;
-  const progress = Math.round((completedCount / 6) * 100);
-  const allDone = !isStreaming && completedCount >= 6;
+  const progress = Math.round((completedCount / totalSteps) * 100);
 
   const toggleStep = (stepNum: number) => {
     setExpandedSteps(prev => {
@@ -586,6 +577,14 @@ function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStre
       return next;
     });
   };
+
+  // Build the display list from actual steps received, filling gaps with pending placeholders.
+  // This means follow-ups show 3 steps, full analysis shows 6 — driven by the data.
+  const displaySteps = Array.from({ length: totalSteps }, (_, i) => {
+    const stepNum = i + 1;
+    const step = steps.find(s => s.step === stepNum);
+    return { stepNum, label: step?.label ?? `Step ${stepNum}`, step, done: step?.completed ?? false };
+  });
 
   return (
     <div className="thought-process">
@@ -598,18 +597,14 @@ function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStre
         <div className="thought-progress-track">
           <div className="thought-progress-fill" style={{ width: `${progress}%` }} />
         </div>
-        <span className="thought-step-counter">{completedCount}/6</span>
+        <span className="thought-step-counter">{completedCount}/{totalSteps}</span>
         <span className="thought-chevron">{open ? "▲" : "▼"}</span>
       </button>
 
-      {/* ── Step list — each completed step expands to show what it did ── */}
+      {/* ── Step list — driven by actual steps from backend ── */}
       {open && (
         <div className="tp-accordion">
-          {STEP_LABELS.map((label, i) => {
-            const stepNum = i + 1;
-            const step = steps.find(s => s.step === stepNum);
-            const done = step?.completed ?? false;
-            // Keep the last completed step spinning while answer is still streaming
+          {displaySteps.map(({ stepNum, label, step, done }, i) => {
             const isLastCompleted = done && isStreaming && stepNum === completedCount;
             const active = isLastCompleted || (isStreaming && !done && completedCount === i);
             const state = (done && !isLastCompleted) ? "done" : active ? "active" : "pending";
@@ -617,7 +612,7 @@ function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStre
             const hasContent = Boolean(step?.content);
 
             return (
-              <div key={i} className={`tp-acc-item tp-acc-item--${state}`}>
+              <div key={stepNum} className={`tp-acc-item tp-acc-item--${state}`}>
                 {hasContent ? (
                   <button className="tp-acc-row" onClick={() => toggleStep(stepNum)}>
                     <div className={`tp-node tp-node--${state}`}>
@@ -628,8 +623,7 @@ function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStre
                         : <span className="tp-num">{stepNum}</span>}
                     </div>
                     <span className="tp-acc-label">{label}</span>
-                    {/* Show corroboration badge for the verification step when done */}
-                    {done && !isLastCompleted && stepNum === 2 && (
+                    {done && !isLastCompleted && stepNum === 2 && totalSteps === 6 && (
                       <span className="tp-corroborated-badge">≥2 agents agreed</span>
                     )}
                     <span className="tp-acc-chevron">{isStepOpen ? "▲" : "▶"}</span>
@@ -700,9 +694,19 @@ function WsScorePip({ score, color }: { score: number; color: string }) {
   );
 }
 
+export interface WorkspaceArtifact {
+  id: string;
+  name: string;
+  kind: "package" | "draft" | "certificate";
+  createdAt: Date;
+  reopen: () => void;
+}
+
 interface WorkspacePanelProps {
   steps: ReasoningStep[];
   citations: Citation[];
+  graphPaths?: import("../types").GraphPath[];
+  artifacts: WorkspaceArtifact[];
   widget?: WidgetPayload;
   analysisText: string;
   isLoading: boolean;
@@ -717,11 +721,12 @@ interface WorkspacePanelProps {
   onOpenDrawer: (view: DrawerView) => void;
 }
 
-function WorkspacePanel({ steps, citations, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
+function WorkspacePanel({ steps, citations, graphPaths, artifacts, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
   const [planOpen, setPlanOpen] = useState(true);
   const [outputOpen, setOutputOpen] = useState(true);
   const [intelOpen, setIntelOpen] = useState(true);
   const [refsOpen, setRefsOpen] = useState(true);
+  const [kgOpen, setKgOpen] = useState(false);
   const [selectedRef, setSelectedRef] = useState<Citation | null>(null);
   // Animate steps completing one-by-one even when they arrive as a batch
   const [visibleSteps, setVisibleSteps] = useState(0);
@@ -751,26 +756,31 @@ function WorkspacePanel({ steps, citations, widget, analysisText, isLoading, has
           <span className="ws-section-name">Plan</span>
           <div className="ws-section-meta">
             {steps.length > 0 && (
-              <span className="ws-badge ws-badge--count">{visibleSteps}/{STEP_LABELS.length}</span>
+              <span className="ws-badge ws-badge--count">{visibleSteps}/{steps.length}</span>
             )}
             <span className={`ws-chevron ${planOpen ? "ws-chevron--open" : ""}`}>›</span>
           </div>
         </button>
         {planOpen && (
           <div className="ws-section-body">
-            {STEP_LABELS.map((label, i) => {
-              const step = steps.find((s) => s.step === i + 1);
-              const done = (step?.completed ?? false) && visibleSteps > i;
-              const active = isLoading && (steps.length === i || (!done && steps.some(s => s.completed)));
+            {steps.map((step, i) => {
+              const done = (step.completed ?? false) && visibleSteps > i;
+              const active = isLoading && !done && i === visibleSteps;
               return (
-                <div key={i} className={`ws-plan-item ws-plan-item--${done ? "done" : active ? "active" : "pending"}`}>
+                <div key={step.step} className={`ws-plan-item ws-plan-item--${done ? "done" : active ? "active" : "pending"}`}>
                   <span className="ws-plan-check">
                     {done ? "✓" : active ? <span className="ws-plan-spinner" /> : "○"}
                   </span>
-                  <span className="ws-plan-label">{label}</span>
+                  <span className="ws-plan-label">{step.label}</span>
                 </div>
               );
             })}
+            {steps.length === 0 && isLoading && (
+              <div className="ws-plan-item ws-plan-item--active">
+                <span className="ws-plan-check"><span className="ws-plan-spinner" /></span>
+                <span className="ws-plan-label">Connecting…</span>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -780,8 +790,8 @@ function WorkspacePanel({ steps, citations, widget, analysisText, isLoading, has
         <button className="ws-section-header" onClick={() => setOutputOpen(!outputOpen)}>
           <span className="ws-section-name">Output</span>
           <div className="ws-section-meta">
-            {(widget ? 1 : 0) > 0 && (
-              <span className="ws-badge ws-badge--count">{widget ? 1 : 0}</span>
+            {(widget ? 1 : 0) + artifacts.length > 0 && (
+              <span className="ws-badge ws-badge--count">{(widget ? 1 : 0) + artifacts.length}</span>
             )}
             <span className={`ws-chevron ${outputOpen ? "ws-chevron--open" : ""}`}>›</span>
           </div>
@@ -827,14 +837,24 @@ function WorkspacePanel({ steps, citations, widget, analysisText, isLoading, has
                 >↗</button>
               </div>
             )}
-            {!widget && hasMessages && (
+            {artifacts.map((art) => (
+              <div key={art.id} className="ws-file-item ws-file-item--clickable ws-artifact-item" onClick={art.reopen}>
+                {art.kind === "package" && <IconFilePdf size={13} className="ws-file-icon ws-file-icon--package" />}
+                {art.kind === "draft" && <IconFileText size={13} className="ws-file-icon ws-file-icon--draft" />}
+                {art.kind === "certificate" && <IconAward size={13} className="ws-file-icon ws-file-icon--cert" />}
+                <span className="ws-file-name ws-file-name--truncate">{art.name}</span>
+                <span className="ws-artifact-time">{art.createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                <button className="ws-file-menu" onClick={(e) => { e.stopPropagation(); art.reopen(); }} title="Reopen">↗</button>
+              </div>
+            ))}
+            {!widget && artifacts.length === 0 && hasMessages && (
               <p className="ws-empty">No outputs yet</p>
             )}
           </div>
         )}
       </div>
 
-      {/* Agent Intelligence — live score cards for secondary agents */}
+      {/* Agent Intelligence — result cards for secondary agents */}
       {(redTeamReview || competitorIntel || refinement || reviewStreaming || competitorStreaming || refinementStreaming) && (
         <div className="ws-section">
           <button className="ws-section-header" onClick={() => setIntelOpen(!intelOpen)}>
@@ -850,8 +870,6 @@ function WorkspacePanel({ steps, citations, widget, analysisText, isLoading, has
           </button>
           {intelOpen && (
             <div className="ws-section-body ws-intel-body">
-
-              {/* Red Team Review card */}
               {(redTeamReview || reviewStreaming) && (
                 <button
                   className={`ws-intel-card ws-intel-card--review ${redTeamReview ? "ws-intel-card--ready" : "ws-intel-card--loading"}`}
@@ -1003,6 +1021,42 @@ function WorkspacePanel({ steps, citations, widget, analysisText, isLoading, has
             ) : (
               <p className="ws-empty">No references yet</p>
             )}
+
+            {/* Knowledge Graph subsection — GraphRAG evidence chains */}
+            {graphPaths && graphPaths.length > 0 && (
+              <div className="ws-kg-section">
+                <button className="ws-kg-header" onClick={() => setKgOpen(o => !o)}>
+                  <span className="ws-kg-icon">⬡</span>
+                  <span className="ws-kg-label">Knowledge Graph</span>
+                  <span className="ws-badge ws-badge--count ws-kg-badge">{graphPaths.length}</span>
+                  <span className={`ws-chevron ${kgOpen ? "ws-chevron--open" : ""}`}>›</span>
+                </button>
+                {kgOpen && (
+                  <div className="ws-kg-body">
+                    {graphPaths.map((path, pi) => (
+                      <div key={pi} className="ws-kg-path">
+                        <div className="ws-kg-path-label">
+                          <span className={`ws-kg-confidence ws-kg-confidence--${path.confidence.toLowerCase()}`}>{path.confidence}</span>
+                          <span className="ws-kg-path-name">{path.grantLabel}</span>
+                        </div>
+                        <div className="ws-kg-hops">
+                          {path.hops.slice(0, 3).map((hop, hi) => (
+                            <div key={hi} className="ws-kg-hop">
+                              <span className="ws-kg-from">{hop.fromLabel}</span>
+                              <span className="ws-kg-rel">→ {hop.rel} →</span>
+                              <span className="ws-kg-to">{hop.toLabel}</span>
+                            </div>
+                          ))}
+                          {path.hops.length > 3 && (
+                            <div className="ws-kg-more">+{path.hops.length - 3} more hops</div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -1066,6 +1120,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
   const [generatingPackage, setGeneratingPackage] = useState<string | null>(null);
   const [draftingApp, setDraftingApp] = useState<string | null>(null);
   const [certifying, setCertifying] = useState<string | null>(null);
+  const [artifacts, setArtifacts] = useState<WorkspaceArtifact[]>([]);
   const [showSettings, setShowSettings] = useState(false);
   const [monitorData, setMonitorData] = useState<MonitorData | null>(null);
   const [monitorTab, setMonitorTab] = useState<"health" | "evals">("health");
@@ -1136,6 +1191,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
   const wsReviewStreaming = latestAssistant?.reviewStreaming ?? false;
   const wsCompetitorStreaming = latestAssistant?.competitorStreaming ?? false;
   const wsRefinementStreaming = latestAssistant?.refinementStreaming ?? false;
+  const wsGraphPaths = latestAssistant?.graphPaths;
 
   const handleSend = async (text?: string) => {
     const message = text ?? input.trim();
@@ -1286,6 +1342,13 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
             )
           );
         },
+        onGraphPaths: (data) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId ? { ...m, graphPaths: data.paths } : m
+            )
+          );
+        },
         onAnswerChunk: (chunk) => {
           setMessages((prev) =>
             prev.map((m) =>
@@ -1376,18 +1439,12 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
       const grantName = (msg.widget.data as GrantMatchData).grantName ?? "Grant";
       const { html } = await generatePackage(msg.widget.data, msg.content, grantName);
       const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const win = window.open(url, "_blank");
-      if (!win) {
-        // Fallback if popup blocked — download as HTML
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${grantName.replace(/[^a-z0-9 ]/gi, "_").replace(/\s+/g, "_")}_Package.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
-      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank");
+      // Log to workspace Output so it can be reopened
+      const artifactId = crypto.randomUUID();
+      const reopen = () => window.open(blobUrl, "_blank");
+      setArtifacts(prev => [...prev, { id: artifactId, name: `${grantName} — Package`, kind: "package", createdAt: new Date(), reopen }]);
     } catch (e) {
       console.error("Package generation failed:", e);
     } finally {
@@ -1409,18 +1466,13 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
         matchScore: w.matchScore,
         analysisText: msg.content,
       });
-      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const win = window.open(url, "_blank");
-      if (!win) {
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${grantName.replace(/[^a-z0-9 ]/gi, "_").replace(/\s+/g, "_")}_Draft_Application.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
-      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      // Open inside the in-app modal so the user can edit inline, then save as PDF
+      setPreviewData({ type: "draft_application", html, title: `${grantName} — Draft Application` });
+      const blobUrl = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
+      const artifactId = crypto.randomUUID();
+      const reopen = () => setPreviewData({ type: "draft_application", html, title: `${grantName} — Draft Application` });
+      setArtifacts(prev => [...prev, { id: artifactId, name: `${grantName} — Draft Application`, kind: "draft", createdAt: new Date(), reopen }]);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
     } catch (e) {
       console.error("Draft application failed:", e);
     } finally {
@@ -1431,7 +1483,14 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
   const handleGenerateCertificate = (msg: Message) => {
     if (!msg.widget || msg.widget.type !== "grant_match" || certifying) return;
     setCertifying(msg.id);
-    generateCertificate(msg.widget.data as import("./GrantMatchWidget").GrantMatchData);
+    const data = msg.widget.data as import("./GrantMatchWidget").GrantMatchData;
+    const grantName = data.grantName ?? "Grant";
+    const html = generateCertificate(data);
+    const title = `${grantName} — Readiness Certificate`;
+    setPreviewData({ type: "draft_application", html, title });
+    const artifactId = crypto.randomUUID();
+    const reopen = () => setPreviewData({ type: "draft_application", html, title });
+    setArtifacts(prev => [...prev, { id: artifactId, name: title, kind: "certificate", createdAt: new Date(), reopen }]);
     setTimeout(() => setCertifying(null), 1200);
   };
 
@@ -1742,7 +1801,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                           />
                         )}
 
-                        {/* Thought process — auto-open when steps arrive, auto-collapse when done */}
+                        {/* Process block — shown at top while streaming for live progress;
+                            when done these collapse to compact bars and sit above the widget */}
                         {(msg.reasoningSteps?.length ?? 0) > 0 && (
                           <ThoughtProcess
                             steps={msg.reasoningSteps ?? []}
@@ -1755,7 +1815,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                           <div className="decision-trail">
                             <div className="decision-trail-head">
                               <IconBolt size={13} />
-                              Dynamic routing · {msg.decisions!.length} decision{msg.decisions!.length === 1 ? "" : "s"}
+                              Adaptive routing — {msg.decisions!.length} path{msg.decisions!.length === 1 ? "" : "s"} taken
                             </div>
                             {msg.decisions!.map((d) => (
                               <div
@@ -1791,7 +1851,23 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                           />
                         )}
 
-                        {/* Inline Widget */}
+                        {/* Provenance — grouped with process metadata, above the widget */}
+                        {msg.tierInfo && !msg.streaming && (
+                          <div className="tier-badge-wrapper">
+                            <TierBadge
+                              tier={msg.tierInfo.tier}
+                              label={msg.tierInfo.label}
+                              guardrailsPassed={msg.tierInfo.guardrailsPassed}
+                              violations={msg.tierInfo.violations}
+                            />
+                          </div>
+                        )}
+
+                        {msg.graphPaths && msg.graphPaths.length > 0 && !msg.streaming && (
+                          <GraphPathsPanel paths={msg.graphPaths} />
+                        )}
+
+                        {/* ── VALUE SECTION ── Widget */}
                         {msg.widget?.type === "grant_match" && (
                           <GrantMatchWidget
                             data={msg.widget.data as import("./GrantMatchWidget").GrantMatchData}
@@ -1809,7 +1885,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                           />
                         )}
 
-                        {/* Quick Actions bar — appears after widget when done */}
+                        {/* ── ACTION SECTION ── Quick actions + follow-up chips */}
                         {msg.widget?.type === "grant_match" && !msg.streaming && (
                           <div className="quick-actions-bar">
                             <button
@@ -1856,7 +1932,6 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                           </div>
                         )}
 
-                        {/* Follow-up suggestion chips */}
                         {msg.widget?.type === "grant_match" && !msg.streaming && (
                           <div className="followup-chips">
                             <span className="followup-chips-label">Ask a follow-up</span>
@@ -1865,18 +1940,6 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
                                 {chip.label}
                               </button>
                             ))}
-                          </div>
-                        )}
-
-                        {/* LLM Fallback Chain — tier badge shown after analysis completes */}
-                        {msg.tierInfo && !msg.streaming && (
-                          <div style={{ marginTop: "0.5rem" }}>
-                            <TierBadge
-                              tier={msg.tierInfo.tier}
-                              label={msg.tierInfo.label}
-                              guardrailsPassed={msg.tierInfo.guardrailsPassed}
-                              violations={msg.tierInfo.violations}
-                            />
                           </div>
                         )}
 
@@ -1981,6 +2044,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton }: {
       <WorkspacePanel
         steps={wsSteps}
         citations={wsCitations}
+        graphPaths={wsGraphPaths}
+        artifacts={artifacts}
         widget={wsWidget}
         analysisText={wsAnalysisText}
         isLoading={isLoading}

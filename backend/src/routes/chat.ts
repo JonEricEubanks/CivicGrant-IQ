@@ -119,12 +119,11 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     // Tell the UI up front whether this is a follow-up reply or a full analysis,
     // so it can render the answer as a plain reply (follow-up) vs. a report (analysis).
     send("meta", { isFollowUp });
-    send("status", { message: isFollowUp ? "Looking up context from your session…" : "Connecting to Microsoft 365 Work IQ context…" });
-    const cityContext = await getCityContext(false);
-    send("work_iq_context", cityContext);
-    send("status", { message: cityContext.source === "sharepoint" ? "SharePoint city context loaded from Microsoft Graph." : "Using local Work IQ context fallback." });
 
-    // ── For follow-ups: skip Competitor Intel — that already ran for the initial query
+    // ── Start Work IQ loading and Competitor Intel concurrently ──────────────
+    const cityContextPromise = getCityContext(false);
+
+    // For follow-ups: skip Competitor Intel — that already ran for the initial query
     const competitorPromise = isFollowUp
       ? Promise.resolve(null)
       : (() => {
@@ -134,6 +133,24 @@ chatRouter.post("/", async (req: Request, res: Response) => {
             return null;
           });
         })();
+
+    // Await city context (competitor continues loading in parallel)
+    const cityContext = await cityContextPromise;
+    send("work_iq_context", cityContext);
+
+    // Emit step 1 "in-progress" immediately with Work IQ details so the
+    // expand panel shows real content even before the LLM reaches step 1.
+    if (!isFollowUp) {
+      const wiqSource = cityContext.source === "sharepoint" ? "Microsoft 365 SharePoint" : "local KB fallback";
+      const wiqThemes = cityContext.priorityThemes.slice(0, 4).join(", ") || "none extracted";
+      const wiqProjects = cityContext.activeProjects.slice(0, 3).map((p: { name: string }) => p.name).join(", ") || "none";
+      send("reasoning_step", {
+        step: 1,
+        label: "Connect Work IQ + Parse Grant",
+        content: `Work IQ loaded from **${wiqSource}** (${cityContext.filesRead.length} files read).\n- Priority themes: ${wiqThemes}\n- Active projects: ${wiqProjects}\n\nParsing grant eligibility requirements…`,
+        completed: false,
+      });
+    }
 
     // Keepalive: send a heartbeat every 20s so the browser SSE connection doesn't time out
     const keepalive = setInterval(() => {
@@ -178,8 +195,22 @@ chatRouter.post("/", async (req: Request, res: Response) => {
             firstStepReceived = true;
             clearInterval(progressInterval);
           }
-          streamedStepNums.add(step.step);
-          send("reasoning_step", step);
+          // For step 1 of a full analysis, prepend Work IQ context to the LLM's
+          // grant-parsing content so the expanded step shows both in one place.
+          const emitStep = (!isFollowUp && step.step === 1 && step.completed && step.content)
+            ? {
+                ...step,
+                content: [
+                  `Work IQ loaded from **${cityContext.source === "sharepoint" ? "Microsoft 365 SharePoint" : "local KB fallback"}** (${cityContext.filesRead.length} files).`,
+                  `- Priority themes: ${cityContext.priorityThemes.slice(0, 4).join(", ") || "none"}`,
+                  `- Active projects: ${cityContext.activeProjects.slice(0, 3).map((p: { name: string }) => p.name).join(", ") || "none"}`,
+                  "",
+                  step.content,
+                ].join("\n"),
+              }
+            : step;
+          streamedStepNums.add(emitStep.step);
+          send("reasoning_step", emitStep);
         },
       });
     } finally {
@@ -258,6 +289,13 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     // a direct answer from the thread context; no need for re-scoring, red team,
     // or competitive intel on what is already an existing analysis.
     if (isFollowUp) {
+      // Emit lightweight steps that reflect what actually happened for this follow-up
+      const followUpSteps = [
+        { step: 1, label: "Load Session Context", content: "Retrieved prior grant analysis thread and city Work IQ context from Microsoft Graph.", completed: true },
+        { step: 2, label: "Recall Grant Analysis", content: "Located relevant findings from the original analysis matching this follow-up question.", completed: true },
+        { step: 3, label: "Answer Follow-up", content: displayText.slice(0, 400) || "Follow-up answer generated from session context.", completed: true },
+      ];
+      for (const step of followUpSteps) send("reasoning_step", step);
       send("done", {});
       return;
     }

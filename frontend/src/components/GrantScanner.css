@@ -337,6 +337,70 @@
 .project-clear-btn { background: none; border: none; font-size: 0.72rem; color: #9ca3af; cursor: pointer; font-family: inherit; padding: 0; text-decoration: underline; }
 .project-clear-btn:hover { color: #6b7280; }
 
+/* ── Focus section header row (header btn + action btn side-by-side) ── */
+.focus-section-header-row {
+  display: flex;
+  align-items: center;
+}
+
+.focus-section-header-row .focus-section-header {
+  flex: 1;
+}
+
+/* Clear button on Priority Focus Areas */
+.section-clear-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #9ca3af;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0 0.9rem 0 0.4rem;
+  text-decoration: underline;
+  line-height: 1;
+  white-space: nowrap;
+}
+.section-clear-btn:hover { color: #6b7280; }
+
+/* Work IQ toggle button */
+.workiq-toggle-btn {
+  flex-shrink: 0;
+  background: #f0f4ff;
+  border: 1.5px solid #c7d7f8;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #4f71cc;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0.2rem 0.65rem;
+  margin-right: 0.75rem;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.workiq-toggle-btn:hover:not(:disabled) { background: #dce8ff; border-color: #4f71cc; color: #2c4faa; }
+.workiq-toggle-btn:disabled { opacity: 0.6; cursor: default; }
+.workiq-toggle-btn--active {
+  background: linear-gradient(135deg, #3b5ee8, #1a6fba);
+  border-color: transparent;
+  color: #fff;
+}
+.workiq-toggle-btn--active:hover:not(:disabled) { background: linear-gradient(135deg, #2c4fcc, #0e5fa0); }
+
+/* Work IQ populated badge in section header */
+.workiq-badge {
+  background: linear-gradient(135deg, #3b5ee8, #1a6fba);
+  color: #fff;
+  font-size: 0.63rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 .scan-btn {
   width: 100%;
   padding: 0.85rem;

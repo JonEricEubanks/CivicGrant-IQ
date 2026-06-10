@@ -11,7 +11,8 @@ import "./ReportPreviewModal.css";
 // ─── Types ────────────────────────────────────────────────────────────────
 export type ReportPayload =
   | { type: "grant_match"; widget: GrantMatchData; analysisText: string; title: string; citations?: Citation[]; redTeamReview?: RedTeamResult; competitorIntel?: CompetitorIntelResult }
-  | { type: "grant_pipeline"; analysisText: string; title: string; citations?: Citation[] };
+  | { type: "grant_pipeline"; analysisText: string; title: string; citations?: Citation[] }
+  | { type: "draft_application"; html: string; title: string };
 
 // ─── HTML Report Generator ─────────────────────────────────────────────────
 function formatFunding(amount: number): string {
@@ -111,7 +112,9 @@ function mdToHtml(rawText: string): string {
   return parts.join("\n");
 }
 
-export function generateReportHtml(data: ReportPayload, dark: boolean, citations?: Citation[]): string {
+type RenderablePayload = Exclude<ReportPayload, { type: "draft_application" }>;
+
+export function generateReportHtml(data: RenderablePayload, dark: boolean, citations?: Citation[]): string {
   const bg = dark ? "#0f1117" : "#f4f7fc";
   const card = dark ? "#1a1d26" : "#ffffff";
   const cardBorder = dark ? "#252836" : "#e8eef7";
@@ -391,8 +394,10 @@ export function ReportPreviewModal({ data, onClose }: ReportPreviewModalProps) {
   const [dlOpen, setDlOpen] = useState(false);
   const dlRef = useRef<HTMLDivElement>(null);
 
-  const citations = data.citations;
-  const html = generateReportHtml(data, dark, citations);
+  const citations = data.type !== "draft_application" ? data.citations : undefined;
+  const isDraft = data.type === "draft_application";
+  const renderableData = isDraft ? null : data as RenderablePayload;
+  const html = isDraft ? data.html : generateReportHtml(renderableData!, dark, citations);
 
   const downloadAs = (filename: string, content: string, mime: string) => {
     const blob = new Blob([content], { type: mime });
@@ -409,18 +414,19 @@ export function ReportPreviewModal({ data, onClose }: ReportPreviewModalProps) {
     downloadAs(`civicgrant-report.html`, html, "text/html");
 
   const handleDownloadWord = () => {
+    if (isDraft) { downloadAs(`draft-application.html`, html, "text/html"); return; }
     const docHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:w="urn:schemas-microsoft-com:office:word"
       xmlns="http://www.w3.org/TR/REC-html40">
       <head><meta charset="UTF-8"><title>${data.title}</title></head>
-      <body>${generateReportHtml(data, false, citations)}</body></html>`;
+      <body>${generateReportHtml(renderableData!, false, citations)}</body></html>`;
     downloadAs(`civicgrant-report.doc`, docHtml, "application/msword");
   };
 
   const handleDownloadPdf = () => {
     const win = window.open("", "_blank");
     if (!win) return;
-    win.document.write(generateReportHtml(data, false, citations));
+    win.document.write(isDraft ? html : generateReportHtml(renderableData!, false, citations));
     win.document.close();
     win.focus();
     setTimeout(() => { win.print(); }, 400);
@@ -438,7 +444,8 @@ export function ReportPreviewModal({ data, onClose }: ReportPreviewModalProps) {
             <span className="rp-toolbar-title">{data.title}</span>
           </div>
           <div className="rp-toolbar-right">
-            {/* Theme toggle */}
+            {/* Theme toggle — not applicable for draft application (has own internal styling) */}
+            {!isDraft && (
             <button
               className="rp-tool-btn"
               title={dark ? "Switch to light mode" : "Switch to dark mode"}
@@ -446,6 +453,7 @@ export function ReportPreviewModal({ data, onClose }: ReportPreviewModalProps) {
             >
               {dark ? <IconSun size={15} /> : <IconMoon size={15} />}
             </button>
+            )}
 
             {/* Present / fullscreen */}
             <button
@@ -502,7 +510,7 @@ export function ReportPreviewModal({ data, onClose }: ReportPreviewModalProps) {
           <iframe
             className="rp-iframe"
             srcDoc={html}
-            sandbox="allow-same-origin"
+            sandbox={data.type === "draft_application" ? "allow-scripts allow-same-origin" : "allow-same-origin"}
             title="Report Preview"
           />
         </div>
@@ -512,10 +520,12 @@ export function ReportPreviewModal({ data, onClose }: ReportPreviewModalProps) {
           <span className="rp-status-text">
             {data.type === "grant_match"
               ? `${data.widget.matchScore}% match · ${formatFunding(data.widget.fundingAmount)} available · Deadline ${safeDate(data.widget.deadline)}`
+              : data.type === "draft_application"
+              ? "Draft application — use the Edit / Save as PDF toolbar inside the document"
               : "Grant pipeline analysis"}
           </span>
           <span className="rp-status-hint">
-            {dark ? "Dark mode" : "Light mode"} · Share with staff via Download
+            {data.type === "draft_application" ? "Click any text to edit · Save as PDF when ready" : (dark ? "Dark mode" : "Light mode") + " · Share with staff via Download"}
           </span>
         </div>
       </div>
