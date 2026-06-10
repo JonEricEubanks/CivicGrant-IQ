@@ -25,7 +25,6 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
-    "frontend": "file:../frontend",
     "helmet": "^8.2.0",
     "mammoth": "^1.12.0",
     "pdf-parse": "^2.4.5"
