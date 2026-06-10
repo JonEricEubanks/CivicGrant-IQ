@@ -16,9 +16,9 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$APP_NAME      = "civicgrant-backend"
+$APP_NAME = "civicgrant-backend"
 $RESOURCE_GROUP = "rg-skillsfest"
-$ENV_FILE      = Join-Path $PSScriptRoot "..\backend\.env"
+$ENV_FILE = Join-Path $PSScriptRoot "..\backend\.env"
 
 # ── Validate ────────────────────────────────────────────────────────────────
 if (-not (Test-Path $ENV_FILE)) {
@@ -35,7 +35,7 @@ foreach ($line in Get-Content $ENV_FILE) {
     if ($trimmed -eq "" -or $trimmed.StartsWith("#")) { continue }
     $idx = $trimmed.IndexOf("=")
     if ($idx -lt 1) { continue }
-    $key   = $trimmed.Substring(0, $idx).Trim()
+    $key = $trimmed.Substring(0, $idx).Trim()
     $value = $trimmed.Substring($idx + 1).Trim()
     # Strip inline comments (e.g. VALUE=foo   # comment)
     $commentIdx = $value.IndexOf("   #")
@@ -44,9 +44,9 @@ foreach ($line in Get-Content $ENV_FILE) {
 }
 
 # ── Add production-required extras ─────────────────────────────────────────
-$settings["WEBSITES_PORT"]    = "3001"   # Tells App Service which port to forward to
-$settings["NODE_ENV"]         = "production"
-$settings["PORT"]             = "3001"
+$settings["WEBSITES_PORT"] = "3001"   # Tells App Service which port to forward to
+$settings["NODE_ENV"] = "production"
+$settings["PORT"] = "3001"
 
 Write-Host "  Found $($settings.Count) settings to push" -ForegroundColor Gray
 

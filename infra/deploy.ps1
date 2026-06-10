@@ -17,18 +17,18 @@ $ErrorActionPreference = "Stop"
 
 # ── Constants ──────────────────────────────────────────────────────────────
 # Set your subscription ID here or via $env:AZURE_SUBSCRIPTION_ID
-$SUBSCRIPTION_ID   = $env:AZURE_SUBSCRIPTION_ID ?? "<your-subscription-id>"
-$RESOURCE_GROUP    = "rg-skillsfest"
-$LOCATION          = "northcentralus"   # RG logical location
-$AI_LOCATION       = "eastus2"          # AI Search + AOAI must be eastus2 for agentic retrieval
-$PREFIX            = "civicgrant"
-$SEARCH_NAME       = "$PREFIX-search"
-$AOAI_NAME         = "$PREFIX-aoai"
-$STORAGE_NAME      = "${PREFIX}store"   # storage names: lowercase, no hyphens, max 24 chars
-$BLOB_CONTAINER    = "civicgrant-docs"
-$AI_HUB_NAME       = "$PREFIX-hub"
-$AI_PROJECT_NAME   = "$PREFIX-project"
-$KB_NAME           = "civicgrant-kb"
+$SUBSCRIPTION_ID = $env:AZURE_SUBSCRIPTION_ID ?? "<your-subscription-id>"
+$RESOURCE_GROUP = "rg-skillsfest"
+$LOCATION = "northcentralus"   # RG logical location
+$AI_LOCATION = "eastus2"          # AI Search + AOAI must be eastus2 for agentic retrieval
+$PREFIX = "civicgrant"
+$SEARCH_NAME = "$PREFIX-search"
+$AOAI_NAME = "$PREFIX-aoai"
+$STORAGE_NAME = "${PREFIX}store"   # storage names: lowercase, no hyphens, max 24 chars
+$BLOB_CONTAINER = "civicgrant-docs"
+$AI_HUB_NAME = "$PREFIX-hub"
+$AI_PROJECT_NAME = "$PREFIX-project"
+$KB_NAME = "civicgrant-kb"
 
 # ── Pre-flight ─────────────────────────────────────────────────────────────
 Write-Host "`n=== CivicGrant IQ Infrastructure Deployment ===" -ForegroundColor Cyan
@@ -55,9 +55,9 @@ az search service create `
 
 $SEARCH_ENDPOINT = "https://$SEARCH_NAME.search.windows.net"
 $SEARCH_KEY = (az search admin-key show `
-  --service-name $SEARCH_NAME `
-  --resource-group $RESOURCE_GROUP `
-  --query "primaryKey" -o tsv)
+    --service-name $SEARCH_NAME `
+    --resource-group $RESOURCE_GROUP `
+    --query "primaryKey" -o tsv)
 
 Write-Host "  Search endpoint: $SEARCH_ENDPOINT" -ForegroundColor Green
 
@@ -72,9 +72,9 @@ az cognitiveservices account create `
   --output none
 
 $AOAI_ENDPOINT = (az cognitiveservices account show `
-  --name $AOAI_NAME `
-  --resource-group $RESOURCE_GROUP `
-  --query "properties.endpoint" -o tsv)
+    --name $AOAI_NAME `
+    --resource-group $RESOURCE_GROUP `
+    --query "properties.endpoint" -o tsv)
 
 # Deploy gpt-4o-mini
 az cognitiveservices account deployment create `
@@ -113,9 +113,9 @@ az storage account create `
   --output none
 
 $BLOB_CONNECTION_STRING = (az storage account show-connection-string `
-  --name $STORAGE_NAME `
-  --resource-group $RESOURCE_GROUP `
-  --query "connectionString" -o tsv)
+    --name $STORAGE_NAME `
+    --resource-group $RESOURCE_GROUP `
+    --query "connectionString" -o tsv)
 
 az storage container create `
   --name $BLOB_CONTAINER `
@@ -142,9 +142,9 @@ az ml workspace create `
   --output none 2>$null
 
 $FOUNDRY_PROJECT_ENDPOINT = (az ml workspace show `
-  --name $AI_PROJECT_NAME `
-  --resource-group $RESOURCE_GROUP `
-  --query "discovery_url" -o tsv 2>$null)
+    --name $AI_PROJECT_NAME `
+    --resource-group $RESOURCE_GROUP `
+    --query "discovery_url" -o tsv 2>$null)
 
 if (-not $FOUNDRY_PROJECT_ENDPOINT) {
   $FOUNDRY_PROJECT_ENDPOINT = "https://$AI_LOCATION.api.azureml.ms/agents/v1.0/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$AI_PROJECT_NAME"
