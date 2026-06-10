@@ -38,9 +38,23 @@ jobs:
         working-directory: backend
         run: npm prune --production
 
+      - name: Prepare deploy artifact
+        run: |
+          mkdir deploy-pkg
+          cp -r backend/dist deploy-pkg/dist
+          cp backend/node_modules deploy-pkg/node_modules -r
+          cp backend/package-lock.json deploy-pkg/
+          # Write package.json with build script removed so Oryx won't try to run tsc
+          node -e "
+            const p = require('./backend/package.json');
+            delete p.scripts.build;
+            delete p.devDependencies;
+            require('fs').writeFileSync('./deploy-pkg/package.json', JSON.stringify(p, null, 2));
+          "
+
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
           app-name: civicgrant-backend
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: backend
+          package: deploy-pkg
