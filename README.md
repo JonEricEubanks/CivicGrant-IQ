@@ -17,7 +17,7 @@
 
 <br/>
 
-### 🚀 **[Try the Live Demo](https://proud-field-00978990f.7.azurestaticapps.net)** &nbsp;·&nbsp; 📺 **[Watch the 3‑min Demo](https://REPLACE_WITH_DEMO_VIDEO_URL)** &nbsp;·&nbsp; 🧭 **[Why It Wins](#-why-this-wins-best-overall-agent)**
+### 🚀 **[Try the Live Demo](https://proud-field-00978990f.7.azurestaticapps.net)** &nbsp;·&nbsp; 📺 **[Watch the 5‑min Demo](https://REPLACE_WITH_DEMO_VIDEO_URL)** &nbsp;·&nbsp; 🧭 **[Why It Wins](#-why-this-wins-best-overall-agent)**
 
 </div>
 
@@ -39,6 +39,7 @@
 | **IQ Layers** | **Foundry IQ** + **Work IQ** (both load‑bearing) |
 | **Live App** | https://proud-field-00978990f.7.azurestaticapps.net |
 | **Repo** | https://github.com/JonEricEubanks/CivicGrant-IQ |
+| **Demo** | https://proud-field-00978990f.7.azurestaticapps.net |
 
 ### 👤 Team
 
@@ -46,25 +47,26 @@
 |---|---|---|---|
 | **Jon Eric Eubanks** | Lead / full‑stack | [JonEricEubanks](https://learn.microsoft.com/en-us/users/jonericeubanks/) | [@JonEricEubanks](https://github.com/JonEricEubanks) |
 
-> **⚠️ Before submitting:** Replace `REPLACE_WITH_MS_LEARN_USERNAME` with your Microsoft Learn profile link and `REPLACE_WITH_DEMO_VIDEO_URL` with your uploaded demo video URL. These are required for eligibility.
+> **⚠️ Before submitting:** Replace `REPLACE_WITH_DEMO_VIDEO_URL` with your uploaded demo video URL (appears twice in this README). Required for eligibility.
 
 ---
 
 ## 🎯 For Judges: Where to Look
 
-**If you have 2 minutes:**
+**If you have 6 minutes:**
 - [Live demo](https://proud-field-00978990f.7.azurestaticapps.net) — paste a real NOFO, watch it reason through grounded steps.
 - Look for the **GraphPaths panel** in the UI — this is the hero artifact that makes reasoning transparent.
 
-**If you have 5 minutes:**
+**If you have 8 minutes:**
 - Read the [GraphRAG Evidence Chains](#-graphrag-the-hero-artifact) section above.
 - Click through [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) lines 464–526 to see the multi-hop BFS and per-hop citation logic.
 - This is the difference between "AI said so" and "AI proved it."
 
-**If you have 10 minutes:**
+**If you have 15 minutes:**
 - Inspect the [Why This Wins](#-why-this-wins-best-overall-agent) section for all four differentiators with proof links.
 - Check [`agent.ts:1166–1244`](backend/src/agent.ts#L1166) for the 3-tier fallback dispatcher (Tier 1 fails → Tier 2 → Tier 3 mock engine).
-- Verify in the live demo: paste a query, watch it stream SSE events, see the GraphPaths render in real time.
+- Skim [Production Hardening](#-production-hardening-beyond-the-guardrails) — SSRF with DNS-rebinding defense ([`fetchUrl.ts:15–48`](backend/src/routes/fetchUrl.ts#L15)), cost-aware rate limits, capped context windows.
+- Verify in the live demo: paste a query, watch it stream SSE events, see the GraphPaths render in real time — and watch the `decision` events explain *why* each sub-agent spawned.
 
 ### 🔌 IQ Integration Map — Exact File:Line Pointers
 
@@ -74,7 +76,12 @@ Every judge claim below points to a real, verifiable line of code:
 |---|---|---|---|
 | **Foundry IQ** — MCP tool registration | [`agent.ts`](backend/src/agent.ts) | 721–726 | `{ type: "mcp", server_url, require_approval: "never", allowed_tools: ["knowledge_base_retrieve"] }` tool definition wired to the Assistants API |
 | **Foundry IQ** — KB retrieval call | [`agent.ts`](backend/src/agent.ts) | 950–967 | `oai.beta.threads.runs.stream(...)` invoking the MCP tool; response parsed and citations extracted |
-| **Work IQ** — Graph/SharePoint context | [`graphContext.ts`](backend/src/graphContext.ts) | 204–284 | `fetchSharePointDocuments()` calling Microsoft Graph `drives/{id}/root/children`, downloading each file, parsing PDF/DOCX, distilling with LLM |
+| **Work IQ** — SharePoint documents | [`graphContext.ts`](backend/src/graphContext.ts) | 286–306 | `loadSharePointDocuments()` calling Microsoft Graph `drives/{id}/root/children`, downloading each file, parsing PDF/DOCX, distilling with LLM |
+| **Work IQ** — SharePoint metadata pipeline | [`graphContext.ts`](backend/src/graphContext.ts) | 185–188, 382–404 | A SharePoint agent helps grant staff tag documents with 6 metadata columns (DocumentType, Status, GrantProgram, ProjectName, Year, Category); `fetchItemFields()` reads them via Graph and routes **active vs. rejected** applications into different reasoning paths |
+| **Work IQ** — Calendar / meetings | [`graphContext.ts`](backend/src/graphContext.ts) | 204–227 | `fetchGrantCalendarEvents()` → Graph `calendarView` (next 90 days), filtered to grant-related events |
+| **Work IQ** — Teams channel messages | [`graphContext.ts`](backend/src/graphContext.ts) | 230–260 | `fetchGrantTeamsMessages()` → Graph `/teams/{id}/channels/{id}/messages`, scans grant-coordination channels |
+| **Work IQ** — Email | [`graphContext.ts`](backend/src/graphContext.ts) | 263–284 | `fetchGrantMail()` → Graph `/users/{upn}/messages?$search="grant"`, recent grant-related mail |
+| **Work IQ** — Signal fusion | [`graphContext.ts`](backend/src/graphContext.ts) | 471–513 | All four signals fetched in parallel and merged into a `LIVE MICROSOFT 365 SIGNALS (Work IQ)` prompt block that grounds every analysis |
 | **6-step chain** — per-step agents | [`agents/multiAgent.ts`](backend/src/agents/multiAgent.ts) | 777–952 | `STEP1_SYSTEM` through `STEP6_SYSTEM` constants + `runSixStepChain()` — 6 separate `quickChat` calls, each step feeds the next |
 | **G17 guardrail** — auto-correct widget | [`guardrails.ts`](backend/src/guardrails.ts) | G17 block | When `fundingAmount > $100B`, corrects the widget in-place and sets `correctedWidget`; `chat.ts` emits `guardrail_correction` SSE event |
 | **GraphRAG** — multi-hop BFS | [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) | 464–526 | `findEvidencePaths()` BFS, typed edges, per-hop confidence scoring |
@@ -95,16 +102,24 @@ Every reasoning hop is **pre-verified and cited to a real document**, with confi
 
 ### 2️⃣ **Dual Microsoft IQ — Production Integration, Not Demo Magic**
 - **Foundry IQ:** MCP `knowledge_base_retrieve` tool on Assistants API (lines 917–934 in [`agent.ts`](backend/src/agent.ts))
-- **Work IQ:** Microsoft Graph → SharePoint document extraction, PDF/DOCX parsing, LLM distillation (lines 189–209 in [`graphContext.ts`](backend/src/graphContext.ts))
+- **Work IQ — four live M365 signals**, fetched in parallel ([`graphContext.ts:471–513`](backend/src/graphContext.ts#L471)):
+  - 📄 **SharePoint documents** — extraction, PDF/DOCX parsing, LLM distillation (`loadSharePointDocuments`, line 286). A **SharePoint agent assists staff with metadata tagging** (DocumentType, Status, GrantProgram, ProjectName, Year, Category) so the library stays AI-ready; CivicGrant IQ reads those columns via `fetchItemFields` (line 185) and uses `Status` to separate active applications from rejected/withdrawn ones (lines 382–404)
+  - 📅 **Calendar / meetings** — upcoming grant deadlines and review meetings via Graph `calendarView` (`fetchGrantCalendarEvents`, line 204)
+  - 💬 **Teams channel messages** — live grant-coordination chatter from team channels (`fetchGrantTeamsMessages`, line 230)
+  - ✉️ **Email** — recent grant-related mail via Graph `$search` (`fetchGrantMail`, line 263)
+- **Signal fusion:** all four merge into a `LIVE MICROSOFT 365 SIGNALS (Work IQ)` block injected into the agent prompt — exactly Work IQ's promise of building memory from *emails, meetings, chats, and documents*
 - **Both active:** City documents auto-pull → agent respects active vs. rejected status → KB augments reasoning
-- **Proof:** Live demo pulls from your actual SharePoint library
+- **Proof:** Live demo pulls from your actual SharePoint library, mailbox, calendar, and Teams
 
 ### 3️⃣ **Five-Agent Fleet with Surgical Orchestration**
 - **Five specialists:** Main 6-step analyst, Red Team GS-14 reviewer, Competitive Intel, Portfolio Scan (live grants.gov), Narrative Refinement
-- **Viability gate:** Only spawns Red Team if match score > 55% (save compute credits)
-- **Low-grounding re-query:** KB search re-runs if agent confidence < 2 sources
+- **Viability gate:** Only spawns Red Team if match score ≥ 55% (`VIABILITY_BAR`, [`chat.ts:345`](backend/src/routes/chat.ts#L345)) — save compute credits
+- **Low-grounding re-query:** KB search auto-re-runs if citations < 2 (`GROUNDING_BAR`, [`chat.ts:346–371`](backend/src/routes/chat.ts#L346)) — the system is self-aware about its own confidence
+- **Transparent routing:** every orchestration choice (re-query, Red Team spawn, skip) is streamed as a `decision` SSE event with the signal metrics that triggered it — judges see *why* an agent spawned, not just that it did ([`chat.ts:349–383`](backend/src/routes/chat.ts#L349))
+- **Eager parallelism:** Competitive Intel launches concurrently with the Main analysis (it doesn't need Main's output), saving 3–5 s per run ([`chat.ts:126–135`](backend/src/routes/chat.ts#L126))
 - **Critic→actor loop:** Red Team and Competitive Intel feed a typed `RefinementHandoffPayload` into Narrative Refinement
-- **No fan-out waste:** Single-turn follow-ups skip parallel execution
+- **No fan-out waste:** Single-turn follow-ups skip parallel execution (48-keyword follow-up heuristic, [`chat.ts:81–96`](backend/src/routes/chat.ts#L81))
+- **Pasted-NOFO lock:** when a user pastes a full grant announcement, detection logic ([`chat.ts:61–104`](backend/src/routes/chat.ts#L61)) pins the agent to *that exact grant* — it cannot silently substitute a similar grant from its knowledge base (a real hallucination mode in RAG agents)
 - **Proof:** [`chat.ts`](backend/src/routes/chat.ts) router logic + [`multiAgent.ts`](backend/src/agents/multiAgent.ts)
 
 ### 4️⃣ **3-Tier Never-Down Fallback + 17-Rule Guardrails**
@@ -117,6 +132,8 @@ Tier 3: Deterministic mock engine (zero credentials, deterministic output)
 ```
 - **17 guardrails:** G01–G09 (input: SSN/injection/DoS detection) + G10–G17 (output: reasoning completeness, match score range, citation grounding)
 - **BLOCK-level violations abort pre-LLM** — save compute, save hallucination risk
+- **Format-drift insurance:** if Tier 2 ignores the 6-step output format, the server synthesizes steps from response paragraphs so the UI never breaks ([`chat.ts:233–255`](backend/src/routes/chat.ts#L233))
+- **Hardened beyond guardrails:** SSRF protection with DNS-rebinding defense, cost-aware rate limiting, capped context windows — see [Production Hardening](#-production-hardening-beyond-the-guardrails)
 - **Proof:** [`agent.ts:1166–1244`](backend/src/agent.ts#L1166) + [`guardrails.ts`](backend/src/guardrails.ts)
 
 ---
@@ -176,7 +193,7 @@ Every number is traced. Every claim is cited. No hallucination.
 - ✅ Per-hop source links — judge can click and verify
 - ✅ Graph-first, LLM-second — AI ranks chains, doesn't invent them
 
-**Implementation:** [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) — 29 typed entities, 49 weighted edges, multi-hop BFS with per-hop evidence extraction (`findEvidencePaths`, line 464)
+**Implementation:** [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) — 40 typed entities, 57 weighted edges, multi-hop BFS with per-hop evidence extraction (`findEvidencePaths`, line 464)
 
 ---
 
@@ -192,12 +209,12 @@ Every number is traced. Every claim is cited. No hallucination.
 | 🔍 **Grant Analysis** | Paste any federal NOFO → AI runs a 6-step chain (Parse → Match → Verify → Gap → Narrative → Strategy) grounded in your city's real Capital Improvement Plan and past grant applications. Every number cited. |
 | 🤖 **Five-Agent Pressure Test** | While you watch, a GS-14 Red Team reviewer (simulated federal program officer) and Competitive Intelligence agent run in parallel. Red Team finds weaknesses; Narrative Refinement folds feedback into a polished draft. |
 | 🧭 **Smart Router** | System decides what to run: re-queries KB if grounding is weak, spawns Red Team only on viable matches (>55%), skips parallel execution on quick follow-ups. Save compute, focus analysis. |
-| 📡 **Live Grant Portfolio Scan** | Type "Buffalo Grove, Illinois" → ranked feed of live grants from Grants.gov sorted by deadline urgency and city-specific match. Updated daily. |
+| 📡 **Live Grant Portfolio Scan** | Type "Buffalo Grove, Illinois" → ranked feed of live grants from Grants.gov sorted by deadline urgency and city-specific match. Funding figures are **verified, not hallucinated**: a second Grants.gov detail call pulls the real `estimatedFunding` for each opportunity ([`grantsLive.ts`](backend/src/routes/grantsLive.ts)). Updated daily. |
 | 📄 **One-Click Export** | Submission-ready package: polished narrative, gap analysis, 4-week compliance action plan, all traced to source documents. Plus full **application drafting** and **PDF report preview/export**. |
 | 🗂️ **Grant Admin Hub** | Post-award: track disbursements, milestone progress, compliance flags, auto-draft SF-425 closeout forms — with its own admin chat agent. |
-| 🧠 **Foundry IQ + Work IQ** | Documents from your SharePoint library auto-load. City context (active projects, risk signals, capital budget) personalize every analysis. Grounding is not optional—it's required. |
+| 🧠 **Foundry IQ + Work IQ** | Documents from your SharePoint library auto-load, plus live M365 signals: upcoming grant calendar events, Teams channel coordination messages, and recent grant-related emails. City context (active projects, risk signals, capital budget) personalize every analysis. Grounding is not optional—it's required. |
 | 📊 **Built-in Eval Dashboard** | LLM-as-judge scores Groundedness, Relevance, Coherence, Safety (1–5 scale). See what worked, what didn't. Iterate. |
-| 📈 **Full Observability** | Every request traced to Azure Application Insights via OpenTelemetry: guardrail verdicts, tier fallbacks, agent spawns, token usage. |
+| 📈 **Full Observability** | Every request traced to Azure Application Insights via OpenTelemetry: guardrail verdicts, tier fallbacks, agent spawns, token usage. Six named custom metrics — agent latency, match score distribution, KB search latency, sub-agent latency, run count, error count ([`telemetry.ts`](backend/src/telemetry.ts)) — answer "what % of requests hit Tier 3?" without log digging. |
 | 🎬 **Guided Demo Tour** | First-time visitors get an interactive walkthrough (DemoTour) — judges see the hero features without hunting. |
 
 </details>
@@ -240,6 +257,7 @@ graph TD
 
     subgraph Data["📂 Knowledge Sources"]
         SharePoint["SharePoint Documents<br/>(Work IQ auto-load)"]
+        M365["Calendar · Teams · Email<br/>(Work IQ live signals)"]
         LocalKB["Local Municipal KB<br/>(Buffalo Grove corpus)"]
     end
 
@@ -250,6 +268,7 @@ graph TD
     Main -.->|fallback on low grounding| Search
     Main -->|fetch city context| Graph
     Graph -->|pull documents| SharePoint
+    Graph -->|pull live signals| M365
     Main -.->|fallback if no credentials| LocalKB
     Chat -->|parallel spawn| RedTeam
     Chat -->|parallel spawn| Competitor
@@ -263,11 +282,11 @@ graph TD
 **The Loop:**
 1. User pastes NOFO → Chat endpoint receives it
 2. Guardrails validate (G01–G09 input rules)
-3. Main agent runs 6-step chain; queries GraphRAG (Foundry IQ) + SharePoint (Work IQ)
+3. Main agent runs 6-step chain; queries GraphRAG (Foundry IQ) + live M365 signals — SharePoint docs, calendar, Teams messages, email (Work IQ)
 4. If grounding is weak (< 2 sources), re-query KB
 5. If score > 55%, spawn Red Team + Competitive Intel in parallel (`Promise.allSettled`)
 6. Refinement merges feedback into polished narrative
-7. Stream response as **17 distinct SSE event types** (steps, citations, graph paths, agent status, widgets); render GraphPaths panel on client
+7. Stream response as **23 distinct SSE event types** (steps, citations, graph paths, agent status, orchestration decisions, widgets); render GraphPaths panel on client
 8. Output guardrails validate (G10–G17) before streaming to user
 9. Every request traced to **Azure Application Insights** via OpenTelemetry; all operations fall back gracefully (Tier 1 → Tier 2 → Tier 3)
 
@@ -383,6 +402,22 @@ TIER 3: Zero-Credential Mock Engine (deterministic, fully local)
 </details>
 
 **Impact:** Live demo cannot fail. Judge can stress-test without worrying about quota exhaustion or API downtime. Every tier transition, guardrail verdict, and agent spawn is traced to Azure Application Insights via OpenTelemetry ([`telemetry.ts`](backend/src/telemetry.ts)).
+
+### 🔒 Production Hardening (Beyond the Guardrails)
+
+Security and resilience engineering most hackathon agents skip entirely:
+
+| Defense | Implementation | Proof |
+|---|---|---|
+| **SSRF protection with DNS-rebinding defense** | The URL-fetch tool resolves every hostname via DNS and validates **every resolved IP** against private ranges — IPv4 (10/8, 172.16/12, 192.168/16, 100.64/10 CGNAT, 169.254/16 cloud IMDS), IPv6 (ULA fc00::/7, link-local fe80::/10, loopback), and IPv4-mapped IPv6 (`::ffff:x.x.x.x`). Non-standard ports blocked (only 80/443). Fails closed on anything unrecognizable. | [`fetchUrl.ts:15–48,99–102`](backend/src/routes/fetchUrl.ts#L15) |
+| **Response streaming caps** | Fetched pages chunk-streamed with a 200 KB hard cap + 8 s `AbortController` timeout — no memory-exhaustion vector | [`fetchUrl.ts:7–8`](backend/src/routes/fetchUrl.ts#L7) |
+| **Cost-aware rate limiting** | Per-IP limits tuned to endpoint cost: chat 10/min, scan 5/min (it fires 5 parallel AI calls), with standard `RateLimit-*` headers | [`index.ts:54–68`](backend/src/index.ts#L54) |
+| **Security headers + CORS allowlist** | Helmet hardening, regex-validated origin allowlist, 1 MB request body cap | [`index.ts:27–46`](backend/src/index.ts#L27) |
+| **Context-window management** | Assistants API threads are **reused across follow-ups** for conversational memory, capped at 20 messages per thread (`MESSAGE_CAP`), 30-min session TTL, and eviction beyond 1,000 cached sessions — no unbounded context growth, no token-limit blowups | [`agent.ts:343–379`](backend/src/agent.ts#L343) |
+| **Multi-layer timeouts** | Every external call has a tuned `AbortSignal` timeout: URL fetch 8 s, grants.gov search 8 s / detail 12 s, portfolio scan 15 s, health check 4 s | [`fetchUrl.ts:8`](backend/src/routes/fetchUrl.ts#L8), [`grantsLive.ts:31,134`](backend/src/routes/grantsLive.ts#L31) |
+| **Fault-isolated parallelism** | Sub-agents run via `Promise.allSettled` — if Competitive Intel dies, Red Team results still stream | [`chat.ts:411–426`](backend/src/routes/chat.ts#L411) |
+| **SSE keepalive + progressive status** | Heartbeat every 20 s prevents silent browser stream timeouts; realistic status updates fill the first-token latency gap | [`chat.ts:160–182`](backend/src/routes/chat.ts#L160) |
+| **Startup health check** | `GET /api/health` reports search reachability, OpenAI/Foundry config, and active KB source on boot — misconfiguration surfaces before the first request | [`index.ts:83–102`](backend/src/index.ts#L83) |
 
 ---
 
@@ -502,8 +537,8 @@ Average latency: **10.4 s** · Full results: [`eval-results.json`](eval-results.
 ```
 backend/src/
   agent.ts                    — 6-step chain, 3-tier fallback, MCP knowledge_base_retrieve, streaming
-  knowledgeGraph.ts           — GraphRAG engine: 29 entities, 49 typed edges, multi-hop BFS
-  graphContext.ts             — Work IQ (Microsoft Graph / SharePoint extraction + LLM distillation)
+  knowledgeGraph.ts           — GraphRAG engine: 40 entities, 57 typed edges, multi-hop BFS
+  graphContext.ts             — Work IQ (Microsoft Graph: SharePoint docs, calendar, Teams messages, email — fused + LLM distillation)
   guardrails.ts               — 17-rule validation pipeline (G01–G17)
   telemetry.ts                — Azure App Insights + OpenTelemetry tracing
   mockEngine.ts               — Tier 3 deterministic zero-credential engine
@@ -516,7 +551,7 @@ backend/src/
   scripts/runEvals.ts         — LLM-as-judge eval harness
 
 frontend/src/components/      — 19 components, including:
-  ChatInterface.tsx           — Main UI (17 SSE event types)
+  ChatInterface.tsx           — Main UI (23 SSE event types)
   GraphPathsPanel.tsx         — GraphRAG visualization (hero artifact)
   AgentOrchestraBar.tsx       — Live five-agent status display
   GrantMatchWidget.tsx        — Animated match gauge
