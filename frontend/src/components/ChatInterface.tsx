@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
 import { streamChat, streamScan, generatePackage, draftApplication, fetchGrantUrl, fetchMonitor, fetchHeroGrants, fetchFabricContext } from "../api";
 import type { FetchedUrl, MonitorData, HeroGrantResult, FabricIqContext } from "../api";
-import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext, CityProfile } from "../types";
+import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext, CityProfile, AgentHandoff } from "../types";
 import { GrantMatchWidget } from "./GrantMatchWidget";
 import type { GrantMatchData } from "./GrantMatchWidget";
 import { GrantPipelineWidget } from "./GrantPipelineWidget";
@@ -16,6 +16,7 @@ import { ReportPreviewModal } from "./ReportPreviewModal";
 import type { ReportPayload } from "./ReportPreviewModal";
 import { GrantRadarSkeleton } from "./GrantRadarSkeleton";
 import { AgentOrchestraBar } from "./AgentOrchestraBar";
+import { AgentHandoffTrace } from "./AgentHandoffTrace";
 import { AppHeader } from "./AppHeader";
 import { TierBadge } from "./TierBadge";
 import { GraphPathsPanel } from "./GraphPathsPanel";
@@ -45,6 +46,7 @@ interface Message {
   redTeamReview?: RedTeamResult;
   competitorIntel?: CompetitorIntelResult;
   refinedNarrative?: RefinedNarrativeResult;
+  agentHandoffs?: AgentHandoff[];
   workIqContext?: WorkIqCityContext;
   tierInfo?: { tier: 1 | 2 | 3; label: string; guardrailsPassed: boolean; violations: number };
   graphPaths?: import("../types").GraphPath[];
@@ -1844,6 +1846,15 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
             })
           );
         },
+        onAgentHandoff: (handoff) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? { ...m, agentHandoffs: [...(m.agentHandoffs ?? []), handoff] }
+                : m
+            )
+          );
+        },
         onTierInfo: (info) => {
           setMessages((prev) =>
             prev.map((m) =>
@@ -2417,6 +2428,11 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                             completedAt={msg.completedAt}
                             refinementDelta={msg.refinedNarrative?.estimatedScoreDelta}
                           />
+
+                        {/* A2A Handoff Trace — live typed payloads flowing between agents */}
+                        {(msg.agentHandoffs?.length ?? 0) > 0 && (
+                          <AgentHandoffTrace handoffs={msg.agentHandoffs ?? []} />
+                        )}
                         )}
 
                         {/* Tier provenance badge — shows which LLM tier ran and guardrails status */}

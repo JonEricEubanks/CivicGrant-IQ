@@ -144,6 +144,29 @@ export interface RefinedNarrativeResult {
   estimatedScoreDelta: number;  // projected score gain
 }
 
+// ─── A2A Agent Handoff Trace ─────────────────────────────────────────────────
+export interface AgentHandoff {
+  from: string;
+  to: string;
+  timestampMs: number;
+  payload: {
+    grantName?: string;
+    matchScore?: number;
+    originalMatchScore?: number;
+    redTeamScore?: number;
+    redTeamVerdict?: string;
+    quickFixes?: string[];
+    topRisks?: string[];
+    competitionLevel?: string;
+    winProbability?: number;
+    differentiators?: string[];
+    strategyTip?: string;
+    gapCount?: number;
+    narrativeLength?: number;
+    trigger?: string;
+  };
+}
+
 // ─── Portfolio Orchestrator ──────────────────────────────────────────────────
 export interface PortfolioItem {
   grantName: string;

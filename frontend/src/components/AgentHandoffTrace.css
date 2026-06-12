@@ -1,0 +1,186 @@
+.handoff-trace {
+  margin-top: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.handoff-trace__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(99, 102, 241, 0.08);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.handoff-trace__icon {
+  font-size: 14px;
+  color: #818cf8;
+}
+
+.handoff-trace__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c7d2fe;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.handoff-trace__badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* ── Individual handoff node ── */
+.handoff-node {
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+.handoff-node:last-child {
+  border-bottom: none;
+}
+
+.handoff-node__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.handoff-node__header:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.handoff-node__arrow {
+  font-size: 12px;
+  color: #6366f1;
+}
+
+.handoff-node__from {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a5b4fc;
+}
+
+.handoff-node__sep {
+  font-size: 13px;
+  color: #6366f1;
+}
+
+.handoff-node__to {
+  font-size: 12px;
+  font-weight: 600;
+  color: #34d399;
+}
+
+.handoff-node__toggle {
+  margin-left: auto;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* ── Payload panel ── */
+.handoff-node__payload {
+  padding: 0 14px 12px;
+  border-top: 1px solid rgba(99, 102, 241, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.payload-view {
+  padding-top: 10px;
+}
+
+.payload-view__meta {
+  margin-bottom: 8px;
+}
+
+.payload-view__type {
+  font-size: 10px;
+  color: #4b5563;
+  font-family: 'Fira Code', monospace;
+  letter-spacing: 0.02em;
+}
+
+/* ── Key-value rows ── */
+.payload-view__kv {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  margin-bottom: 10px;
+}
+
+.payload-kv {
+  display: contents;
+}
+
+.payload-kv__label {
+  font-size: 11px;
+  color: #6b7280;
+  padding: 2px 0;
+  white-space: nowrap;
+}
+
+.payload-kv__value {
+  font-size: 11px;
+  color: #e5e7eb;
+  padding: 2px 0;
+  font-family: 'Fira Code', monospace;
+}
+
+.payload-kv--highlight .payload-kv__value {
+  color: #818cf8;
+  font-weight: 700;
+}
+
+/* ── List sections ── */
+.payload-view__list {
+  margin-bottom: 8px;
+}
+
+.payload-view__list-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.payload-view__list-item {
+  font-size: 11px;
+  color: #d1d5db;
+  display: flex;
+  gap: 6px;
+  margin-bottom: 2px;
+  line-height: 1.4;
+}
+
+.payload-view__list-dot {
+  color: #818cf8;
+  flex-shrink: 0;
+}
+
+/* ── Strategy tip ── */
+.payload-view__tip {
+  font-size: 11px;
+  color: #d1d5db;
+  background: rgba(52, 211, 153, 0.06);
+  border-left: 2px solid #34d399;
+  padding: 6px 10px;
+  border-radius: 0 4px 4px 0;
+  margin-top: 4px;
+}
+
+.payload-view__tip-label {
+  font-weight: 600;
+  color: #34d399;
+  margin-right: 4px;
+}

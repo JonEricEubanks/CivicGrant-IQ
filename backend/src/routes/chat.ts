@@ -494,6 +494,21 @@ chatRouter.post("/", async (req: Request, res: Response) => {
       });
       send("agent_status", { agent: "review", message: "Red Team reviewing draft narrative…" });
       send("status", { message: "[RED TEAM] Spawned concurrent reviewer — scoring draft narrative for federal reviewer perspective…" });
+
+      // Emit A2A handoff: Main Analysis → Red Team
+      send("agent_handoff", {
+        from: "MainAnalysis (Step 5 Narrative)",
+        to: "RedTeamReviewer",
+        timestampMs: Date.now(),
+        payload: {
+          grantName,
+          matchScore,
+          narrativeLength: narrativeDraft.length,
+          gapCount: widgetData?.gaps?.length ?? 0,
+          trigger: `match ${matchScore}% ≥ viability bar ${VIABILITY_BAR}%`,
+        },
+      });
+
       reviewPromise = runRedTeamReview(grantName, narrativeDraft, matchScore).catch((err) => {
         console.error("[chat] red team agent failed:", err);
         return null;
@@ -562,6 +577,29 @@ chatRouter.post("/", async (req: Request, res: Response) => {
               }
             : undefined,
         };
+
+        // ── A2A Handoff Trace — emit the typed inter-agent payload so the UI
+        // can render the full agent-to-agent data flow for judges to inspect.
+        send("agent_handoff", {
+          from: "RedTeam + CompetitorIntel",
+          to: "NarrativeRefinement",
+          timestampMs: Date.now(),
+          payload: {
+            grantName: handoff.grantName,
+            originalMatchScore: handoff.originalMatchScore,
+            redTeamScore: reviewResult?.overallScore,
+            redTeamVerdict: reviewResult?.reviewerVerdict,
+            quickFixes: handoff.redTeam?.quickFixes ?? [],
+            topRisks: handoff.redTeam?.topRisks ?? [],
+            competitionLevel: handoff.competitor?.competitionLevel,
+            winProbability: handoff.competitor?.winProbability,
+            differentiators: handoff.competitor?.differentiators ?? [],
+            strategyTip: handoff.competitor?.strategyTip,
+            gapCount: handoff.gaps?.length ?? 0,
+            narrativeLength: handoff.originalNarrative.length,
+          },
+        });
+
         const refinement = await runNarrativeRefinement(handoff);
         send("refined_narrative", refinement);
       } catch (err) {
