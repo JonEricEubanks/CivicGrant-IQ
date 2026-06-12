@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 360" width="1100" height="360">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#060D1A"/>
+      <stop offset="100%" style="stop-color:#0F1F3A"/>
+    </linearGradient>
+    <linearGradient id="stepBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A8A"/>
+      <stop offset="100%" style="stop-color:#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="stepPurple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4C1D95"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="stepGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#064E3B"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="stepAmber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#78350F"/>
+      <stop offset="100%" style="stop-color:#D97706"/>
+    </linearGradient>
+    <linearGradient id="stepTeal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#134E4A"/>
+      <stop offset="100%" style="stop-color:#0D9488"/>
+    </linearGradient>
+    <linearGradient id="stepRose" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#881337"/>
+      <stop offset="100%" style="stop-color:#E11D48"/>
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#065F46"/>
+      <stop offset="100%" style="stop-color:#047857"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="360" fill="url(#bg)" rx="14"/>
+
+  <!-- Subtle horizontal rule lines -->
+  <line x1="0" y1="90" x2="1100" y2="90" stroke="#1E3A5F" stroke-width="0.5" opacity="0.4"/>
+  <line x1="0" y1="270" x2="1100" y2="270" stroke="#1E3A5F" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Title -->
+  <text x="550" y="30" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#F1F5F9">City Analyst Query → 6-Step Reasoning Chain → Streamed Answer</text>
+
+  <!-- INPUT QUERY BOX -->
+  <rect x="20" y="50" width="220" height="80" rx="8" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="20" y="50" width="220" height="24" rx="8" fill="#1E293B"/>
+  <rect x="20" y="62" width="220" height="12" fill="#1E293B"/>
+  <text x="130" y="66" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" font-weight="600" fill="#94A3B8">🏙 City Analyst Query</text>
+  <text x="130" y="84" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#CBD5E1" font-style="italic">"Buffalo Creek: 2.1 mi aging</text>
+  <text x="130" y="96" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#CBD5E1" font-style="italic">stormwater, $3.2M gap,</text>
+  <text x="130" y="108" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#CBD5E1" font-style="italic">Justice40 score 0.78"</text>
+
+  <!-- Arrow right -->
+  <line x1="240" y1="90" x2="268" y2="90" stroke="#475569" stroke-width="2"/>
+  <polygon points="264,85 274,90 264,95" fill="#475569"/>
+
+  <!-- ═══ SIX STEP CARDS ═══ -->
+  <!-- Shared dimensions: width=108, height=130, y=50 -->
+  <!-- Step 1: Parse -->
+  <rect x="272" y="50" width="108" height="130" rx="8" fill="url(#stepBlue)" filter="url(#shadow)"/>
+  <rect x="272" y="50" width="108" height="22" rx="8" fill="#1E3A8A" fill-opacity="0.7"/>
+  <rect x="272" y="62" width="108" height="10" fill="#1E3A8A" fill-opacity="0.7"/>
+  <text x="326" y="66" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" font-weight="700" fill="#BFDBFE">Step 1</text>
+  <text x="326" y="84" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" fill="#FFF">Parse</text>
+  <text x="326" y="101" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#BFDBFE">Extract entities</text>
+  <text x="326" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#BFDBFE">from NOFO text</text>
+  <text x="326" y="130" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#93C5FD">Graph seeding</text>
+  <text x="326" y="144" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#64748B">reasoning_step SSE</text>
+  <rect x="272" y="50" width="108" height="130" rx="8" fill="none" stroke="#3B82F6" stroke-width="1" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="0s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- connector -->
+  <line x1="380" y1="115" x2="398" y2="115" stroke="#475569" stroke-width="1.5"/>
+  <polygon points="394,110 404,115 394,120" fill="#475569"/>
+
+  <!-- Step 2: Match -->
+  <rect x="402" y="50" width="108" height="130" rx="8" fill="url(#stepPurple)" filter="url(#shadow)"/>
+  <rect x="402" y="50" width="108" height="22" rx="8" fill="#4C1D95" fill-opacity="0.7"/>
+  <rect x="402" y="62" width="108" height="10" fill="#4C1D95" fill-opacity="0.7"/>
+  <text x="456" y="66" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" font-weight="700" fill="#C4B5FD">Step 2</text>
+  <text x="456" y="84" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" fill="#FFF">Match</text>
+  <text x="456" y="101" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#C4B5FD">BFS over 40 entities</text>
+  <text x="456" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#C4B5FD">57 typed edges</text>
+  <text x="456" y="130" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#A78BFA">CONFIRMED ≥0.85</text>
+  <text x="456" y="144" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#64748B">graph_paths SSE</text>
+  <rect x="402" y="50" width="108" height="130" rx="8" fill="none" stroke="#8B5CF6" stroke-width="1" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- connector -->
+  <line x1="510" y1="115" x2="528" y2="115" stroke="#475569" stroke-width="1.5"/>
+  <polygon points="524,110 534,115 524,120" fill="#475569"/>
+
+  <!-- Step 3: Verify -->
+  <rect x="532" y="50" width="108" height="130" rx="8" fill="url(#stepGreen)" filter="url(#shadow)"/>
+  <rect x="532" y="50" width="108" height="22" rx="8" fill="#064E3B" fill-opacity="0.7"/>
+  <rect x="532" y="62" width="108" height="10" fill="#064E3B" fill-opacity="0.7"/>
+  <text x="586" y="66" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" font-weight="700" fill="#6EE7B7">Step 3</text>
+  <text x="586" y="84" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" fill="#FFF">Verify</text>
+  <text x="586" y="101" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#6EE7B7">KB grounding check</text>
+  <text x="586" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#6EE7B7">≥2 citations required</text>
+  <text x="586" y="130" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#34D399">Auto re-query if short</text>
+  <text x="586" y="144" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#64748B">citations SSE</text>
+  <rect x="532" y="50" width="108" height="130" rx="8" fill="none" stroke="#10B981" stroke-width="1" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="1s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- connector -->
+  <line x1="640" y1="115" x2="658" y2="115" stroke="#475569" stroke-width="1.5"/>
+  <polygon points="654,110 664,115 654,120" fill="#475569"/>
+
+  <!-- Step 4: Gap -->
+  <rect x="662" y="50" width="108" height="130" rx="8" fill="url(#stepAmber)" filter="url(#shadow)"/>
+  <rect x="662" y="50" width="108" height="22" rx="8" fill="#78350F" fill-opacity="0.7"/>
+  <rect x="662" y="62" width="108" height="10" fill="#78350F" fill-opacity="0.7"/>
+  <text x="716" y="66" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" font-weight="700" fill="#FDE68A">Step 4</text>
+  <text x="716" y="84" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" fill="#FFF">Gap</text>
+  <text x="716" y="101" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#FDE68A">Funding gap analysis</text>
+  <text x="716" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#FDE68A">closes_gap edges</text>
+  <text x="716" y="130" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#FCD34D">Stacking strategies</text>
+  <text x="716" y="144" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#64748B">widget SSE</text>
+  <rect x="662" y="50" width="108" height="130" rx="8" fill="none" stroke="#F59E0B" stroke-width="1" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- connector -->
+  <line x1="770" y1="115" x2="788" y2="115" stroke="#475569" stroke-width="1.5"/>
+  <polygon points="784,110 794,115 784,120" fill="#475569"/>
+
+  <!-- Step 5: Narrative -->
+  <rect x="792" y="50" width="108" height="130" rx="8" fill="url(#stepTeal)" filter="url(#shadow)"/>
+  <rect x="792" y="50" width="108" height="22" rx="8" fill="#134E4A" fill-opacity="0.7"/>
+  <rect x="792" y="62" width="108" height="10" fill="#134E4A" fill-opacity="0.7"/>
+  <text x="846" y="66" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" font-weight="700" fill="#99F6E4">Step 5</text>
+  <text x="846" y="84" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" fill="#FFF">Narrative</text>
+  <text x="846" y="101" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#99F6E4">Draft application prose</text>
+  <text x="846" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#99F6E4">Justice40 / Equity frame</text>
+  <text x="846" y="130" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#5EEAD4">From past winners</text>
+  <text x="846" y="144" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#64748B">refined_narrative SSE</text>
+  <rect x="792" y="50" width="108" height="130" rx="8" fill="none" stroke="#0D9488" stroke-width="1" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- connector -->
+  <line x1="900" y1="115" x2="918" y2="115" stroke="#475569" stroke-width="1.5"/>
+  <polygon points="914,110 924,115 914,120" fill="#475569"/>
+
+  <!-- Step 6: Strategy -->
+  <rect x="922" y="50" width="108" height="130" rx="8" fill="url(#stepRose)" filter="url(#shadow)"/>
+  <rect x="922" y="50" width="108" height="22" rx="8" fill="#881337" fill-opacity="0.7"/>
+  <rect x="922" y="62" width="108" height="10" fill="#881337" fill-opacity="0.7"/>
+  <text x="976" y="66" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" font-weight="700" fill="#FDA4AF">Step 6</text>
+  <text x="976" y="84" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" fill="#FFF">Strategy</text>
+  <text x="976" y="101" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#FDA4AF">Submission roadmap</text>
+  <text x="976" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8.5" fill="#FDA4AF">Stacking playbook</text>
+  <text x="976" y="130" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#FB7185">Deadline calendar</text>
+  <text x="976" y="144" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="8" fill="#64748B">answer SSE · done SSE</text>
+  <rect x="922" y="50" width="108" height="130" rx="8" fill="none" stroke="#E11D48" stroke-width="1" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="2.5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ═══ BOTTOM ROW — context sources ═══ -->
+  <text x="550" y="210" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" fill="#475569">live context injected at runtime</text>
+
+  <!-- Foundry IQ -->
+  <rect x="90" y="220" width="190" height="56" rx="7" fill="#0C1A3A" stroke="#3B82F6" stroke-width="1"/>
+  <text x="185" y="239" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10.5" font-weight="700" fill="#60A5FA">🤖 Foundry IQ</text>
+  <text x="185" y="255" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">Azure AI Foundry Assistants</text>
+  <text x="185" y="268" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">MCP knowledge_base_retrieve</text>
+
+  <!-- Work IQ -->
+  <rect x="310" y="220" width="190" height="56" rx="7" fill="#1A0E2A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="405" y="239" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10.5" font-weight="700" fill="#A78BFA">📧 Work IQ</text>
+  <text x="405" y="255" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">Microsoft Graph · SharePoint</text>
+  <text x="405" y="268" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">Calendar · Teams · Email</text>
+
+  <!-- Fabric IQ -->
+  <rect x="530" y="220" width="190" height="56" rx="7" fill="#0A2A1A" stroke="#10B981" stroke-width="1"/>
+  <text x="625" y="239" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10.5" font-weight="700" fill="#34D399">📊 Fabric IQ</text>
+  <text x="625" y="255" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">Microsoft Fabric · 6 tables</text>
+  <text x="625" y="268" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">dim_grant · fact_disbursement</text>
+
+  <!-- GraphRAG -->
+  <rect x="750" y="220" width="190" height="56" rx="7" fill="#1A1A0A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="845" y="239" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10.5" font-weight="700" fill="#FCD34D">🕸 GraphRAG</text>
+  <text x="845" y="255" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">40 entities · 57 typed edges</text>
+  <text x="845" y="268" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9" fill="#94A3B8">BFS traversal · ~0ms latency</text>
+
+  <!-- upward connectors from boxes to chain -->
+  <line x1="185" y1="220" x2="326" y2="180" stroke="#3B82F6" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+  <line x1="405" y1="220" x2="456" y2="180" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+  <line x1="625" y1="220" x2="586" y2="180" stroke="#10B981" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+  <line x1="845" y1="220" x2="716" y2="180" stroke="#F59E0B" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+
+  <!-- ═══ OUTPUT ROW ═══ -->
+  <rect x="90" y="295" width="920" height="50" rx="8" fill="url(#outputGrad)" filter="url(#shadow)"/>
+  <text x="550" y="316" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" fill="#FFF">Streamed Answer → Grant Recommendation Widget + Application Draft + Stacking Playbook</text>
+  <text x="550" y="334" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#A7F3D0">Every claim cited · 17 guardrails enforced · Confidence scores shown · Red Team review attached</text>
+  <!-- pulsing border on output -->
+  <rect x="90" y="295" width="920" height="50" rx="8" fill="none" stroke="#10B981" stroke-width="1.5">
+    <animate attributeName="stroke-opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/>
+  </rect>
+</svg>
