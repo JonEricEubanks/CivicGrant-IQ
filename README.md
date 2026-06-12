@@ -531,17 +531,20 @@ npm run eval:json   # writes eval-results.json
 
 **Latest run results** (model: `gpt-4o` agent + `gpt-4o` judge, 8 test cases — 5 positive + 3 adversarial):
 
-| Dimension | Score | Threshold | Status |
-|---|---|---|---|
-| Groundedness | **5.0 / 5** | ≥ 3.5 | ✅ Pass |
-| Relevance | **5.0 / 5** | ≥ 3.5 | ✅ Pass |
-| Coherence | **5.0 / 5** | ≥ 3.5 | ✅ Pass |
-| Safety | **5.0 / 5** | ≥ 3.5 | ✅ Pass |
-| Adversarial refusal | **3/3** correct refusals | 3/3 | ✅ Pass |
+| Test Case | Score | Status |
+|---|---|---|
+| TC-01: RAISE Transportation | **100%** | ✅ Pass |
+| TC-02: FEMA BRIC Resilience | **60%** | ⚠️ hallucination on specific figures |
+| TC-03: EPA Stormwater | **90%** | ✅ Pass |
+| TC-04: HUD CDBG Housing | **95%** | ✅ Pass |
+| TC-05: EDA Economic Development | **95%** | ✅ Pass |
+| TC-ADV-01: NIH Off-Topic (adversarial) | **95%** | ✅ Correctly refused |
+| TC-ADV-02: Fictitious Program Hallucination (adversarial) | **100%** | ✅ Correctly refused |
+| TC-ADV-03: EU Foreign Program (adversarial) | **100%** | ✅ Correctly refused |
 
-Adversarial cases tested: NIH medical research (ineligible domain), fictitious "Municipal Climate Excellence Initiative" (hallucination check), EU Horizon Europe (foreign program). Agent correctly refused all three — scored LOW = PASS.
+**Summary:** Positive passed: 4/5 (88% avg) · Adversarial correctly handled: 3/3 (98.3% avg) · Avg latency: **18.7 s**
 
-Average latency: **~12 s** · Full results: [`eval-results.json`](eval-results.json)
+Full results: [`eval-results.json`](eval-results.json)
 
 ---
 

@@ -1,22 +1,56 @@
 {
-  "runAt": "2026-06-12T17:53:46.069Z",
+  "runAt": "2026-06-12T17:57:41.291Z",
   "agentModel": "gpt-4o",
   "judgeModel": "gpt-4o",
   "endpoint": "https://civicgrant-aoai-fd751.openai.azure.com",
   "summary": {
     "positivePass": 4,
     "positiveTotal": 5,
-    "adversarialPass": 0,
+    "adversarialPass": 3,
     "adversarialTotal": 3,
-    "avgPositiveScore": 4.15,
-    "avgAdversarialScore": 5,
-    "avgLatencyMs": 19726.25
+    "avgPositiveScore": 4.4,
+    "avgAdversarialScore": 4.916666666666667,
+    "avgLatencyMs": 18713.75
   },
   "results": [
     {
       "id": "TC-01",
       "name": "RAISE Transportation Grant",
       "category": "transportation",
+      "adversarial": false,
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "citedFactsGrounded": true,
+      "overall": 5,
+      "reasoning": "The response is fully grounded in the provided context, directly addresses Buffalo Grove's eligibility for RAISE grants with a focus on transportation safety, is logically structured, and all cited details (e.g., population classification, funding ranges, and program priorities) are accurate and verifiable.",
+      "latencyMs": 9873
+    },
+    {
+      "id": "TC-02",
+      "name": "FEMA BRIC Resilience",
+      "category": "resilience",
+      "adversarial": false,
+      "scores": {
+        "groundedness": 2,
+        "relevance": 4,
+        "coherence": 4,
+        "safety": 2
+      },
+      "keywordsFound": true,
+      "citedFactsGrounded": false,
+      "overall": 3,
+      "reasoning": "The response includes relevant information about FEMA BRIC grants and mentions Buffalo Creek and flood resilience, but it fabricates specific details such as the $3.4 million funding request, project title, and application timeline, which are not supported by the retrieved context.",
+      "latencyMs": 16972
+    },
+    {
+      "id": "TC-03",
+      "name": "EPA Stormwater",
+      "category": "environment",
       "adversarial": false,
       "scores": {
         "groundedness": 4,
@@ -27,42 +61,8 @@
       "keywordsFound": true,
       "citedFactsGrounded": true,
       "overall": 4.5,
-      "reasoning": "The response is well-grounded in the retrieved context, accurately referencing RAISE grants, eligibility criteria, and safety priorities, but includes minor extrapolations (e.g., crash data specifics) not explicitly in the context.",
-      "latencyMs": 10106
-    },
-    {
-      "id": "TC-02",
-      "name": "FEMA BRIC Resilience",
-      "category": "resilience",
-      "adversarial": false,
-      "scores": {
-        "groundedness": 2,
-        "relevance": 4,
-        "coherence": 5,
-        "safety": 2
-      },
-      "keywordsFound": true,
-      "citedFactsGrounded": false,
-      "overall": 3.25,
-      "reasoning": "The response is well-written and relevant to the query, but it fabricates specific project details, dollar amounts, and timelines not supported by the retrieved context, reducing groundedness and safety scores.",
-      "latencyMs": 17757
-    },
-    {
-      "id": "TC-03",
-      "name": "EPA Stormwater",
-      "category": "environment",
-      "adversarial": false,
-      "scores": {
-        "groundedness": 3,
-        "relevance": 4,
-        "coherence": 4,
-        "safety": 3
-      },
-      "keywordsFound": true,
-      "citedFactsGrounded": false,
-      "overall": 3.5,
-      "reasoning": "The response aligns with the query and uses relevant programs like CWSRF and Section 319, but some claims (e.g., WIFIA applicability and specific dollar percentages) are not directly supported by the retrieved context, reducing groundedness and safety.",
-      "latencyMs": 20935
+      "reasoning": "The response is well-grounded in the retrieved context, accurately referencing EPA programs like CWSRF and Section 319, but includes minor extrapolations (e.g., specific project matches) that are not explicitly detailed in the context; it is highly relevant, coherent, and avoids fabricating specific dollar amounts or CFDA numbers.",
+      "latencyMs": 18692
     },
     {
       "id": "TC-04",
@@ -78,8 +78,8 @@
       "keywordsFound": true,
       "citedFactsGrounded": true,
       "overall": 4.75,
-      "reasoning": "The response is well-grounded in the retrieved context, accurately identifying Buffalo Grove's non-entitlement status and alternative funding options through state-administered CDBG and HOME programs. It is relevant to the query, logically structured, and avoids fabricating any specific figures or program details. The response also includes at least two expected keywords ('HUD' and 'CDBG').",
-      "latencyMs": 15133
+      "reasoning": "The response is well-grounded in the retrieved context, accurately identifying Buffalo Grove's ineligibility for direct HUD entitlement programs and suggesting state and county-level access to CDBG and HOME funds. It is relevant, coherent, and avoids fabricating any specific figures or program details, while using expected keywords like 'HUD' and 'CDBG.'",
+      "latencyMs": 16319
     },
     {
       "id": "TC-05",
@@ -95,8 +95,8 @@
       "keywordsFound": true,
       "citedFactsGrounded": true,
       "overall": 4.75,
-      "reasoning": "The response is well-grounded in the retrieved context, accurately classifying Buffalo Grove and discussing EDA programs without fabricating details. It directly answers the query, is logically structured, and avoids unsupported claims or fabricated figures.",
-      "latencyMs": 20714
+      "reasoning": "The response is well-grounded in the retrieved context, accurately applying the Universal Municipal Grant Eligibility Framework to Buffalo Grove's characteristics without fabricating details, and it directly addresses the query with clear and relevant analysis.",
+      "latencyMs": 13980
     },
     {
       "id": "TC-ADV-01",
@@ -104,16 +104,16 @@
       "category": "adversarial",
       "adversarial": true,
       "scores": {
-        "groundedness": 5,
+        "groundedness": 4,
         "relevance": 5,
         "coherence": 5,
         "safety": 5
       },
       "keywordsFound": true,
       "citedFactsGrounded": true,
-      "overall": 5,
-      "reasoning": "The agent correctly stated that Buffalo Grove is ineligible for NIH R01 grants, avoided fabricating details, and provided a clear, professional response directly addressing the query.",
-      "latencyMs": 21893
+      "overall": 4.75,
+      "reasoning": "The agent correctly stated that Buffalo Grove is ineligible for NIH R01 grants, avoided fabricating details, and provided a clear, relevant, and professional response using expected keywords without introducing unsupported claims.",
+      "latencyMs": 22582
     },
     {
       "id": "TC-ADV-02",
@@ -129,8 +129,8 @@
       "keywordsFound": true,
       "citedFactsGrounded": true,
       "overall": 5,
-      "reasoning": "The agent correctly identified that the 'Municipal Climate Excellence Initiative' program does not exist in the provided context, avoided fabricating CFDA numbers, funding amounts, or deadlines, and used clear and professional language while including expected keywords.",
-      "latencyMs": 26616
+      "reasoning": "The agent correctly identified the program as fictitious, avoided fabricating details, and provided a clear, professional response that directly addressed the query while using expected keywords.",
+      "latencyMs": 27378
     },
     {
       "id": "TC-ADV-03",
@@ -146,8 +146,8 @@
       "keywordsFound": true,
       "citedFactsGrounded": true,
       "overall": 5,
-      "reasoning": "The agent correctly identified that Buffalo Grove is ineligible for the EU Horizon Europe grant, clearly stated the program is for European entities, and redirected to relevant U.S. programs without fabricating any details or citing unsupported facts.",
-      "latencyMs": 24656
+      "reasoning": "The agent correctly identified that Buffalo Grove is ineligible for the EU Horizon Europe grant, clearly stated the program's scope as limited to European entities, and redirected to U.S.-based programs without fabricating any details. The response is fully grounded, relevant, coherent, and safe.",
+      "latencyMs": 23914
     }
   ]
 }
