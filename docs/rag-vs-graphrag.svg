@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1E293B;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="leftCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B0A0A;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#7F1D1D;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="rightCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0C1A3A;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1E3A6A;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="redStep" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#991B1B;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#DC2626;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="blueStep" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1D4ED8;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="greenStep" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#065F46;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="420" fill="url(#bg)" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#F8FAFC">RAG vs GraphRAG — Why Typed Graphs Win</text>
+
+  <!-- LEFT CARD — Raw RAG -->
+  <rect x="30" y="52" width="390" height="348" rx="10" fill="url(#leftCard)" stroke="#EF4444" stroke-width="1.5" stroke-opacity="0.5"/>
+  <rect x="30" y="52" width="390" height="38" rx="10" fill="#991B1B" fill-opacity="0.6"/>
+  <rect x="30" y="78" width="390" height="12" rx="0" fill="#991B1B" fill-opacity="0.6"/>
+  <text x="225" y="76" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="700" fill="#FCA5A5">⚠  Raw RAG (Naive Retrieval)</text>
+
+  <!-- RAG Step 1: Query -->
+  <rect x="70" y="106" width="310" height="40" rx="6" fill="url(#redStep)" fill-opacity="0.8"/>
+  <text x="225" y="122" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FFF">User Query</text>
+  <text x="225" y="136" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#FECACA">"Which grants fit Buffalo Creek flood project?"</text>
+
+  <!-- Arrow -->
+  <line x1="225" y1="146" x2="225" y2="160" stroke="#EF4444" stroke-width="2"/>
+  <polygon points="218,157 232,157 225,165" fill="#EF4444"/>
+
+  <!-- RAG Step 2: Vector Search -->
+  <rect x="70" y="162" width="310" height="40" rx="6" fill="#7F1D1D" fill-opacity="0.9"/>
+  <text x="225" y="178" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FFF">Vector Similarity Search</text>
+  <text x="225" y="192" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#FECACA">Top-k nearest chunks by cosine distance</text>
+
+  <!-- Arrow -->
+  <line x1="225" y1="202" x2="225" y2="216" stroke="#EF4444" stroke-width="2"/>
+  <polygon points="218,213 232,213 225,221" fill="#EF4444"/>
+
+  <!-- RAG Step 3: Dump text -->
+  <rect x="50" y="218" width="350" height="60" rx="6" fill="#450A0A" stroke="#EF4444" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="225" y="235" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FCA5A5">15 KB Unstructured Text Dump</text>
+  <text x="225" y="252" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9.5" fill="#FCA5A5" font-style="italic">"FEMA BRIC provides funding for... eligible</text>
+  <text x="225" y="265" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="9.5" fill="#FCA5A5" font-style="italic">communities include... deadline is... amounts..."</text>
+
+  <!-- Arrow -->
+  <line x1="225" y1="278" x2="225" y2="292" stroke="#EF4444" stroke-width="2"/>
+  <polygon points="218,289 232,289 225,297" fill="#EF4444"/>
+
+  <!-- RAG Step 4: LLM -->
+  <rect x="70" y="294" width="310" height="40" rx="6" fill="#7F1D1D" fill-opacity="0.9"/>
+  <text x="225" y="310" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FFF">LLM Generates Answer</text>
+  <text x="225" y="324" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#FECACA">No citation enforcement, no graph traversal</text>
+
+  <!-- Arrow -->
+  <line x1="225" y1="334" x2="225" y2="348" stroke="#EF4444" stroke-width="2"/>
+  <polygon points="218,345 232,345 225,353" fill="#EF4444"/>
+
+  <!-- RAG Result -->
+  <rect x="70" y="350" width="310" height="36" rx="6" fill="#991B1B" fill-opacity="0.6"/>
+  <text x="225" y="364" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FCA5A5">??? Hope it's accurate</text>
+  <text x="225" y="378" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#FCA5A5">Hallucinations possible · No confidence score</text>
+
+  <!-- RIGHT CARD — GraphRAG -->
+  <rect x="480" y="52" width="390" height="348" rx="10" fill="url(#rightCard)" stroke="#3B82F6" stroke-width="1.5" stroke-opacity="0.6"/>
+  <rect x="480" y="52" width="390" height="38" rx="10" fill="#1D4ED8" fill-opacity="0.5"/>
+  <rect x="480" y="78" width="390" height="12" rx="0" fill="#1D4ED8" fill-opacity="0.5"/>
+  <text x="675" y="76" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="700" fill="#93C5FD">✓  CivicGrant-IQ GraphRAG</text>
+
+  <!-- GraphRAG Step 1: Query -->
+  <rect x="520" y="106" width="310" height="40" rx="6" fill="url(#blueStep)" fill-opacity="0.8"/>
+  <text x="675" y="122" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FFF">User Query</text>
+  <text x="675" y="136" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#BFDBFE">"Which grants fit Buffalo Creek flood project?"</text>
+
+  <!-- Arrow -->
+  <line x1="675" y1="146" x2="675" y2="160" stroke="#3B82F6" stroke-width="2"/>
+  <polygon points="668,157 682,157 675,165" fill="#3B82F6"/>
+
+  <!-- GraphRAG Step 2: Typed Graph -->
+  <rect x="500" y="162" width="350" height="60" rx="6" fill="#0C1A3A" stroke="#3B82F6" stroke-width="1" stroke-opacity="0.6"/>
+  <text x="675" y="180" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#93C5FD">Typed Entity-Relationship Graph</text>
+  <!-- mini graph nodes -->
+  <circle cx="605" cy="200" r="5" fill="#3B82F6" filter="url(#glow)"/>
+  <circle cx="635" cy="192" r="4" fill="#8B5CF6"/>
+  <circle cx="635" cy="208" r="4" fill="#059669"/>
+  <circle cx="665" cy="196" r="4" fill="#F59E0B"/>
+  <circle cx="665" cy="210" r="4" fill="#8B5CF6"/>
+  <circle cx="695" cy="200" r="5" fill="#3B82F6" filter="url(#glow)"/>
+  <line x1="610" y1="200" x2="631" y2="193" stroke="#3B82F6" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="610" y1="200" x2="631" y2="208" stroke="#059669" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="639" y1="192" x2="661" y2="196" stroke="#F59E0B" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="639" y1="208" x2="661" y2="210" stroke="#8B5CF6" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="669" y1="196" x2="690" y2="200" stroke="#3B82F6" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="669" y1="210" x2="690" y2="200" stroke="#059669" stroke-width="1" stroke-opacity="0.7"/>
+  <text x="740" y="196" font-family="Segoe UI,Arial,sans-serif" font-size="9.5" fill="#BFDBFE">40 entities</text>
+  <text x="740" y="210" font-family="Segoe UI,Arial,sans-serif" font-size="9.5" fill="#BFDBFE">57 edges</text>
+
+  <!-- Arrow -->
+  <line x1="675" y1="222" x2="675" y2="236" stroke="#3B82F6" stroke-width="2"/>
+  <polygon points="668,233 682,233 675,241" fill="#3B82F6"/>
+
+  <!-- GraphRAG Step 3: BFS -->
+  <rect x="520" y="238" width="310" height="40" rx="6" fill="#1D4ED8" fill-opacity="0.8"/>
+  <text x="675" y="254" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FFF">BFS Graph Traversal</text>
+  <text x="675" y="268" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#BFDBFE">buffalo_creek → qualifies_for → fema_bric (hop 1)</text>
+
+  <!-- Arrow -->
+  <line x1="675" y1="278" x2="675" y2="292" stroke="#3B82F6" stroke-width="2"/>
+  <polygon points="668,289 682,289 675,297" fill="#3B82F6"/>
+
+  <!-- GraphRAG Step 4: Cited hops -->
+  <rect x="500" y="294" width="350" height="40" rx="6" fill="url(#greenStep)" fill-opacity="0.85"/>
+  <text x="675" y="310" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#FFF">Cited Hops + Confidence Pre-Scoring</text>
+  <text x="675" y="324" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#A7F3D0">CONFIRMED ≥0.85 · LIKELY ≥0.65 · POSSIBLE</text>
+
+  <!-- Arrow -->
+  <line x1="675" y1="334" x2="675" y2="348" stroke="#059669" stroke-width="2"/>
+  <polygon points="668,345 682,345 675,353" fill="#059669"/>
+
+  <!-- GraphRAG Result -->
+  <rect x="520" y="350" width="310" height="36" rx="6" fill="#065F46" fill-opacity="0.8" stroke="#059669" stroke-width="1"/>
+  <text x="675" y="364" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#6EE7B7">Defensible, cited answer</text>
+  <text x="675" y="378" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#6EE7B7">Every claim traceable · ~0ms graph latency</text>
+
+  <!-- VS divider -->
+  <circle cx="450" cy="226" r="22" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+  <text x="450" y="231" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="700" fill="#94A3B8">VS</text>
+
+  <!-- Animated glow on right card border -->
+  <rect x="480" y="52" width="390" height="348" rx="10" fill="none" stroke="#3B82F6" stroke-width="1.5" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite"/>
+  </rect>
+</svg>
