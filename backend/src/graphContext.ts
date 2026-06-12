@@ -255,7 +255,7 @@ async function fetchGrantTeamsMessages(): Promise<string[]> {
     return insights.slice(0, 6);
   } catch (err) {
     console.debug("[WorkIQ] Teams fetch skipped:", (err as Error).message?.slice(0, 80));
-    return [];
+    return demoTeamsInsights();
   }
 }
 
