@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" font-family="Segoe UI,-apple-system,Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="bgiq" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="f1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0078D4"/>
+      <stop offset="1" stop-color="#004E8C"/>
+    </linearGradient>
+    <linearGradient id="f2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7B83EB"/>
+      <stop offset="1" stop-color="#4B55C8"/>
+    </linearGradient>
+    <linearGradient id="f3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#15803D"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="320" fill="url(#bgiq)"/>
+  <!-- subtle grid lines -->
+  <line x1="0" y1="160" x2="1200" y2="160" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="320" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+
+  <!-- header -->
+  <text x="600" y="38" text-anchor="middle" font-size="13" font-weight="700" fill="#94A3B8" letter-spacing="2.5">THREE IQ LAYERS — ALL LOAD-BEARING</text>
+
+  <!-- PILLAR 1: Foundry IQ -->
+  <g filter="url(#shadow)" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.1s" fill="freeze"/>
+    <rect x="60" y="60" width="320" height="220" rx="16" fill="url(#f1)"/>
+    <rect x="60" y="60" width="320" height="220" rx="16" fill="none" stroke="#50E6FF" stroke-opacity="0.3" stroke-width="1.5"/>
+    <text x="220" y="105" text-anchor="middle" font-size="28" fill="#ffffff">🔵</text>
+    <text x="220" y="140" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff">Foundry IQ</text>
+    <text x="220" y="164" text-anchor="middle" font-size="11.5" fill="#BAD9F5">Azure AI Foundry · Assistants API</text>
+    <line x1="100" y1="178" x2="340" y2="178" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+    <text x="220" y="202" text-anchor="middle" font-size="11" fill="#DCE9F7">MCP knowledge_base_retrieve</text>
+    <text x="220" y="222" text-anchor="middle" font-size="11" fill="#DCE9F7">5 real Buffalo Grove documents</text>
+    <text x="220" y="242" text-anchor="middle" font-size="11" fill="#DCE9F7">Azure AI Search · gpt-4o-mini</text>
+    <rect x="120" y="258" width="200" height="6" rx="3" fill="#ffffff" fill-opacity="0.15"/>
+    <rect x="120" y="258" width="200" height="6" rx="3" fill="#50E6FF" fill-opacity="0.85">
+      <animate attributeName="width" from="0" to="200" dur="1s" begin="0.5s" fill="freeze"/>
+    </rect>
+  </g>
+
+  <!-- PILLAR 2: Work IQ -->
+  <g filter="url(#shadow)" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.3s" fill="freeze"/>
+    <rect x="440" y="60" width="320" height="220" rx="16" fill="url(#f2)"/>
+    <rect x="440" y="60" width="320" height="220" rx="16" fill="none" stroke="#C5C8FF" stroke-opacity="0.3" stroke-width="1.5"/>
+    <text x="600" y="105" text-anchor="middle" font-size="28" fill="#ffffff">🟣</text>
+    <text x="600" y="140" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff">Work IQ</text>
+    <text x="600" y="164" text-anchor="middle" font-size="11.5" fill="#D9DBFF">Microsoft Graph · 4 live signals</text>
+    <line x1="480" y1="178" x2="720" y2="178" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+    <text x="600" y="202" text-anchor="middle" font-size="11" fill="#EEF0FF">📄 SharePoint (PDF/DOCX, LLM-distilled)</text>
+    <text x="600" y="222" text-anchor="middle" font-size="11" fill="#EEF0FF">📅 Calendar deadlines · 💬 Teams msgs</text>
+    <text x="600" y="242" text-anchor="middle" font-size="11" fill="#EEF0FF">✉️ Email · fused into SIGNALS block</text>
+    <rect x="500" y="258" width="200" height="6" rx="3" fill="#ffffff" fill-opacity="0.15"/>
+    <rect x="500" y="258" width="200" height="6" rx="3" fill="#C5C8FF" fill-opacity="0.9">
+      <animate attributeName="width" from="0" to="200" dur="1s" begin="0.7s" fill="freeze"/>
+    </rect>
+  </g>
+
+  <!-- PILLAR 3: Fabric IQ -->
+  <g filter="url(#shadow)" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.5s" fill="freeze"/>
+    <rect x="820" y="60" width="320" height="220" rx="16" fill="url(#f3)"/>
+    <rect x="820" y="60" width="320" height="220" rx="16" fill="none" stroke="#86EFAC" stroke-opacity="0.3" stroke-width="1.5"/>
+    <text x="980" y="105" text-anchor="middle" font-size="28" fill="#ffffff">🟢</text>
+    <text x="980" y="140" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff">Fabric IQ</text>
+    <text x="980" y="164" text-anchor="middle" font-size="11.5" fill="#BBF7D0">Microsoft Fabric · Live SQL Analytics</text>
+    <line x1="860" y1="178" x2="1100" y2="178" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+    <text x="980" y="202" text-anchor="middle" font-size="11" fill="#DCFCE7">dim_grant · fact_disbursement · 6 tables</text>
+    <text x="980" y="222" text-anchor="middle" font-size="11" fill="#DCFCE7">GrantLifecycle ontology grounding</text>
+    <text x="980" y="242" text-anchor="middle" font-size="11" fill="#DCFCE7">GrantPortfolio semantic model + GraphModel</text>
+    <rect x="880" y="258" width="200" height="6" rx="3" fill="#ffffff" fill-opacity="0.15"/>
+    <rect x="880" y="258" width="200" height="6" rx="3" fill="#86EFAC" fill-opacity="0.9">
+      <animate attributeName="width" from="0" to="200" dur="1s" begin="0.9s" fill="freeze"/>
+    </rect>
+  </g>
+
+  <!-- bottom label -->
+  <text x="600" y="306" text-anchor="middle" font-size="11" fill="#64748B">All three active on every analysis · not demo placeholders</text>
+</svg>
