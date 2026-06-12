@@ -88,9 +88,7 @@ export function ProcessPill({
           />
         )}
         {/* ThoughtProcess while steps stream in */}
-        {(reasoningSteps?.length ?? 0) > 0 && (
-          <ThoughtProcess steps={reasoningSteps!} isStreaming={true} />
-        )}
+        {(reasoningSteps?.length ?? 0) > 0 && processContent}
         {/* AgentOrchestraBar live */}
         {(reasoningSteps?.length ?? 0) > 0 && (
           <AgentOrchestraBar

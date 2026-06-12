@@ -14,12 +14,7 @@ import type { DrawerView } from "./AgentDrawer";
 import { AgentDrawer } from "./AgentDrawer";
 import { ReportPreviewModal } from "./ReportPreviewModal";
 import type { ReportPayload } from "./ReportPreviewModal";
-import { GrantRadarSkeleton } from "./GrantRadarSkeleton";
-import { AgentOrchestraBar } from "./AgentOrchestraBar";
-import { AgentHandoffTrace } from "./AgentHandoffTrace";
-import { GuardrailsStrip } from "./GuardrailsStrip";
 import { AppHeader } from "./AppHeader";
-import { TierBadge } from "./TierBadge";
 import { GraphPathsPanel } from "./GraphPathsPanel";
 import { ProcessPill } from "./ProcessPill";
 import {
@@ -35,6 +30,9 @@ import "./ChatInterface.css";
 type WidgetPayload =
   | { type: "grant_match"; data: GrantMatchData }
   | { type: "grant_pipeline"; data: { grants: PipelineGrant[]; cityName: string; totalOpportunity: number } }
+  | { type: "grant_detail"; data: Record<string, unknown> | null }
+  | { type: "portfolio_health"; data: Record<string, unknown> }
+  | { type: "compliance_board"; data: Record<string, unknown> }
   | { type: "city_scan"; data: CityProfileScanData };
 
 interface Message {
@@ -499,24 +497,6 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
   return html;
 }
 
-// ─── Tool call status line ───────────────────────────────────────────────
-function ToolCallLine({ status, done }: { status: string; done: boolean }) {
-  const lc = status.toLowerCase();
-  const icon = lc.includes("connect") ? <IconBuilding size={13} />
-    : lc.includes("search") ? <IconSearch size={13} />
-    : lc.includes("analyz") ? <IconChart size={13} />
-    : lc.includes("generat") ? <IconChart size={13} />
-    : lc.includes("retriev") ? <IconFileText size={13} />
-    : <IconSettings size={13} />;
-  return (
-    <div className={`tool-call-line ${done ? "tool-call-line--done" : "tool-call-line--active"}`}>
-      <span className="tcl-icon">{icon}</span>
-      <span className="tcl-text">{status}</span>
-      {!done && <span className="tcl-spinner" />}
-    </div>
-  );
-}
-
 // ─── Answer peek — collapsed scrollable window for streaming / full text ───────
 function AnswerPeek({ children, streaming, label }: { children: React.ReactNode; streaming: boolean; label?: string }) {
   const [open, setOpen] = useState(false);
@@ -923,6 +903,27 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
                 <button
                   className="ws-file-menu"
                   onClick={(e) => { e.stopPropagation(); onOpenPreview({ type: "grant_pipeline", analysisText, title: "Grant Pipeline Report", citations }); }}
+                  title="Open preview"
+                >↗</button>
+              </div>
+            )}
+            {(widget?.type === "grant_detail" || widget?.type === "portfolio_health" || widget?.type === "compliance_board") && (
+              <div
+                className="ws-file-item ws-file-item--clickable"
+                onClick={() => onOpenPreview({
+                  type: "grant_pipeline",
+                  analysisText,
+                  title: widget.type === "grant_detail" ? ((widget.data as any)?.name ?? "Grant Detail") : widget.type === "portfolio_health" ? "Portfolio Health Report" : "Compliance Alerts",
+                  citations,
+                })}
+              >
+                <IconFileText size={13} className="ws-file-icon" />
+                <span className="ws-file-name">
+                  {widget.type === "grant_detail" ? ((widget.data as any)?.name ?? "Grant Detail") : widget.type === "portfolio_health" ? "Portfolio Health Report" : "Compliance Alerts"}
+                </span>
+                <button
+                  className="ws-file-menu"
+                  onClick={(e) => { e.stopPropagation(); onOpenPreview({ type: "grant_pipeline", analysisText, title: widget.type === "grant_detail" ? ((widget.data as any)?.name ?? "Grant Detail") : widget.type === "portfolio_health" ? "Portfolio Health Report" : "Compliance Alerts", citations }); }}
                   title="Open preview"
                 >↗</button>
               </div>
