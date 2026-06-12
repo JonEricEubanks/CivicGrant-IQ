@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 185" font-family="Segoe UI,-apple-system,Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#003A6E"/>
+      <stop offset="0.35" stop-color="#0078D4"/>
+      <stop offset="0.65" stop-color="#3B1E8E"/>
+      <stop offset="1" stop-color="#6E40C9"/>
+    </linearGradient>
+    <linearGradient id="divline" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="185" fill="url(#bg)"/>
+  <circle cx="600" cy="92" r="380" fill="#ffffff" fill-opacity="0.03"/>
+  <circle cx="100" cy="50" r="120" fill="#50E6FF" fill-opacity="0.04"/>
+  <circle cx="1100" cy="140" r="120" fill="#C5C8FF" fill-opacity="0.04"/>
+
+  <!-- BY THE NUMBERS header -->
+  <text x="600" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#8AB4D0" letter-spacing="3" opacity="0">
+    BY THE NUMBERS
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0s" fill="freeze"/>
+  </text>
+
+  <!-- Dividers -->
+  <rect x="200" y="34" width="1" height="134" fill="url(#divline)"/>
+  <rect x="400" y="34" width="1" height="134" fill="url(#divline)"/>
+  <rect x="600" y="34" width="1" height="134" fill="url(#divline)"/>
+  <rect x="800" y="34" width="1" height="134" fill="url(#divline)"/>
+  <rect x="1000" y="34" width="1" height="134" fill="url(#divline)"/>
+
+  <!-- STAT 1: 40 Entities -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.1s" fill="freeze"/>
+    <text x="100" y="110" text-anchor="middle" font-size="62" font-weight="900" fill="#50E6FF">40</text>
+    <text x="100" y="135" text-anchor="middle" font-size="12.5" font-weight="600" fill="#B8D6EC">Graph Entities</text>
+    <text x="100" y="152" text-anchor="middle" font-size="10.5" fill="#6A9FBF">typed nodes in KB</text>
+  </g>
+
+  <!-- STAT 2: 57 Edges -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.22s" fill="freeze"/>
+    <text x="300" y="110" text-anchor="middle" font-size="62" font-weight="900" fill="#50E6FF">57</text>
+    <text x="300" y="135" text-anchor="middle" font-size="12.5" font-weight="600" fill="#B8D6EC">Weighted Edges</text>
+    <text x="300" y="152" text-anchor="middle" font-size="10.5" fill="#6A9FBF">typed relationships</text>
+  </g>
+
+  <!-- STAT 3: 17 Guardrails -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.34s" fill="freeze"/>
+    <text x="500" y="110" text-anchor="middle" font-size="62" font-weight="900" fill="#F9A825">17</text>
+    <text x="500" y="135" text-anchor="middle" font-size="12.5" font-weight="600" fill="#B8D6EC">Guardrail Rules</text>
+    <text x="500" y="152" text-anchor="middle" font-size="10.5" fill="#6A9FBF">G01–G17</text>
+  </g>
+
+  <!-- STAT 4: 5 Agents -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.46s" fill="freeze"/>
+    <text x="700" y="110" text-anchor="middle" font-size="62" font-weight="900" fill="#C5C8FF">5</text>
+    <text x="700" y="135" text-anchor="middle" font-size="12.5" font-weight="600" fill="#B8D6EC">Specialist Agents</text>
+    <text x="700" y="152" text-anchor="middle" font-size="10.5" fill="#6A9FBF">parallel fleet</text>
+  </g>
+
+  <!-- STAT 5: 3 Tiers -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.58s" fill="freeze"/>
+    <text x="900" y="110" text-anchor="middle" font-size="62" font-weight="900" fill="#86EFAC">3</text>
+    <text x="900" y="135" text-anchor="middle" font-size="12.5" font-weight="600" fill="#B8D6EC">Fallback Tiers</text>
+    <text x="900" y="152" text-anchor="middle" font-size="10.5" fill="#6A9FBF">never goes down</text>
+  </g>
+
+  <!-- STAT 6: 23 SSE Events -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.70s" fill="freeze"/>
+    <text x="1100" y="110" text-anchor="middle" font-size="62" font-weight="900" fill="#50E6FF">23</text>
+    <text x="1100" y="135" text-anchor="middle" font-size="12.5" font-weight="600" fill="#B8D6EC">SSE Event Types</text>
+    <text x="1100" y="152" text-anchor="middle" font-size="10.5" fill="#6A9FBF">live streaming</text>
+  </g>
+</svg>
