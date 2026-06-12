@@ -1,0 +1,7 @@
+metric_id,requirement_id,confidence,evidence,source_doc
+metric_crs7,req_nfip,1.0,"CRS Class 7 is only achievable with active, compliant NFIP participation — zero policy lapses",BG-PastApplication-BRIC-BuffaloCreek-2025
+metric_lhmp,req_lhmp,1.0,"FEMA-approved LHMP through June 2027 — fully satisfies BRIC/HMGP LHMP eligibility requirement",BG-PastApplication-BRIC-BuffaloCreek-2025
+metric_reserves,req_match_bric,1.0,"$15.4M reserves covers $850K BRIC match (Phase I: $4.25M × 20%) with 18× margin",BG-CapitalImprovementPlan-2026-2030
+metric_reserves,req_match_raise,1.0,"$15.4M reserves exceeds $3.25M RAISE local/state committed match with 4.7× margin",BG-CapitalImprovementPlan-2026-2030
+metric_uei,req_sam,1.0,"UEI X7MLFBG4PNE3 active in SAM.gov — satisfies federal grant registration requirement for all programs",BG-PastApplication-BRIC-BuffaloCreek-2025
+metric_aa2,req_match_bric,0.9,"Aa2 rating enables cost-effective GO bond issuance for additional match capacity if needed",BG-CityProfile-2026

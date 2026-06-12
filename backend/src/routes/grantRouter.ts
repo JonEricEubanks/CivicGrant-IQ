@@ -196,7 +196,31 @@ export function detectQueryIntent(query: string): {
   sources: string[];
   widgetType: string;
 } {
-  // Compliance & deadline queries (check first to avoid "due" from matching prioritization)
+  // ── HIGHEST PRIORITY: Explicit grant analysis requests ─────────────────────
+  // Must run before all other checks. Catches queries like:
+  //   "Analyze the FY2024 Flood Mitigation Assistance grant for Buffalo Grove"
+  //   "Assess eligibility, match score, and gaps for BRIC"
+  //   "Evaluate the NOFO for..."
+  //   "Does Buffalo Grove qualify for the RAISE program? What are the gaps?"
+  const isExplicitAnalysis =
+    /\banalyz[ei]|\bassess\b|\bevaluat[ei]|\bscore\b.*\bgrant|\bgrant\b.*\bscore\b/i.test(query) &&
+    /\beligib|\bmatch\s+score|\bgap[s]?\b|\bqualif|\bfit\b.*\bgrant|\bgrant\b.*\bfit\b/i.test(query);
+  const isNofoAnalysis =
+    /\bnofo\b|notice\s+of\s+funding|funding\s+opportunity\s+number|fiscal\s+year\s+\d{4}.*grant|grant.*fiscal\s+year\s+\d{4}/i.test(query);
+  const isNamedGrantAnalysis =
+    /\banalyze\b|\bassess\b/i.test(query) &&
+    /flood\s+mitigation|stormwater|resilience|infrastructure|transportation|housing|community\s+development|bric|raise|fma|hmgp|cdbg|srf|tiger|build|infra\s+grant|federal\s+grant/i.test(query);
+
+  if (isExplicitAnalysis || isNofoAnalysis || isNamedGrantAnalysis) {
+    return {
+      type: "general_grant_analysis",
+      description: "Full 6-agent grant analysis: eligibility scoring, match assessment, gap identification, narrative, and strategy",
+      sources: ["foundry_iq", "portfolio", "work_iq"],
+      widgetType: "grant_match",
+    };
+  }
+
+  // Compliance & deadline queries (check before prioritization to avoid "due" false-matches)
   if (/compliance|deadline|due|overdue|upcoming|report.*due|quarterly|sf-425|closeout|risk/i.test(query)) {
     return {
       type: "compliance_alerts",
@@ -206,8 +230,9 @@ export function detectQueryIntent(query: string): {
     };
   }
 
-  // Prioritization queries
-  if (/top\s+3|priorit|rank|order|which.*grant.*first|most urgent|highest priority|this quarter|this month/i.test(query)) {
+  // Prioritization queries — use \bprioritiz\b to avoid false-matching "priorities"
+  // (e.g. "flood mitigation priorities" should NOT trigger this branch)
+  if (/\btop\s+[345]\b|\bprioritiz\w*|\brank\b.*\bgrant|\bgrant\b.*\brank|\border.*\bgrant\b|\bwhich.*grant.*first\b|\bmost\s+urgent\b|\bhighest\s+priority\b|\bthis\s+quarter\b|\bthis\s+month\b/i.test(query)) {
     return {
       type: "top_grants_prioritized",
       description: "Ranking top 3-5 grants by urgency, deadline, and Work IQ signals",
@@ -217,7 +242,7 @@ export function detectQueryIntent(query: string): {
   }
 
   // Portfolio health/overview queries
-  if (/portfolio|status|overview|summary|disburs|awarded|total|how much|health|all grant/i.test(query)) {
+  if (/\bportfolio\b|\boverview\b|\bsummary\b|\bdisburs|\bawarded\b|\btotal\b.*\bgrant|\bhow\s+much\b|\bhealth\b|\ball\s+grant/i.test(query)) {
     return {
       type: "portfolio_health",
       description: "Analyzing portfolio-level health: disbursement progress, active vs. applied, total funding",
@@ -226,8 +251,8 @@ export function detectQueryIntent(query: string): {
     };
   }
 
-  // Project-to-grant matching
-  if (/project.*grant|grant.*project|align|match|fit|eligible|qualify|apply for|can we get/i.test(query)) {
+  // Project-to-grant matching (no "match score" — that's caught above by isExplicitAnalysis)
+  if (/\bproject.*grant\b|\bgrant.*project\b|\balign\b|\bfit\b|\beligible\b|\bqualify\b|\bapply\s+for\b|\bcan\s+we\s+get\b/i.test(query)) {
     return {
       type: "project_grant_match",
       description: "Matching Buffalo Grove projects to eligible federal grant programs",
@@ -237,8 +262,8 @@ export function detectQueryIntent(query: string): {
   }
 
   // Single grant detail queries
-  if (/(?:the |a )?(northwood|bric|raise|smc|srf|cdbg|fema|hud|dot|epa|usda).*grant|tell me about|status of|details.*grant|what.*grant|grant.*info/i.test(query)) {
-    const grantMatch = query.match(/(northwood|bric|raise|smc|srf|cdbg|fema|hud|dot|epa|usda)/i);
+  if (/(?:the |a )?(northwood|bric|raise|smc|srf|cdbg|fema|hud|dot|epa|usda).*grant\b|\btell\s+me\s+about\b|\bstatus\s+of\b|\bdetails.*grant\b|\bwhat.*grant\b|\bgrant.*info\b/i.test(query)) {
+    const grantMatch = query.match(/\b(northwood|bric|raise|smc|srf|cdbg|fema|hud|dot|epa|usda)\b/i);
     const grantHint = grantMatch ? grantMatch[1] : "grant";
     return {
       type: "single_grant_detail",
@@ -249,7 +274,7 @@ export function detectQueryIntent(query: string): {
   }
 
   // Financial capacity / cost-share queries
-  if (/cost.?share|match|financial|budget|reserves|capacity|afford|fund/i.test(query)) {
+  if (/\bcost.?share\b|\bfinancial\b|\bbudget\b|\breserves\b|\bcapacity\b|\bafford\b/i.test(query)) {
     return {
       type: "financial_capacity",
       description: "Assessing financial capacity, reserves, and cost-share availability",

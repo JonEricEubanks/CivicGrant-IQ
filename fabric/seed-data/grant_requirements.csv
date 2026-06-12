@@ -1,0 +1,12 @@
+program_id,requirement_id,strength,evidence
+fema_bric,req_lhmp,1.0,"FEMA BRIC eligibility criterion: applicant must have a current FEMA-approved LHMP"
+fema_bric,req_nfip,1.0,"FEMA BRIC: community must be an active NFIP participant in good standing"
+fema_bric,req_match_bric,1.0,"FEMA BRIC: 25% non-federal cost share required on total project cost"
+fema_bric,req_sam,1.0,"All FEMA grants require active SAM.gov registration"
+fema_bric,req_bca,0.9,"FEMA BRIC: Benefit-Cost Analysis strongly preferred; BCA ratio ≥ 1.0 strengthens scoring"
+raise,req_bca,1.0,"USDOT RAISE: Benefit-Cost Analysis required for large awards (> $5M)"
+raise,req_match_raise,1.0,"RAISE: demonstrated local/state funding commitment strongly preferred; 20%+ match improves competitiveness"
+raise,req_sam,1.0,"All federal grants require active SAM.gov registration"
+raise,req_local_gov,1.0,"RAISE: eligible applicants include local governments and transit agencies"
+fema_hmgp,req_lhmp,1.0,"FEMA HMGP: active LHMP required for sub-applicant eligibility"
+fema_hmgp,req_nfip,1.0,"FEMA HMGP: active NFIP participation required"

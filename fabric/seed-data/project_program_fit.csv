@@ -1,0 +1,12 @@
+project_id,program_id,fit_score,evidence,source_doc
+buffalo_creek,fema_bric,0.95,"Flood warning infrastructure + green infrastructure + critical facility hardening — all three are FEMA BRIC Tier 2 focus areas",BG-PastApplication-BRIC-BuffaloCreek-2025
+buffalo_creek,fema_hmgp,0.88,"Flood hazard mitigation project (warning system, green infra) — standard HMGP eligible activity",BG-PastApplication-BRIC-BuffaloCreek-2025
+buffalo_creek,fema_fma,0.85,"FMA-eligible activities: stormwater drainage improvements for NFIP-insured structures in Buffalo Creek floodplain",BG-PastApplication-BRIC-BuffaloCreek-2025
+buffalo_creek,usdot_protect,0.72,"Weiland Road infrastructure hardening + culvert improvements parallel PROTECT road climate resilience eligible activities",BG-PastApplication-BRIC-BuffaloCreek-2025
+aptakisic,raise,0.95,"Safety, multimodal access, transit connectivity to Metra Prairie View — all RAISE priority categories (safety + equity + climate)",BG-PastApplication-RAISE-Aptakisic-IL83-2024
+aptakisic,idot_hsip,0.92,"IDOT District 1 High-Injury Network designation; IDOT 2022 IL-83 Corridor Safety Study recommends this project as highest priority statewide",BG-PastApplication-RAISE-Aptakisic-IL83-2024
+aptakisic,cmap_cmaq,0.78,"Adaptive signal upgrade and congestion reduction components qualify for CMAQ funding under Chicago MSA TIP",BG-CapitalImprovementPlan-2026-2030
+aptakisic,ss4a,0.93,"Vision Zero focus: 2 pedestrian fatalities, LOS F, protected bike lane to Metra Prairie View — all core SS4A Implementation grant eligible activities",BG-PastApplication-RAISE-Aptakisic-IL83-2024
+northwood,smc_siip,0.99,"Stormwater wetland + culvert improvements + road drainage — core SIIP eligible activities (AWARDED FY2024)",BG-PastApplication-Northwood-Stormwater-SMC-2024
+northwood,epa_cwsrf,0.76,"Wetland restoration + stormwater quality management — EPA CWSRF green infrastructure eligible activity",BG-PastApplication-Northwood-Stormwater-SMC-2024
+lake_cook,cmap_cmaq,0.85,"Road corridor improvement in Chicago MSA — targeted CMAQ/STP-Urban programmatic funding in CIP T-2",BG-CapitalImprovementPlan-2026-2030

@@ -1,0 +1,10 @@
+metric_id,city_id,metric_name,value_numeric,detail,source_doc
+metric_reserves,bg,"$15.4M Unreserved Capital Fund Balance",15400000,"FY2026 — available for project cost-share commitments",BG-CapitalImprovementPlan-2026-2030
+metric_aa2,bg,"Moody's Aa2 Credit Rating (reaffirmed January 2025)",,"Demonstrates strong fiscal management and bonding capacity",BG-CityProfile-2026
+metric_crs7,bg,"NFIP CRS Class 7 — saves residents $280K/year",280000,"Community Rating System Class 7; annual NFIP premium savings for residents",BG-PastApplication-BRIC-BuffaloCreek-2025
+metric_lhmp,bg,"FEMA-approved LHMP — expires June 2027",,"Adopted May 2022 (Ordinance #2022-16); Buffalo Creek listed as Priority-1 hazard",BG-PastApplication-BRIC-BuffaloCreek-2025
+metric_crash,bg,"Aptakisic/IL-83: 87 crashes (5yr), 2 fatalities, LOS F",87,"31 injury crashes (36% vs 22% statewide); crash rate 1.42 vs 0.68 state avg; ADT 28,400; IDOT High-Injury Network",BG-PastApplication-RAISE-Aptakisic-IL83-2024
+metric_flood_damage,bg,"Buffalo Creek: $14.2M property damage (past decade)",14200000,"1,240-acre floodplain (12% of Village); 342 residential structures at risk",BG-PastApplication-BRIC-BuffaloCreek-2025
+metric_uei,bg,"SAM.gov Active — UEI X7MLFBG4PNE3 / CAGE 7MUW9",,"Zero compliance issues across all past federal grants",BG-PastApplication-BRIC-BuffaloCreek-2025
+metric_grant_track,bg,"Grant Track Record: $5.5M AWARDED + $8.4M under federal review",5500000,"100% grant compliance record",BG-CapitalImprovementPlan-2026-2030
+metric_stormwater_master_plan,bg,"2022 Storm Water Master Plan — Northwood Priority-1 remediation",,"23 flooding incidents (2015-2023); $3.4M cumulative private damage",BG-PastApplication-Northwood-Stormwater-SMC-2024

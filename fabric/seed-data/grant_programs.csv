@@ -1,0 +1,20 @@
+program_id,program_name,agency,focus,match_pct_required,min_award,max_award,iija_bill,population_limit
+fema_bric,"FEMA BRIC (Building Resilient Infrastructure & Communities)","FEMA / DHS","flood resilience, climate adaptation, hazard mitigation",25,,,false,
+raise,"USDOT RAISE Discretionary Grants","U.S. Department of Transportation","transportation safety, multimodal access, equity",,1000000,25000000,false,
+smc_siip,"Lake County SMC SIIP (Stormwater Infrastructure Improvement Program)","Lake County Stormwater Management Commission","stormwater management, flood mitigation, wetlands",,,,false,
+fema_hmgp,"FEMA HMGP (Hazard Mitigation Grant Program)","FEMA / DHS","post-disaster hazard mitigation, structure elevation, floodproofing",,,,false,
+epa_cwsrf,"EPA Clean Water State Revolving Fund (CWSRF via IEPA)","EPA / Illinois EPA","water quality, stormwater, green infrastructure, wet weather",,,,false,
+hud_cdbg,"HUD Community Development Block Grant (CDBG)","U.S. HUD","community development, housing, public facilities, low-income benefit",,,,false,
+cmap_cmaq,"CMAP CMAQ / STP-Urban (Congestion Mitigation & Air Quality)","CMAP / IDOT","road improvements, congestion reduction, air quality, transit access",,,,false,
+idot_hsip,"IDOT HSIP (Highway Safety Improvement Program)","Illinois DOT","high-crash locations, safety countermeasures, signal upgrades",,,,false,
+ss4a,"USDOT Safe Streets & Roads for All (SS4A)","U.S. DOT FHWA","Vision Zero, pedestrian/cyclist safety, traffic calming, safe routes",20,100000,25000000,true,
+fema_fma,"FEMA Flood Mitigation Assistance (FMA)","FEMA / DHS","flood risk reduction for NFIP-insured structures, property buyout, structure elevation, drainage",25,,,true,
+epa_dwsrf,"EPA Drinking Water State Revolving Fund (DWSRF) — Lead Service Line","EPA / State Agency","drinking water infrastructure, lead service line replacement, PFAS contamination",,,,true,
+usdot_protect,"USDOT PROTECT Grant Program (Climate Resilience)","FHWA / USDOT","transportation climate resilience, culverts, bridge scour, stormwater drainage on roads",20,,,true,
+eda_pubworks,"EDA Public Works & Economic Adjustment Assistance","U.S. Economic Development Administration","economic distress, job creation infrastructure, industrial parks, broadband, port access",50,,,false,
+usda_cf,"USDA Rural Development Community Facilities (CF)","USDA Rural Development","community facilities, fire stations, libraries, community centers, healthcare — rural areas",,,,false,20000
+usda_ww,"USDA Rural Development Water & Waste Disposal","USDA Rural Development","water treatment, wastewater systems, rural communities",,,,false,10000
+ntia_bead,"NTIA BEAD (Broadband Equity Access & Deployment)","NTIA / Commerce","broadband infrastructure, unserved/underserved areas, digital equity",,,,true,
+doe_eecbg,"DOE Energy Efficiency & Conservation Block Grant (EECBG)","U.S. Department of Energy","municipal energy efficiency, LED streetlights, EV charging, renewable energy on public facilities",,,,true,
+hud_home,"HUD HOME Investment Partnerships Program","U.S. HUD","affordable housing construction/rehab, down-payment assistance, CHDO partnerships",25,,,false,
+arc_grants,"Appalachian Regional Commission (ARC) Area Development","Appalachian Regional Commission","Appalachian 13-state region: water/sewer, transportation, broadband, healthcare, workforce",,250000,5000000,false,

@@ -464,7 +464,7 @@ export async function getCityContext(forceRefresh = false): Promise<CityContext>
 
   let context: CityContext;
   if (!graphConfigured()) {
-    context = localKbContext("Microsoft Graph is not configured. Set GRAPH_TENANT_ID, GRAPH_CLIENT_ID, and GRAPH_CLIENT_SECRET.");
+    context = localKbContext("Work IQ · Local KB mode active");
   } else {
     try {
       // Run SharePoint doc load and live M365 signals in parallel for speed

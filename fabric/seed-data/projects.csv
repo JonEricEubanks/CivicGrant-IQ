@@ -1,0 +1,5 @@
+project_id,city_id,project_name,total_cost,grant_request,local_match,status,grant_app_id,scope
+buffalo_creek,bg,"Buffalo Creek Watershed Flood Resilience — Phase I",4250000,3400000,850000,"Under federal review",BRIC-FY24-IL-0223,"Flood warning system (20→90 min warning), 3 green infrastructure rain gardens (−24% peak runoff), Weiland Road lift station hardening (500-yr event)"
+aptakisic,bg,"Aptakisic Road / IL-83 Intersection Reconstruction",8250000,5000000,1000000,"Under federal review",RAISE-FY24-IL-2024-0847,"Dual left-turn lanes on IL-83, adaptive traffic signal, protected bike lane to Prairie View Metra, ADA upgrades"
+northwood,bg,"Northwood Neighborhood Stormwater Improvements — Phase I",13800000,5500000,8300000,"AWARDED — construction commenced January 2025",,"Northwood Park wetland restoration, Ridgewood Pond outlet upgrade, roadside drainage network"
+lake_cook,bg,"Lake-Cook Road Corridor Improvements",5600000,2800000,2800000,"Design 60% complete",,"Road corridor improvement targeting CMAQ/STP-Urban programming"

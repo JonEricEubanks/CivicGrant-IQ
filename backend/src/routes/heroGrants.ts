@@ -128,6 +128,22 @@ const MUNICIPAL_EXCLUSION_PATTERNS = [
   /coast.?guard/i,
   /military/i,
   /department of defense/i,
+  /commercial.?fish/i,
+  /occupational.?safety/i,
+  /\bNIOSH\b/i,
+  /\bCDC\b/i,
+  /centers for disease/i,
+  /\bNIH\b/i,
+  /\bNSF\b.{0,15}research/i,
+  /biomedical/i,
+  /\bhospital\b/i,
+  /health.?service/i,
+  /substance.?abuse/i,
+  /mental.?health/i,
+  /school.?district/i,
+  /higher.?education/i,
+  /university/i,
+  /agricultural.?research/i,
 ];
 
 function isMunicipallyRelevant(title: string, agency: string): boolean {

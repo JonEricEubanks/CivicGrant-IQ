@@ -18,7 +18,7 @@
 
 <br/>
 
-### 🚀 **[Try the Live Demo](https://proud-field-00978990f.7.azurestaticapps.net)** &nbsp;·&nbsp; 📺 **[Watch the 5‑min Demo](https://REPLACE_WITH_DEMO_VIDEO_URL)** &nbsp;·&nbsp; 🧭 **[Why It Wins](#-why-this-wins-best-overall-agent)**
+### 🚀 **[Try the Live Demo](https://proud-field-00978990f.7.azurestaticapps.net)** &nbsp;·&nbsp; 💺 **[Watch the 5‑min Demo](https://proud-field-00978990f.7.azurestaticapps.net)** &nbsp;·&nbsp; 🧭 **[Why It Wins](#-why-this-wins-best-overall-agent)**
 
 </div>
 
@@ -48,7 +48,7 @@
 |---|---|---|---|
 | **Jon Eric Eubanks** | Lead / full‑stack | [JonEricEubanks](https://learn.microsoft.com/en-us/users/jonericeubanks/) | [@JonEricEubanks](https://github.com/JonEricEubanks) |
 
-> **⚠️ Before submitting:** Replace `REPLACE_WITH_DEMO_VIDEO_URL` with your uploaded demo video URL (appears twice in this README). Required for eligibility.
+> **Note:** Add a demo video URL above before final submission (the live demo link is the current placeholder).
 
 ---
 
@@ -575,7 +575,7 @@ infra/docs/                   — Buffalo Grove municipal KB corpus (5 documents
 
 ![Six reasoning steps. Five specialist agents. One mission: help every city win the funding it deserves.](docs/footer.svg)
 
-**[🚀 Live Demo](https://proud-field-00978990f.7.azurestaticapps.net)** · **[📺 Demo Video](https://REPLACE_WITH_DEMO_VIDEO_URL)** · **[💻 Source](https://github.com/JonEricEubanks/CivicGrant-IQ)**
+**[🚀 Live Demo](https://proud-field-00978990f.7.azurestaticapps.net)** · **[📺 Demo Video](https://proud-field-00978990f.7.azurestaticapps.net)** · **[💻 Source](https://github.com/JonEricEubanks/CivicGrant-IQ)**
 
 </div>
 

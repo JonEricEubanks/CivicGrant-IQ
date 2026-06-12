@@ -285,7 +285,7 @@ export function WorkIqPanel({ grantName, agency, deadline, milestones, actionIte
                 </ul>
               </div>
             )}
-            {context.error && <p className="workiq-context-error">Fallback active: {context.error}</p>}
+            {context.error && <p className="workiq-context-error">Work IQ · Local KB mode — connect Microsoft Graph for live calendar, email, and SharePoint signals</p>}
           </>
         )}
       </div>

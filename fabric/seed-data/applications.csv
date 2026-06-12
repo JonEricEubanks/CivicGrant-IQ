@@ -1,0 +1,7 @@
+app_id,city_id,program_id,project_id,status,amount_requested,amount_awarded,submitted_date
+BRIC-FY24-IL-0223,bg,fema_bric,buffalo_creek,"Under federal review",3400000,,2025-01-31
+RAISE-FY24-IL-2024-0847,bg,raise,aptakisic,"Under federal review",5000000,,2024-09-25
+SIIP-FY24-NORTHWOOD,bg,smc_siip,northwood,Awarded,5500000,5500000,2024-02-15
+HMGP-FY2020-BG,bg,fema_hmgp,,Awarded,185000,185000,2020-06-01
+HMGP-FY2017-BG,bg,fema_hmgp,,Awarded,620000,620000,2017-05-01
+HMGP-FY2014-BG,bg,fema_hmgp,,Awarded,340000,340000,2014-04-01

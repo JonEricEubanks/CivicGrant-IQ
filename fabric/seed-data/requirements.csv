@@ -1,0 +1,8 @@
+requirement_id,requirement_name,applies_to,description
+req_lhmp,"FEMA-approved Local Hazard Mitigation Plan (active)","FEMA BRIC / HMGP","Current FEMA-approved LHMP required for BRIC/HMGP eligibility"
+req_nfip,"Active NFIP Community Participation","FEMA BRIC / HMGP","Community must be active NFIP participant with no lapsed policies"
+req_bca,"Benefit-Cost Analysis (BCA ratio ≥ 1.0)","RAISE / FEMA BRIC","Quantified BCA showing positive net social benefit"
+req_sam,"Active SAM.gov Registration (UEI required)","All federal grants","Active SAM.gov registration with UEI required for all federal awards"
+req_match_bric,"25% Non-Federal Cost Share (FEMA BRIC)","FEMA BRIC","Minimum 25% non-federal match required on total project cost"
+req_match_raise,"Demonstrated Local Funding Commitment (RAISE)","USDOT RAISE","RAISE strongly prefers applicants with committed local/state match; 20%+ expected"
+req_local_gov,"Eligible Local Government Applicant","Most federal/state grants","Municipality, county, or transit agency as direct applicant"

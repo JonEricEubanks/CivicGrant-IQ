@@ -1,0 +1,13 @@
+city_id,program_id,confidence,evidence,source_doc
+bg,fema_bric,0.92,"CRS Class 7 + Active LHMP (exp. June 2027) + $15.4M reserves + BRIC-FY24-IL-0223 filed Jan 2025",BG-PastApplication-BRIC-BuffaloCreek-2025
+bg,raise,0.87,"Aptakisic/IL-83 on IDOT High-Injury Network (87 crashes, 2 fatalities) + $3.25M local/state match committed + Metra Prairie View connectivity",BG-PastApplication-RAISE-Aptakisic-IL83-2024
+bg,smc_siip,0.99,"AWARDED $5.5M FY2024 — Northwood stormwater Phase I; construction commenced January 2025",BG-PastApplication-Northwood-Stormwater-SMC-2024
+bg,idot_hsip,0.90,"Aptakisic/IL-83 crash rate 1.42 vs 0.68 statewide avg; IDOT District 1 High-Injury Network designation; 2 fatal pedestrian crashes (2021-2022)",BG-PastApplication-RAISE-Aptakisic-IL83-2024
+bg,fema_hmgp,0.85,"Active LHMP + CRS Class 7 + prior HMGP awards (FY2020 $185K, FY2017 $620K, FY2014 $340K)",BG-PastApplication-BRIC-BuffaloCreek-2025
+bg,epa_cwsrf,0.78,"Stormwater Management Fund ($8.1M) + awarded SIIP stormwater project + Buffalo Creek on Illinois EPA 303(d) impaired waterways list",BG-PastApplication-BRIC-BuffaloCreek-2025
+bg,cmap_cmaq,0.82,"Chicago MSA eligibility + Lake-Cook Road corridor in CIP (T-2, $5.6M) + CMAP TIP programming capacity",BG-CapitalImprovementPlan-2026-2030
+bg,hud_cdbg,0.72,"Non-entitlement city (< 50K); eligible via Illinois DCEO state CDBG; senior population 17.4% supports public facilities activities",BG-CityProfile-2026
+bg,ss4a,0.88,"Aptakisic/IL-83 pedestrian fatalities + LOS F + school zone proximity qualifies for SS4A safety focus; protected bike lane to Metra meets multimodal access criteria",BG-PastApplication-RAISE-Aptakisic-IL83-2024
+bg,fema_fma,0.82,"Active NFIP participant (CRS Class 7) + 342 NFIP-insured structures in Buffalo Creek floodplain + repetitive-flood-loss property candidates",BG-PastApplication-BRIC-BuffaloCreek-2025
+bg,usdot_protect,0.79,"Undersized culverts on Buffalo Creek documented in 2022 Stormwater Master Plan; road drainage improvements on CIP projects T-2 and S-3 align with PROTECT eligible activities",BG-CapitalImprovementPlan-2026-2030
+bg,doe_eecbg,0.75,"Population ~41K (formula EECBG eligible city ≥35K); CIP includes LED street light upgrades and municipal fleet electrification planning",BG-CityProfile-2026
