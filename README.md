@@ -7,6 +7,7 @@
 [![Azure AI Foundry](https://img.shields.io/badge/Azure%20AI%20Foundry-Reasoning%20Agent-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://ai.azure.com)
 [![Foundry IQ](https://img.shields.io/badge/Foundry%20IQ-Grounded%20Retrieval-00A4EF?style=for-the-badge&logo=microsoft&logoColor=white)](https://ai.azure.com)
 [![Work IQ](https://img.shields.io/badge/Work%20IQ-Microsoft%20Graph-7B83EB?style=for-the-badge&logo=microsoft365&logoColor=white)](https://learn.microsoft.com/graph)
+[![Fabric IQ](https://img.shields.io/badge/Fabric%20IQ-Live%20GrantLakehouse-22C55E?style=for-the-badge&logo=microsoftfabric&logoColor=white)](https://learn.microsoft.com/fabric)
 [![GraphRAG](https://img.shields.io/badge/GraphRAG-Cited%20Evidence%20Chains-6E40C9?style=for-the-badge)](#-the-differentiator--graphrag-cited-evidence-chains)
 
 [![React 18](https://img.shields.io/badge/React%2018-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
@@ -36,7 +37,7 @@
 |---|---|
 | **Event** | Agents League @ AI Skills Fest 2026 |
 | **Track** | 🧠 Reasoning Agents (Microsoft Foundry) |
-| **IQ Layers** | **Foundry IQ** + **Work IQ** (both load‑bearing) |
+| **IQ Layers** | **Foundry IQ** + **Work IQ** + **Fabric IQ** — all three, load-bearing |
 | **Live App** | https://proud-field-00978990f.7.azurestaticapps.net |
 | **Repo** | https://github.com/JonEricEubanks/CivicGrant-IQ |
 | **Demo** | https://proud-field-00978990f.7.azurestaticapps.net |
@@ -82,6 +83,9 @@ Every judge claim below points to a real, verifiable line of code:
 | **Work IQ** — Teams channel messages | [`graphContext.ts`](backend/src/graphContext.ts) | 230–260 | `fetchGrantTeamsMessages()` → Graph `/teams/{id}/channels/{id}/messages`, scans grant-coordination channels |
 | **Work IQ** — Email | [`graphContext.ts`](backend/src/graphContext.ts) | 263–284 | `fetchGrantMail()` → Graph `/users/{upn}/messages?$search="grant"`, recent grant-related mail |
 | **Work IQ** — Signal fusion | [`graphContext.ts`](backend/src/graphContext.ts) | 471–513 | All four signals fetched in parallel and merged into a `LIVE MICROSOFT 365 SIGNALS (Work IQ)` prompt block that grounds every analysis |
+| **Fabric IQ** — Live SQL Analytics | [`routes/fabricIq.ts`](backend/src/routes/fabricIq.ts) | 1–100 | `queryGrantLakehouse()` — AAD token auth to Fabric SQL Analytics endpoint, `dim_grant` / `fact_disbursement` / 6 other tables |
+| **Fabric IQ** — Ontology grounding | [`fabricIq.ts`](backend/src/fabricIq.ts) | 1–80 | `buildOntologyGrounding()` — GrantLifecycle ontology injected into admin agent system prompt; agent reasons in shared business vocabulary |
+| **Fabric IQ** — Semantic model | [`routes/fabricIq.ts`](backend/src/routes/fabricIq.ts) | 220–270 | `getFabricContext()` discovers GrantPortfolio SemanticModel + GraphModel from Fabric REST API |
 | **6-step chain** — per-step agents | [`agents/multiAgent.ts`](backend/src/agents/multiAgent.ts) | 777–952 | `STEP1_SYSTEM` through `STEP6_SYSTEM` constants + `runSixStepChain()` — 6 separate `quickChat` calls, each step feeds the next |
 | **G17 guardrail** — auto-correct widget | [`guardrails.ts`](backend/src/guardrails.ts) | G17 block | When `fundingAmount > $100B`, corrects the widget in-place and sets `correctedWidget`; `chat.ts` emits `guardrail_correction` SSE event |
 | **GraphRAG** — multi-hop BFS | [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) | 464–526 | `findEvidencePaths()` BFS, typed edges, per-hop confidence scoring |
@@ -100,7 +104,7 @@ Every reasoning hop is **pre-verified and cited to a real document**, with confi
 - Confidence grading pre-computed from edge weights: CONFIRMED (≥0.85), LIKELY (≥0.65), POSSIBLE (below)
 - **Proof:** [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) — `findEvidencePaths` BFS at line 464, confidence scoring at line 522
 
-### 2️⃣ **Dual Microsoft IQ — Production Integration, Not Demo Magic**
+### 2️⃣ **All Three Microsoft IQ Layers — Production Integration, Not Demo Magic**
 - **Foundry IQ:** MCP `knowledge_base_retrieve` tool on Assistants API (lines 917–934 in [`agent.ts`](backend/src/agent.ts))
 - **Work IQ — four live M365 signals**, fetched in parallel ([`graphContext.ts:471–513`](backend/src/graphContext.ts#L471)):
   - 📄 **SharePoint documents** — extraction, PDF/DOCX parsing, LLM distillation (`loadSharePointDocuments`, line 286). A **SharePoint agent assists staff with metadata tagging** (DocumentType, Status, GrantProgram, ProjectName, Year, Category) so the library stays AI-ready; CivicGrant IQ reads those columns via `fetchItemFields` (line 185) and uses `Status` to separate active applications from rejected/withdrawn ones (lines 382–404)
@@ -108,8 +112,9 @@ Every reasoning hop is **pre-verified and cited to a real document**, with confi
   - 💬 **Teams channel messages** — live grant-coordination chatter from team channels (`fetchGrantTeamsMessages`, line 230)
   - ✉️ **Email** — recent grant-related mail via Graph `$search` (`fetchGrantMail`, line 263)
 - **Signal fusion:** all four merge into a `LIVE MICROSOFT 365 SIGNALS (Work IQ)` block injected into the agent prompt — exactly Work IQ's promise of building memory from *emails, meetings, chats, and documents*
-- **Both active:** City documents auto-pull → agent respects active vs. rejected status → KB augments reasoning
-- **Proof:** Live demo pulls from your actual SharePoint library, mailbox, calendar, and Teams
+- **Fabric IQ:** Live Microsoft Fabric workspace — `dim_grant` SQL Analytics endpoint, GrantLifecycle ontology grounding, GrantPortfolio semantic model, graph model traversal ([`routes/fabricIq.ts`](backend/src/routes/fabricIq.ts))
+- **All three IQ layers active:** City documents auto-pull → agent respects active vs. rejected status → KB augments reasoning → live Fabric grant status informs admin agent
+- **Proof:** Live demo pulls from your actual SharePoint library, mailbox, calendar, Teams, and live GrantLakehouse SQL endpoint
 
 ### 3️⃣ **Five-Agent Fleet with Surgical Orchestration**
 - **Five specialists:** Main 6-step analyst, Red Team GS-14 reviewer, Competitive Intel, Portfolio Scan (live grants.gov), Narrative Refinement

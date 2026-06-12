@@ -1,7 +1,87 @@
 import { Router, Request, Response } from "express";
 import { getOpenAIClient } from "../agent";
 import { GRANT_PORTFOLIO, findGrant, buildGrantContext, portfolioStats } from "../grantPortfolio";
+import { buildOntologyGrounding, buildAvailableActionsBlock, isFabricIqActive } from "../fabricIq";
+import { getFabricContext, formatFabricContextForPrompt } from "./fabricIq";
+import type { GrantTableRow } from "./fabricIq";
 import { withSpan } from "../telemetry";
+
+// ─── Fabric → portfolio merger ───────────────────────────────────────────────
+
+const LIFECYCLE_STATUS: Record<string, "active" | "applied" | "closeout" | "closed" | "declined"> = {
+  Active:      "active",
+  Closeout:    "closeout",
+  Closed:      "closed",
+  UnderReview: "applied",
+  Submitted:   "applied",
+  Declined:    "declined",
+};
+
+/**
+ * Overlay live Fabric dim_grant row onto a portfolio grant.
+ * Mutates a shallow copy — only overwrites fields present in the live row.
+ */
+function mergeWithFabricRow(
+  grant: (typeof GRANT_PORTFOLIO)[number],
+  row: GrantTableRow
+): (typeof GRANT_PORTFOLIO)[number] {
+  const out = { ...grant };
+
+  // Status from lifecycle_state
+  const liveStatus = LIFECYCLE_STATUS[String(row.lifecycle_state ?? "")];
+  if (liveStatus) (out as Record<string, unknown>).status = liveStatus;
+
+  // Award / match amounts (Fabric is source of truth)
+  if (row.award_amount != null)
+    (out as Record<string, unknown>).awardAmount = Number(row.award_amount);
+  if (row.city_match != null)
+    (out as Record<string, unknown>).cityMatch = Number(row.city_match);
+  if (row.total_project != null)
+    (out as Record<string, unknown>).totalProject = Number(row.total_project);
+
+  // Key risk — live from Fabric
+  if (row.key_risk != null && String(row.key_risk).trim())
+    (out as Record<string, unknown>).keyRisk = String(row.key_risk);
+
+  // Summary — live from Fabric
+  if (row.summary != null && String(row.summary).trim())
+    (out as Record<string, unknown>).summary = String(row.summary);
+
+  // Disbursed % — patch the first disbursement to reflect live pct
+  if (row.pct_disbursed != null && out.disbursements.length) {
+    const pct = Number(row.pct_disbursed) / 100;
+    const liveAmount = Math.round(out.awardAmount * pct);
+    // Update paid disbursements total without rebuilding all rows
+    (out as Record<string, unknown>)._fabricPctDisbursed = Number(row.pct_disbursed);
+    (out as Record<string, unknown>)._fabricDisbursed    = liveAmount;
+  }
+
+  return out;
+}
+
+/**
+ * Merge the full GRANT_PORTFOLIO with live Fabric dim_grant rows.
+ * Matches on grant_id (exact) or normalized grant_name substring.
+ */
+function mergePortfolioWithFabric(
+  rows: GrantTableRow[]
+): { merged: (typeof GRANT_PORTFOLIO)[number][]; liveCount: number } {
+  if (!rows.length) return { merged: GRANT_PORTFOLIO, liveCount: 0 };
+
+  let liveCount = 0;
+  const merged = GRANT_PORTFOLIO.map((g) => {
+    const row = rows.find(
+      (r) =>
+        String(r.grant_id ?? "") === g.id ||
+        String(r.grant_name ?? "")
+          .toLowerCase()
+          .includes(g.name.toLowerCase().slice(0, 20))
+    );
+    if (row) { liveCount++; return mergeWithFabricRow(g, row); }
+    return g;
+  });
+  return { merged, liveCount };
+}
 
 export const adminChatRouter = Router();
 
@@ -78,8 +158,23 @@ adminChatRouter.post("/", async (req: Request, res: Response) => {
     try {
       send("status", { message: "Loading grant portfolio data…" });
 
+      // ─── Pull live Fabric data (cached 3 min, never blocks) ──────────
+      let fabricRows: GrantTableRow[] = [];
+      let fabricLive = false;
+      try {
+        const fabricCtx = await getFabricContext(false);
+        if (fabricCtx.source !== "fabric-offline" && fabricCtx.grantRows.length) {
+          fabricRows = fabricCtx.grantRows;
+          fabricLive = true;
+          send("status", { message: `Fabric IQ: loaded ${fabricRows.length} live grant records…` });
+        }
+      } catch {
+        // Fabric unavailable — proceed with static data
+      }
+
       // ─── Build context ────────────────────────────────────────────────
       let grantContext: string;
+      let actionsBlock = "";
       if (grantId) {
         const grant = findGrant(grantId);
         if (!grant) {
@@ -87,30 +182,66 @@ adminChatRouter.post("/", async (req: Request, res: Response) => {
           res.end();
           return;
         }
-        grantContext = buildGrantContext(grant);
+        // Overlay live Fabric row if available
+        const liveGrant = fabricRows.length
+          ? (mergePortfolioWithFabric(fabricRows).merged.find((g) => g.id === grantId) ?? grant)
+          : grant;
+        grantContext = buildGrantContext(liveGrant as Parameters<typeof buildGrantContext>[0]);
+        actionsBlock = buildAvailableActionsBlock(liveGrant as Parameters<typeof buildAvailableActionsBlock>[0]);
       } else {
-        // Portfolio-level: include all grants + summary stats
+        // Portfolio-level: merge all grants with live Fabric data
+        const { merged } = mergePortfolioWithFabric(fabricRows);
         const stats = portfolioStats();
         const summaryLines = [
           `PORTFOLIO SUMMARY (as of ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })})`,
+          fabricLive ? `[Source: Microsoft Fabric IQ — Live GrantLakehouse data]` : `[Source: static portfolio data]`,
           `Total Awarded (active): $${stats.totalAwarded.toLocaleString()}`,
           `Total Applied (pending): $${stats.totalApplied.toLocaleString()}`,
           `Total Disbursed to Date: $${stats.totalDisbursed.toLocaleString()}`,
           `Compliance Alerts — Overdue: ${stats.overdueTasks} | Due Soon: ${stats.dueSoonTasks}`,
           ``,
           `ACTIVE GRANTS:`,
-          ...GRANT_PORTFOLIO.map((g) => `  [${g.status.toUpperCase()}] ${g.name} — $${g.awardAmount.toLocaleString()} (${g.agency})`),
+          ...merged.map((g) => `  [${(g.status as string).toUpperCase()}] ${g.name} — $${g.awardAmount.toLocaleString()} (${g.agency})`),
           ``,
           `─── GRANT DETAILS ───`,
-          ...GRANT_PORTFOLIO.filter((g) => g.status === "active").map((g) => buildGrantContext(g)),
+          ...merged.filter((g) => g.status === "active").map((g) => buildGrantContext(g as Parameters<typeof buildGrantContext>[0])),
         ];
         grantContext = summaryLines.join("\n");
+      }
+
+      // ─── Fabric IQ: ground the agent in the grant-lifecycle ontology ──
+      const ontologyGrounding = buildOntologyGrounding();
+      if (ontologyGrounding) {
+        send("status", { message: "Grounding in Fabric IQ grant-lifecycle ontology…" });
+      }
+
+      // ─── Fabric IQ live data block (key risks, lifecycle states) ─────
+      let fabricLiveBlock = "";
+      if (fabricLive && fabricRows.length) {
+        const riskLines = fabricRows
+          .filter((r) => r.key_risk && String(r.key_risk).trim())
+          .map((r) => `  • ${r.grant_name} [${r.lifecycle_state}] — ${r.key_risk}`);
+        if (riskLines.length) {
+          fabricLiveBlock = [
+            `## FABRIC IQ — LIVE GRANT STATUS (GrantLakehouse @ ${new Date().toLocaleString()})`,
+            `These are the authoritative live values from the GrantLakehouse SQL Analytics endpoint.`,
+            `Use these to override any static data when answering about disbursement status, lifecycle state, or risk.`,
+            ``,
+            `Live lifecycle states and key risks:`,
+            ...riskLines,
+          ].join("\n");
+        }
       }
 
       send("status", { message: "Analyzing grant data…" });
 
       // ─── Build messages ───────────────────────────────────────────────
-      const systemMessage = `${ADMIN_SYSTEM_PROMPT}\n\n## CURRENT GRANT DATA\n${grantContext}`;
+      const systemMessage = [
+        ADMIN_SYSTEM_PROMPT,
+        ontologyGrounding,
+        fabricLiveBlock,
+        `## CURRENT GRANT DATA\n${grantContext}${actionsBlock}`,
+      ].filter(Boolean).join("\n\n");
 
       type Msg = { role: "system" | "user" | "assistant"; content: string };
       const messages: Msg[] = [{ role: "system", content: systemMessage }];
@@ -176,6 +307,31 @@ adminChatRouter.post("/", async (req: Request, res: Response) => {
  * GET /api/admin-chat/portfolio
  * Returns the full grant portfolio as JSON (for initial dashboard load).
  */
-adminChatRouter.get("/portfolio", (_req: Request, res: Response) => {
-  res.json({ grants: GRANT_PORTFOLIO, stats: portfolioStats() });
+adminChatRouter.get("/portfolio", async (_req: Request, res: Response) => {
+  let fabricLive = false;
+  let fabricPulledAt: string | null = null;
+  let grants = GRANT_PORTFOLIO as typeof GRANT_PORTFOLIO;
+
+  try {
+    const fabricCtx = await getFabricContext(false);
+    if (fabricCtx.source !== "fabric-offline" && fabricCtx.grantRows.length) {
+      const { merged, liveCount } = mergePortfolioWithFabric(fabricCtx.grantRows);
+      if (liveCount > 0) {
+        grants = merged as typeof GRANT_PORTFOLIO;
+        fabricLive = true;
+        fabricPulledAt = fabricCtx.pulledAt;
+      }
+    }
+  } catch {
+    // Fabric unavailable — fall back to static data
+  }
+
+  res.json({
+    grants,
+    stats: portfolioStats(),
+    fabricIq: isFabricIqActive(),
+    fabricLive,
+    fabricPulledAt,
+  });
 });
+

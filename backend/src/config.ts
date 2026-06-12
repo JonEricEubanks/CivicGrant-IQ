@@ -52,6 +52,15 @@ export const config = {
   // Optional: a specific M365 user UPN to pull calendar events and mail from
   graphUserUpn: process.env.GRAPH_USER_UPN ?? "",
 
+  // Microsoft Fabric IQ — GrantLakehouse, GrantLifecycle graph model, GrantPortfolio semantic model
+  // Uses a Service Principal with Workspace Member/Contributor role on CivicGrant-IQ
+  // Can reuse GRAPH_* credentials if that SP also has Fabric permissions
+  fabricTenantId:    process.env.FABRIC_TENANT_ID    || process.env.GRAPH_TENANT_ID    || "",
+  fabricClientId:    process.env.FABRIC_CLIENT_ID    || process.env.GRAPH_CLIENT_ID    || "",
+  fabricClientSecret: process.env.FABRIC_CLIENT_SECRET || process.env.GRAPH_CLIENT_SECRET || "",
+  fabricWorkspaceId:  process.env.FABRIC_WORKSPACE_ID  || "d560d0c7-337a-4784-8be7-ab23b1a945ba",
+  fabricSqlEndpoint:  process.env.FABRIC_SQL_ENDPOINT  || "dlfartuhhivupl72ef5u2r4tzy-y7igbvl2gocepc7hvmr3dkkfxi.datawarehouse.fabric.microsoft.com",
+
   // Azure Resource details (for reference — set in .env, never hardcode)
   subscriptionId: process.env.AZURE_SUBSCRIPTION_ID ?? "",
   resourceGroup: process.env.AZURE_RESOURCE_GROUP ?? "",

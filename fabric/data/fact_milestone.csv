@@ -1,0 +1,39 @@
+milestone_id,grant_id,title,status,progress_pct,due_date,completed_date,is_at_risk,owner
+northwood-smc-2024__m1,northwood-smc-2024,Grant Agreement Executed,complete,100,2024-10-15,2024-10-15,false,Village Manager's Office
+northwood-smc-2024__m2,northwood-smc-2024,Environmental Clearance (NEPA Categorical Exclusion),complete,100,2024-12-01,2024-11-22,false,Public Works
+northwood-smc-2024__m3,northwood-smc-2024,Final Design Completion (100%),complete,100,2025-03-01,2025-02-28,false,Engineering
+northwood-smc-2024__m4,northwood-smc-2024,Phase 1 Bid Award,complete,100,2025-04-15,2025-04-10,false,Public Works
+northwood-smc-2024__m5,northwood-smc-2024,Phase 1 Construction Complete (Wetland),complete,100,2026-01-01,2025-12-31,false,Public Works
+northwood-smc-2024__m6,northwood-smc-2024,Phase 2 Construction — Culverts & Road (65%),in-progress,65,2026-09-30,,false,Public Works / Contractor
+northwood-smc-2024__m7,northwood-smc-2024,Phase 3 Construction — Road Reconstruction,upcoming,0,2026-12-31,,false,Public Works / Contractor
+northwood-smc-2024__m8,northwood-smc-2024,Final Inspection & Project Acceptance,upcoming,0,2027-06-30,,false,Engineering
+northwood-smc-2024__m9,northwood-smc-2024,Final Performance & Financial Report Submitted,upcoming,0,2027-09-30,,false,Finance / Deputy Village Manager
+raise-aptakisic-2024__m1,raise-aptakisic-2024,Application Submitted,complete,100,2024-07-15,2024-07-12,false,Deputy Village Manager
+raise-aptakisic-2024__m2,raise-aptakisic-2024,USDOT Technical Review (expected),upcoming,0,2025-06-30,,false,USDOT
+raise-aptakisic-2024__m3,raise-aptakisic-2024,Award Notification (expected),at-risk,0,2026-03-31,,true,USDOT
+fema-bric-2025__m1,fema-bric-2025,Application Submitted to FEMA via IEMA,complete,100,2025-10-01,2025-09-28,false,Emergency Management Coordinator
+fema-bric-2025__m2,fema-bric-2025,FEMA Technical Review,upcoming,0,2026-06-30,,false,FEMA / IEMA
+fema-bric-2025__m3,fema-bric-2025,BRIC Award Notification (expected),upcoming,0,2026-09-30,,false,FEMA
+cmaq-lakecook-2021__m1,cmaq-lakecook-2021,Application Submitted to CMAP,complete,100,2020-09-01,2020-08-28,false,Deputy Village Manager
+cmaq-lakecook-2021__m2,cmaq-lakecook-2021,Grant Agreement Executed,complete,100,2021-07-01,2021-07-01,false,Village Manager's Office
+cmaq-lakecook-2021__m3,cmaq-lakecook-2021,Phase II Design Complete,complete,100,2021-12-01,2021-11-20,false,Engineering
+cmaq-lakecook-2021__m4,cmaq-lakecook-2021,Equipment Procured & Delivered,complete,100,2022-05-01,2022-04-15,false,Public Works
+cmaq-lakecook-2021__m5,cmaq-lakecook-2021,Corridor Construction Complete,complete,100,2023-06-30,2023-06-12,false,Public Works / Contractor
+cmaq-lakecook-2021__m6,cmaq-lakecook-2021,Before/After Performance Study,complete,100,2023-11-30,2023-11-22,false,Engineering
+cmaq-lakecook-2021__m7,cmaq-lakecook-2021,Final Inspection & Project Acceptance,complete,100,2023-12-15,2023-12-15,false,Engineering
+cmaq-lakecook-2021__m8,cmaq-lakecook-2021,Final Report & SF-425 Closeout Accepted,complete,100,2024-03-31,2024-03-15,false,Finance / Deputy Village Manager
+afg-scba-2023__m1,afg-scba-2023,Application Submitted,complete,100,2023-03-01,2023-02-24,false,Fire Chief
+afg-scba-2023__m2,afg-scba-2023,Award & Agreement Executed,complete,100,2023-09-01,2023-09-01,false,Village Manager's Office
+afg-scba-2023__m3,afg-scba-2023,SCBA Units Delivered & In Service,complete,100,2024-02-01,2024-01-20,false,Fire Department
+afg-scba-2023__m4,afg-scba-2023,Department-Wide Fit Testing & Training,complete,100,2024-04-01,2024-03-28,false,Fire Department
+afg-scba-2023__m5,afg-scba-2023,Final Performance Report & SF-425 Closeout,upcoming,0,2025-11-30,,false,Finance / Fire Chief
+epa-brownfields-2024__m1,epa-brownfields-2024,Application Submitted,complete,100,2024-08-01,2024-07-29,false,Director of Community Development
+epa-brownfields-2024__m2,epa-brownfields-2024,EPA Review,complete,100,2024-11-30,2024-11-30,false,EPA Region 5
+epa-brownfields-2024__m3,epa-brownfields-2024,Award Decision — Not Selected,complete,100,2024-12-05,2024-12-05,false,EPA Region 5
+eecbg-streetlights-2024__m1,eecbg-streetlights-2024,Grant Agreement Executed,complete,100,2024-08-01,2024-08-01,false,Village Manager's Office
+eecbg-streetlights-2024__m2,eecbg-streetlights-2024,Photometric Design Complete,complete,100,2024-11-01,2024-10-10,false,Engineering
+eecbg-streetlights-2024__m3,eecbg-streetlights-2024,Phase 1 Arterial Conversion Complete,complete,100,2025-05-01,2025-04-25,false,Public Works / Contractor
+eecbg-streetlights-2024__m4,eecbg-streetlights-2024,Phase 2 Residential Conversion (55%),in-progress,55,2026-08-31,,false,Public Works / Contractor
+eecbg-streetlights-2024__m5,eecbg-streetlights-2024,Controls Platform Go-Live,upcoming,0,2026-10-31,,false,Public Works / IT
+eecbg-streetlights-2024__m6,eecbg-streetlights-2024,Measurement & Verification Report,upcoming,0,2026-12-15,,false,Sustainability Coordinator
+eecbg-streetlights-2024__m7,eecbg-streetlights-2024,Final Report & SF-425 Closeout,upcoming,0,2026-12-31,,false,Finance / Sustainability Coordinator

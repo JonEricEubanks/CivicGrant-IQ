@@ -95,6 +95,32 @@ export async function refreshCityContext(): Promise<import("./types").WorkIqCity
   return res.json();
 }
 
+// ─── Fabric IQ context ────────────────────────────────────────────────────
+
+export interface FabricIqContext {
+  source: "fabric-live" | "fabric-partial" | "fabric-offline";
+  pulledAt: string;
+  workspaceId: string;
+  items: { name: string; type: string }[];
+  tables: string[];
+  grantRows: Record<string, string | number | boolean | null>[];
+  graphPaths: unknown;
+  semanticModelName: string | null;
+  error?: string;
+}
+
+export async function fetchFabricContext(): Promise<FabricIqContext> {
+  const res = await fetch(`${API_BASE}/fabric-iq/context`);
+  if (!res.ok) throw new Error(`Fabric IQ context failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function refreshFabricContext(): Promise<FabricIqContext> {
+  const res = await fetch(`${API_BASE}/fabric-iq/refresh`, { method: "POST" });
+  if (!res.ok) throw new Error(`Fabric IQ refresh failed: ${res.statusText}`);
+  return res.json();
+}
+
 export async function streamScan(
   profile: import("./types").CityProfile,
   handlers: SSEHandler & {
@@ -345,6 +371,8 @@ export async function fetchMonitor(): Promise<MonitorData> {
 export interface AdminPortfolio {
   grants: import("./types").AdminGrant[];
   stats: import("./types").AdminPortfolioStats;
+  fabricLive?: boolean;
+  fabricPulledAt?: string | null;
 }
 
 /**

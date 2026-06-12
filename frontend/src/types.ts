@@ -231,7 +231,10 @@ export interface AdminGrant {
   awardDate: string;
   startDate: string;
   endDate: string;
-  status: "active" | "applied" | "closeout";
+  status: "active" | "applied" | "closeout" | "closed" | "declined";
+  closeoutDate?: string;
+  closedDate?: string;
+  declinedDate?: string;
   projectManager: string;
   grantCoordinator: string;
   cfda: string;

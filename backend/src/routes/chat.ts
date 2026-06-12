@@ -102,7 +102,13 @@ chatRouter.post("/", async (req: Request, res: Response) => {
 
   const enrichedMessage = isGrantTextPasted
     ? `IMPORTANT INSTRUCTION: The user has pasted the full text of a specific grant announcement below. You MUST analyze THIS exact grant — do NOT substitute a different grant from your knowledge base. Use the KB only to retrieve Buffalo Grove's city profile, past applications, and CIP data to evaluate BG's fit against this specific grant. If this grant is not applicable to Buffalo Grove (e.g., it's for medical research, foreign entities, or a completely different domain), say so clearly and score the match at 10% or below.\n\n---\nGRANT TEXT PROVIDED BY USER:\n${trimmed}`
-    : trimmed;
+    : (() => {
+        // Demo-safe default: when users skip "Scan My City" and do not name a city,
+        // anchor the analysis to Buffalo Grove so outputs stay concrete.
+        const hasExplicitCity = /\bbuffalo\s+grove\b|\bcity\s+of\s+[a-z][a-z\s.'-]+|\b(?:for|in)\s+[a-z][a-z\s.'-]+,\s*[a-z]{2}\b|\b(?:for|in)\s+[a-z][a-z\s.'-]+\s+(?:illinois|texas|california|florida|new\s+york|ohio|michigan|arizona|georgia|north\s+carolina|pennsylvania)\b/i.test(trimmed);
+        if (hasExplicitCity) return trimmed;
+        return `DEFAULT CITY CONTEXT: Buffalo Grove, IL. If the user did not explicitly name a city, run the analysis for Buffalo Grove.\n\n${trimmed}`;
+      })();
 
   try {
     // ── Root OTel span — all 5 agent spans nest under this one trace in App Insights

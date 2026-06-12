@@ -94,6 +94,11 @@ export const IconX = ico([
   <line key="b" x1="6" y1="6" x2="18" y2="18" />,
 ]);
 
+export const IconPanelRight = ico([
+  <rect key="r" x="1" y="3" width="22" height="18" rx="2" />,
+  <line key="l" x1="16" y1="3" x2="16" y2="21" />,
+]);
+
 export const IconDownload = ico([
   <path key="a" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />,
   <polyline key="b" points="7 10 12 15 17 10" />,
@@ -220,6 +225,14 @@ export const IconDatabase = ico([
   <ellipse key="a" cx="12" cy="5" rx="9" ry="3" />,
   <path key="b" d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />,
   <path key="c" d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />,
+]);
+
+/** Fabric IQ — diamond/layers icon matching Microsoft Fabric's visual identity */
+export const IconFabricIQ = ico([
+  <polygon key="a" points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />,
+  <line key="b" x1="12" y1="2" x2="12" y2="22" />,
+  <line key="c" x1="2" y1="8.5" x2="22" y2="8.5" />,
+  <line key="d" x1="2" y1="15.5" x2="22" y2="15.5" />,
 ]);
 
 // ─── Brand / product logos ───────────────────────────────────────────────

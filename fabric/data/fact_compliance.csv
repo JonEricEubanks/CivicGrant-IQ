@@ -1,0 +1,22 @@
+compliance_id,grant_id,title,type,status,frequency,due_date,last_completed_date,is_overdue,is_due_soon,notes
+northwood-smc-2024__c1,northwood-smc-2024,Davis-Bacon Act Wage Compliance,audit,current,Ongoing — certified payrolls weekly,,2026-05-30,false,false,"All contractor payrolls current through May 30, 2026. No violations."
+northwood-smc-2024__c2,northwood-smc-2024,Quarterly Progress Reports,report,current,Quarterly,2026-07-01,2026-04-01,false,false,"Q1 2026 report filed April 1. Q2 2026 report due July 1, 2026."
+northwood-smc-2024__c3,northwood-smc-2024,Semi-Annual Financial Report (SF-425),report,due-soon,Semi-annual,2026-06-30,2025-12-31,false,true,"SF-425 due June 30, 2026 — Finance must pull actuals and submit via grants.gov."
+northwood-smc-2024__c4,northwood-smc-2024,Environmental Monitoring — Wetland Cell Establishment,monitoring,current,Monthly (first 2 years),,2026-05-15,false,false,Hydrophytic vegetation coverage at 78% of target. On track.
+northwood-smc-2024__c5,northwood-smc-2024,NEPA Categorical Exclusion Compliance,clearance,complete,,,2024-11-22,false,false,"CE approved Nov 22, 2024. No significant environmental impacts."
+northwood-smc-2024__c6,northwood-smc-2024,Mid-Project Performance Review,audit,current,One-time,2026-08-15,,false,false,SMC site visit + financial audit scheduled for August 2026.
+northwood-smc-2024__c7,northwood-smc-2024,Title VI Non-Discrimination Certification,clearance,current,,,2024-10-15,false,false,Annual re-certification due with grant agreement anniversary.
+cmaq-lakecook-2021__c1,cmaq-lakecook-2021,Quarterly Progress Reports,report,complete,Quarterly,,2023-12-15,false,false,All 10 quarterly reports filed on time across the period of performance.
+cmaq-lakecook-2021__c2,cmaq-lakecook-2021,Davis-Bacon Act Wage Compliance,audit,complete,Ongoing,,2023-06-12,false,false,Certified payrolls complete. No violations across project.
+cmaq-lakecook-2021__c3,cmaq-lakecook-2021,Single Audit (Uniform Guidance),audit,complete,One-time,,2024-02-10,false,false,FY2023 Single Audit — no findings related to this award.
+cmaq-lakecook-2021__c4,cmaq-lakecook-2021,Final SF-425 Federal Financial Report,report,complete,One-time,,2024-03-15,false,false,Accepted by CMAP. Grant closed 2024-03-28.
+cmaq-lakecook-2021__c5,cmaq-lakecook-2021,Title VI Non-Discrimination Certification,clearance,complete,,,2021-07-01,false,false,Certified at agreement execution.
+afg-scba-2023__c1,afg-scba-2023,Final Performance Report (AFG),report,due-soon,One-time,2025-11-30,,false,true,"Due within 90 days of period-of-performance end (Aug 31, 2025)."
+afg-scba-2023__c2,afg-scba-2023,Final SF-425 Federal Financial Report,report,due-soon,One-time,2025-11-30,,false,true,Reconcile final actuals; release $18K retention on acceptance.
+afg-scba-2023__c3,afg-scba-2023,Equipment Inventory & Tagging,monitoring,complete,One-time,,2024-04-01,false,false,All 42 units tagged with grant asset IDs per AFG requirements.
+afg-scba-2023__c4,afg-scba-2023,Federal Equipment Use Certification,clearance,current,,,2024-04-01,false,false,Equipment used solely for authorized firefighting purposes.
+eecbg-streetlights-2024__c1,eecbg-streetlights-2024,Davis-Bacon Act Wage Compliance,audit,current,Ongoing — certified payrolls weekly,,2026-05-29,false,false,Residential-phase misclassification flagged 2026-05; corrected and resubmitted. Monitoring weekly.
+eecbg-streetlights-2024__c2,eecbg-streetlights-2024,Quarterly Progress Reports,report,current,Quarterly,2026-07-01,2026-04-01,false,false,Q1 2026 filed; Q2 2026 due July 1.
+eecbg-streetlights-2024__c3,eecbg-streetlights-2024,Federal Financial Report (SF-425),report,due-soon,Semi-annual,2026-06-30,2025-12-31,false,true,"Semi-annual SF-425 due June 30, 2026."
+eecbg-streetlights-2024__c4,eecbg-streetlights-2024,Buy America(n) Compliance — Fixtures,clearance,current,,,2024-10-15,false,false,Fixture vendor BABA certification on file; waiver not required.
+eecbg-streetlights-2024__c5,eecbg-streetlights-2024,Energy Savings M&V Plan,monitoring,current,Annual,,2025-12-01,false,false,Baseline established; Phase 1 tracking 63% reduction vs 61% target.

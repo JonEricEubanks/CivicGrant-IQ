@@ -801,6 +801,36 @@ function patchWidget(
 ): { type: string; data: unknown } | undefined {
   if (rawWidget?.type === "grant_match") {
     const d = rawWidget.data as Record<string, unknown>;
+
+    // Normalize malformed grant headers like
+    // "<Grant Name> and issuing agency: Not specified." which can leak from prose extraction.
+    if (typeof d.grantName === "string") {
+      const originalGrantName = d.grantName.trim();
+      const agencyEmbedded = originalGrantName.match(/\band issuing agency:\s*([^\.\n]+)/i);
+      const agencyLooksUnknown =
+        typeof d.agency !== "string" ||
+        /^(not\s+specified|unknown|n\/?a|none|tbd)$/i.test(d.agency.trim());
+
+      if (agencyEmbedded && agencyLooksUnknown) {
+        d.agency = agencyEmbedded[1].trim();
+      }
+
+      const cleanedGrantName = originalGrantName
+        .replace(/\s*and issuing agency:\s*[^\.\n]+\.?/i, "")
+        .trim();
+
+      d.grantName = cleanedGrantName || "Grant Opportunity";
+    }
+
+    if (typeof d.agency === "string") {
+      const agency = d.agency.trim();
+      d.agency = /^(not\s+specified|unknown|n\/?a|none)$/i.test(agency)
+        ? "Issuing agency to be confirmed"
+        : agency;
+    } else {
+      d.agency = "Issuing agency to be confirmed";
+    }
+
     if (!d.fundingAmount || d.fundingAmount === 0) {
       const fm = responseText.match(
         /\$\s*([\d,.]+)\s*(trillion|billion|million|T|B|M)\b|(?:total|available)\s+funding[^$\n]{0,40}\$\s*([\d,.]+)\s*(trillion|billion|million|T|B|M)?/i

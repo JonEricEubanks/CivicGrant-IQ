@@ -373,8 +373,9 @@
 .live-search-loading { display: flex; align-items: center; gap: 0.6rem; color: #6b7280; font-size: 0.82rem; padding: 0.5rem 0; }
 .live-results-list { display: flex; flex-direction: column; gap: 0; flex-shrink: 0; }
 .live-results-list::-webkit-scrollbar { width: 5px; }
-.live-results-list::-webkit-scrollbar-track { background: #f9fafb; border-radius: 4px; }
-.live-results-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+.live-results-list::-webkit-scrollbar-track { background: transparent; border-radius: 4px; }
+.live-results-list::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
+.live-results-list:hover::-webkit-scrollbar-thumb { background: #d1d5db; }
 
 /* Category sections */
 .live-category-section { margin-bottom: 0.5rem; }
@@ -457,13 +458,15 @@
 .intel-ai-scroll { overflow-y: auto; max-height: 310px; padding: 0 1.25rem 0.75rem; }
 .intel-ai-scroll::-webkit-scrollbar { width: 5px; }
 .intel-ai-scroll::-webkit-scrollbar-track { background: transparent; }
-.intel-ai-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+.intel-ai-scroll::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
+.intel-ai-scroll:hover::-webkit-scrollbar-thumb { background: #d1d5db; }
 
 /* Live zone — takes all remaining space, its own scroll */
 .intel-live-zone { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding: 0 1.25rem 1.25rem; }
 .intel-live-zone::-webkit-scrollbar { width: 5px; }
-.intel-live-zone::-webkit-scrollbar-track { background: #f9fafb; }
-.intel-live-zone::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+.intel-live-zone::-webkit-scrollbar-track { background: transparent; }
+.intel-live-zone::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
+.intel-live-zone:hover::-webkit-scrollbar-thumb { background: #d1d5db; }
 .intel-live-zone .intel-section-hd--live { padding-top: 0.7rem; margin-bottom: 0.5rem; }
 
 /* Section divider headers */

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
-import { streamChat, streamScan, generatePackage, draftApplication, fetchGrantUrl, fetchMonitor, fetchHeroGrants } from "../api";
-import type { FetchedUrl, MonitorData, HeroGrantResult } from "../api";
+import { streamChat, streamScan, generatePackage, draftApplication, fetchGrantUrl, fetchMonitor, fetchHeroGrants, fetchFabricContext } from "../api";
+import type { FetchedUrl, MonitorData, HeroGrantResult, FabricIqContext } from "../api";
 import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext, CityProfile } from "../types";
 import { GrantMatchWidget } from "./GrantMatchWidget";
 import type { GrantMatchData } from "./GrantMatchWidget";
@@ -24,7 +24,8 @@ import {
   IconCopy, IconCheck, IconBolt,
   IconChart, IconFilePdf, IconFileText, IconGlobe,
   IconLink, IconScales, IconTarget, IconSparkle, IconAward,
-  IconPaperclip, IconDatabase,
+  IconPaperclip, IconDatabase, IconX, IconPanelRight,
+  IconFabricIQ,
 } from "./Icons";
 import "./ChatInterface.css";
 
@@ -729,11 +730,13 @@ interface WorkspacePanelProps {
   competitorStreaming?: boolean;
   refinementStreaming?: boolean;
   tierInfo?: { tier: 1 | 2 | 3; label: string; guardrailsPassed: boolean; violations: number };
+  isVisible: boolean;
+  onToggleVisibility: () => void;
   onOpenPreview: (payload: ReportPayload) => void;
   onOpenDrawer: (view: DrawerView) => void;
 }
 
-function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, tierInfo, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
+function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, tierInfo, isVisible, onToggleVisibility, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
   const [planOpen, setPlanOpen] = useState(true);
   const [outputOpen, setOutputOpen] = useState(true);
   const [inputsOpen, setInputsOpen] = useState(true);
@@ -756,9 +759,18 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
   const allPlanDone = !isLoading && completedCount > 0;
 
   return (
-    <aside className={`workspace-panel ${hasMessages ? "workspace-panel--visible" : ""}`}>
+    <aside className={`workspace-panel ${hasMessages && isVisible ? "workspace-panel--visible" : ""}`}>
       <div className="ws-header">
         <span className="ws-title">Workspace</span>
+        <button
+          className="ws-header-toggle"
+          onClick={onToggleVisibility}
+          title="Hide details panel (Ctrl+Shift+B)"
+          aria-label="Hide details panel"
+          type="button"
+        >
+          <IconPanelRight size={14} />
+        </button>
       </div>
 
       {/* Plan */}
@@ -1240,7 +1252,7 @@ interface AttachDoc {
   id: string;
   label: string;
   desc: string;
-  source: "work-iq" | "foundry-iq";
+  source: "work-iq" | "foundry-iq" | "fabric-iq";
   kind?: "doc" | "calendar" | "email" | "teams";
   /** Full content to inject into prompt when pinned */
   content?: string;
@@ -1258,6 +1270,13 @@ const FOUNDRY_IQ_DOCS: AttachDoc[] = [
   { id: "fiq-city", label: "City Profile 2026", desc: "Foundry IQ vector index \u00b7 demographics & financials", source: "foundry-iq" },
   { id: "fiq-cip", label: "Capital Improvement Plan", desc: "Foundry IQ vector index \u00b7 projects & budgets", source: "foundry-iq" },
   { id: "fiq-past-apps", label: "Past Grant Applications", desc: "Foundry IQ vector index \u00b7 BRIC, SMC, RAISE precedents", source: "foundry-iq" },
+];
+
+const FABRIC_IQ_DOCS: AttachDoc[] = [
+  { id: "fab-semantic", label: "Grant Semantic Model", desc: "Fabric IQ \u00b7 semantic layer for grant eligibility & scoring logic", source: "fabric-iq" },
+  { id: "fab-ontology", label: "City Ontology Context", desc: "Fabric IQ \u00b7 entities, relationships & business rules for Buffalo Grove", source: "fabric-iq" },
+  { id: "fab-ops", label: "Operations Agent Signals", desc: "Fabric IQ \u00b7 real-time operational telemetry & compliance status", source: "fabric-iq" },
+  { id: "fab-graph", label: "Grant Graph Relationships", desc: "Fabric IQ \u00b7 GQL-powered relationship map across programs & agencies", source: "fabric-iq" },
 ];
 
 export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, autoScan, onScanTriggered }: { onSwitchToScan?: () => void; onSwitchToAdmin?: () => void; tourButton?: ReactNode; autoScan?: boolean; onScanTriggered?: () => void }) {
@@ -1284,11 +1303,14 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
   const [attachedDocs, setAttachedDocs] = useState<AttachDoc[]>([]);
   const [showAttachPicker, setShowAttachPicker] = useState(false);
-  const [attachPickerTab, setAttachPickerTab] = useState<"all" | "sharepoint" | "meetings" | "emails" | "teams" | "foundry-iq">("all");
+  const [attachPickerTab, setAttachPickerTab] = useState<"all" | "sharepoint" | "meetings" | "emails" | "teams" | "foundry-iq" | "fabric-iq">("all");
   const [spDocs, setSpDocs] = useState<AttachDoc[]>([]);
   const [m365Signals, setM365Signals] = useState<AttachDoc[]>([]);
   const [wsInputs, setWsInputs] = useState<AttachDoc[]>([]);
   const [attachSearch, setAttachSearch] = useState("");
+  const [isWorkspaceVisible, setIsWorkspaceVisible] = useState(true);
+  const [fabricContext, setFabricContext] = useState<FabricIqContext | null>(null);
+  const [fabricLoading, setFabricLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -1638,9 +1660,20 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
     isSendingRef.current = true;
     setInput("");
     // Prepend pinned doc context for user-typed messages (not hero card prompts)
-    const docPrefix = attachedDocs.length > 0 && !text
-      ? `[Pinned Work IQ context:\n${attachedDocs.map((d) => d.content ?? d.label).join("\n")}]\n\n`
+    const fabricDocs = attachedDocs.filter((d) => d.source === "fabric-iq");
+    const fabricPrefix = fabricDocs.length > 0 && fabricContext
+      ? `[Fabric IQ Live Context — source:${fabricContext.source} workspace:${fabricContext.workspaceId}\n` +
+        `Items: ${fabricContext.items.map((i) => `${i.name}(${i.type})`).join(", ")}\n` +
+        (fabricContext.semanticModelName ? `SemanticModel: ${fabricContext.semanticModelName}\n` : "") +
+        (fabricContext.tables.length ? `Tables: ${fabricContext.tables.join(", ")}\n` : "") +
+        (fabricContext.grantRows.length
+          ? `LiveGrantData(${fabricContext.grantRows.length} rows): ${fabricContext.grantRows.slice(0, 6).map((r) => JSON.stringify(r)).join(" | ")}\n`
+          : "") +
+        `]\n\n`
       : "";
+    const docPrefix = attachedDocs.length > 0 && !text
+      ? fabricPrefix + `[Pinned Work IQ context:\n${attachedDocs.filter((d) => d.source !== "fabric-iq").map((d) => d.content ?? d.label).join("\n")}]\n\n`
+      : fabricPrefix;
     const message = docPrefix + baseMessage;
     if (attachedDocs.length > 0) setWsInputs(attachedDocs);
     setAttachedDocs([]);
@@ -1942,6 +1975,26 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
   };
 
   const hasMessages = messages.length > 0;
+  const latestCityScanMsg = [...messages].reverse().find(
+    (m) => m.widget?.type === "city_scan" && Boolean((m.widget.data as CityProfileScanData).cityName)
+  );
+  const activeCityContext = latestCityScanMsg?.widget?.type === "city_scan"
+    ? (latestCityScanMsg.widget.data as CityProfileScanData).cityName
+    : "Buffalo Grove, IL";
+  const usingDefaultCityContext = !latestCityScanMsg;
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === "B" || e.key === "b")) {
+        e.preventDefault();
+        if (hasMessages) {
+          setIsWorkspaceVisible((prev) => !prev);
+        }
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [hasMessages]);
 
   return (
     <div className="chat-interface chat-interface--col">
@@ -1952,6 +2005,18 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
         actions={
           <>
             {tourButton}
+            {hasMessages && (
+              <button
+                className={`cowork-header-icon-btn${isWorkspaceVisible ? " cowork-header-icon-btn--active" : ""}`}
+                onClick={() => setIsWorkspaceVisible(v => !v)}
+                title={`${isWorkspaceVisible ? "Hide" : "Show"} details panel (Ctrl+Shift+B)`}
+                aria-label={`${isWorkspaceVisible ? "Hide" : "Show"} details panel`}
+                aria-pressed={isWorkspaceVisible}
+                type="button"
+              >
+                <IconPanelRight size={16} />
+              </button>
+            )}
             <button className="cowork-header-icon-btn" title="New chat" aria-label="Start new chat" onClick={handleNewChat}><IconNewChat size={16} /></button>
             <button
               className={`cowork-header-icon-btn${showSettings ? " cowork-header-icon-btn--active" : ""}`}
@@ -2536,7 +2601,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
 
             {/* Attachment picker popover — floats above the input wrapper */}
             {showAttachPicker && (() => {
-              type PickerTab = "all" | "sharepoint" | "meetings" | "emails" | "teams" | "foundry-iq";
+              type PickerTab = "all" | "sharepoint" | "meetings" | "emails" | "teams" | "foundry-iq" | "fabric-iq";
               const spItems = (spDocs.length > 0 ? spDocs : LOCAL_WORK_IQ_DOCS);
               const calItems = m365Signals.filter((d) => d.kind === "calendar");
               const mailItems = m365Signals.filter((d) => d.kind === "email");
@@ -2549,6 +2614,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                 { id: "emails", label: "Emails", count: mailItems.length },
                 ...(teamsItems.length > 0 ? [{ id: "teams" as PickerTab, label: "Teams", count: teamsItems.length }] : []),
                 { id: "foundry-iq", label: "Foundry IQ" },
+                { id: "fabric-iq", label: "Fabric IQ" },
               ];
 
               const q = attachSearch.toLowerCase();
@@ -2573,6 +2639,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                         ? <span className="picker-item-emoji">{icon}</span>
                         : doc.source === "foundry-iq"
                           ? <IconDatabase size={15} />
+                          : doc.source === "fabric-iq"
+                          ? <IconFabricIQ size={15} />
                           : <IconFileText size={15} />
                       }
                     </span>
@@ -2610,6 +2678,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   : <div className="picker-empty">No Teams messages found</div>;
               } else if (attachPickerTab === "foundry-iq") {
                 listContent = filt(FOUNDRY_IQ_DOCS).map(renderItem);
+              } else if (attachPickerTab === "fabric-iq") {
+                listContent = filt(FABRIC_IQ_DOCS).map(renderItem);
               } else {
                 // "all" — grouped
                 listContent = (<>
@@ -2618,6 +2688,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   {renderSection("Emails", filt(mailItems), "picker-group-label--emails")}
                   {teamsItems.length > 0 && renderSection("Teams", filt(teamsItems), "picker-group-label--teams")}
                   {renderSection("Foundry IQ", filt(FOUNDRY_IQ_DOCS), "picker-group-label--foundry")}
+                  {renderSection("Fabric IQ", filt(FABRIC_IQ_DOCS), "picker-group-label--fabric")}
                 </>);
               }
 
@@ -2659,6 +2730,21 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
             })()}
 
             <div className="input-wrapper">
+              <div className={`city-context-indicator${usingDefaultCityContext ? " city-context-indicator--default" : ""}`}>
+                <span className="city-context-label">
+                  {usingDefaultCityContext ? "Using default city:" : "City context:"}
+                </span>
+                <strong className="city-context-value">{activeCityContext}</strong>
+                <button
+                  className="city-context-change-btn"
+                  onClick={() => handleTriggerScanSetup()}
+                  type="button"
+                  aria-label="Change city context with Scan My City"
+                >
+                  Change city
+                </button>
+              </div>
+
               {attachedDocs.length > 0 && (
                 <div className="attached-docs-bar">
                   {attachedDocs.map((d) => (
@@ -2718,6 +2804,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   aria-label="Attach Work IQ files from SharePoint"
                   onClick={() => { setAttachPickerTab("all"); setShowAttachPicker(true); setAttachSearch(""); }}
                 >
+                  <IconBolt size={11} />
                   Work IQ Signals
                 </button>
                 <button
@@ -2725,7 +2812,28 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   aria-label="Attach Foundry IQ knowledge base documents"
                   onClick={() => { setAttachPickerTab("foundry-iq"); setShowAttachPicker(true); setAttachSearch(""); }}
                 >
+                  <IconDatabase size={11} />
                   Foundry IQ
+                </button>
+                <button
+                  className="source-chip source-chip--fabric"
+                  aria-label="Attach Fabric IQ semantic models and ontology context"
+                  onClick={async () => {
+                    setAttachPickerTab("fabric-iq");
+                    setShowAttachPicker(true);
+                    setAttachSearch("");
+                    if (!fabricContext && !fabricLoading) {
+                      setFabricLoading(true);
+                      try {
+                        const ctx = await fetchFabricContext();
+                        setFabricContext(ctx);
+                      } catch { /* fallback to static docs */ }
+                      finally { setFabricLoading(false); }
+                    }
+                  }}
+                >
+                  <IconFabricIQ size={11} />
+                  {fabricLoading ? "Loading…" : fabricContext?.source === "fabric-live" ? "Fabric IQ ●" : "Fabric IQ"}
                 </button>
               </div>
             </div>
@@ -2754,6 +2862,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
         competitorStreaming={wsCompetitorStreaming}
         refinementStreaming={wsRefinementStreaming}
         tierInfo={wsTierInfo}
+        isVisible={isWorkspaceVisible}
+        onToggleVisibility={() => setIsWorkspaceVisible((prev) => !prev)}
         onOpenPreview={setPreviewData}
         onOpenDrawer={setAgentDrawer}
       />

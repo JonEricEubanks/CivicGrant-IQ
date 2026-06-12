@@ -23,7 +23,14 @@ function complianceDot(status: AdminGrant["compliance"][number]["status"]): stri
 function statusLabel(status: AdminGrant["status"]): string {
   if (status === "active") return "Active";
   if (status === "applied") return "Applied";
+  if (status === "closed") return "Closed";
+  if (status === "declined") return "Declined";
   return "Closeout";
+}
+
+// Grants in an execution/post-award phase show the budget chips + tabbed detail.
+function isExecutingStatus(status: AdminGrant["status"]): boolean {
+  return status === "active" || status === "closeout" || status === "closed";
 }
 
 function fmt$(n: number): string {
@@ -513,7 +520,7 @@ function GrantDetail({
       )}
 
       {/* ── Budget summary chips ── */}
-      {grant.status === "active" && (
+      {isExecutingStatus(grant.status) && (
         <div className="budget-chips">
           <div className="budget-chip bc-blue">
             <span className="bc-val">{fmt$(grant.awardAmount)}</span>
@@ -539,8 +546,8 @@ function GrantDetail({
         </div>
       )}
 
-      {/* ── Tabs (active grants) ── */}
-      {grant.status === "active" && (
+      {/* ── Tabs (active / closeout / closed grants) ── */}
+      {isExecutingStatus(grant.status) && (
         <>
           <div className="detail-tabs">
             <button
@@ -702,8 +709,8 @@ function GrantDetail({
         </>
       )}
 
-      {/* ── Applied grants: just milestone timeline ── */}
-      {grant.status === "applied" && (
+      {/* ── Applied / declined grants: read-only milestone timeline ── */}
+      {(grant.status === "applied" || grant.status === "declined") && (
         <div className="tab-content">
           <p className="grant-summary">{grant.summary}</p>
           <div className="milestone-list">
@@ -720,7 +727,11 @@ function GrantDetail({
               </div>
             ))}
           </div>
-          <div className="applied-note">Award announcement pending. No compliance requirements active yet.</div>
+          <div className="applied-note">
+            {grant.status === "declined"
+              ? `Not selected${grant.declinedDate ? ` (${grant.declinedDate})` : ""}.${grant.keyRisk ? ` ${grant.keyRisk}` : ""}`
+              : "Award announcement pending. No compliance requirements active yet."}
+          </div>
         </div>
       )}
 
@@ -739,6 +750,8 @@ export function GrantAdminDashboard(): JSX.Element {
   const [chatGrant, setChatGrant] = useState<AdminGrant | null | "portfolio">(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fabricLive, setFabricLive] = useState(false);
+  const [fabricPulledAt, setFabricPulledAt] = useState<string | null>(null);
 
   // Agent-driven state overrides — milestone/compliance status updates
   const [milestoneOverrides, setMilestoneOverrides] = useState<Record<string, Partial<AdminGrant["milestones"][number]>>>({});
@@ -760,9 +773,11 @@ export function GrantAdminDashboard(): JSX.Element {
 
   useEffect(() => {
     fetchAdminPortfolio()
-      .then(({ grants: g, stats: s }) => {
+      .then(({ grants: g, stats: s, fabricLive: fl, fabricPulledAt: fp }) => {
         setGrants(g);
         setStats(s);
+        if (fl) setFabricLive(true);
+        if (fp) setFabricPulledAt(fp);
         if (g.length > 0) setSelectedId(g[0].id);
         setLoading(false);
       })
@@ -794,6 +809,11 @@ export function GrantAdminDashboard(): JSX.Element {
         <div className="admin-sidebar-header">
           <div className="admin-sidebar-title">Grant Portfolio</div>
           <div className="admin-sidebar-city">Buffalo Grove, IL</div>
+          {fabricLive && (
+            <div className="admin-fabric-badge" title={fabricPulledAt ? `Last synced: ${new Date(fabricPulledAt).toLocaleTimeString()}` : "Live from Fabric"}>
+              <span className="fabric-dot" />Fabric IQ Live
+            </div>
+          )}
         </div>
 
         {stats && (

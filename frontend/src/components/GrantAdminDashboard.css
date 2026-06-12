@@ -40,6 +40,36 @@
   margin-top: 2px;
 }
 
+.admin-fabric-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #86efac;
+  background: rgba(134, 239, 172, 0.12);
+  border: 1px solid rgba(134, 239, 172, 0.3);
+  border-radius: 10px;
+  padding: 2px 8px 2px 6px;
+}
+
+.fabric-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 5px #22c55e;
+  animation: fabric-pulse 2s ease-in-out infinite;
+}
+
+@keyframes fabric-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 /* ─── Portfolio stats ─────────────────────────────────────────────────────── */
 .portfolio-stats {
   padding: 12px 16px;
@@ -186,7 +216,9 @@
 
 .gst-active { background: #dcfce7; color: #15803d; }
 .gst-applied { background: #e8f1fb; color: #1a6fba; }
-.gst-closeout { background: #f3f4f6; color: #4b5563; }
+.gst-closeout { background: #fef3c7; color: #b45309; }
+.gst-closed { background: #f3f4f6; color: #4b5563; }
+.gst-declined { background: #fee2e2; color: #b91c1c; }
 
 /* ─── Main area ───────────────────────────────────────────────────────────── */
 .admin-main {

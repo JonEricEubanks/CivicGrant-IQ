@@ -1,0 +1,208 @@
+{
+  "$schema": "https://learn.microsoft.com/fabric/iq/ontology-schema/v1",
+  "name": "GrantLifecycleOntology",
+  "displayName": "Municipal Grant Lifecycle",
+  "description": "Shared business vocabulary for the full lifecycle of a federal/state grant in a municipal government — from identification through closeout. Grounds CivicGrant IQ's admin agents in trusted business language so they reason over Grants, Disbursements, Milestones and Compliance the way a grant coordinator does, not over raw tables.",
+  "source": {
+    "lakehouse": "civicgrant_lakehouse",
+    "note": "Entity types are bound to the OneLake delta tables produced by backend/src/scripts/generateFabricData.ts"
+  },
+
+  "entityTypes": [
+    {
+      "name": "City",
+      "displayName": "City",
+      "table": "dim_city",
+      "key": "city_id",
+      "properties": [
+        { "name": "city_name", "type": "string" },
+        { "name": "state", "type": "string" },
+        { "name": "population", "type": "integer" },
+        { "name": "moodys_rating", "type": "string", "description": "Bond rating — drives federal program eligibility" }
+      ]
+    },
+    {
+      "name": "Agency",
+      "displayName": "Funding Agency",
+      "table": "dim_agency",
+      "key": "agency_id",
+      "properties": [
+        { "name": "agency_name", "type": "string" },
+        { "name": "level", "type": "enum", "values": ["Federal", "State/Regional"] }
+      ]
+    },
+    {
+      "name": "Program",
+      "displayName": "Grant Program",
+      "table": "dim_program",
+      "key": "program_id",
+      "properties": [
+        { "name": "program_name", "type": "string" },
+        { "name": "cfda", "type": "string", "description": "Assistance Listing / CFDA number" },
+        { "name": "focus_area", "type": "string" }
+      ]
+    },
+    {
+      "name": "Grant",
+      "displayName": "Grant",
+      "table": "dim_grant",
+      "key": "grant_id",
+      "properties": [
+        { "name": "grant_name", "type": "string" },
+        { "name": "award_amount", "type": "currency" },
+        { "name": "city_match", "type": "currency" },
+        { "name": "total_project", "type": "currency" },
+        { "name": "federal_share_pct", "type": "integer" },
+        { "name": "award_date", "type": "date" },
+        { "name": "start_date", "type": "date" },
+        { "name": "end_date", "type": "date" },
+        { "name": "pct_disbursed", "type": "integer" },
+        { "name": "primary_focus", "type": "string" },
+        {
+          "name": "lifecycle_state",
+          "type": "enum",
+          "values": ["Identified", "Drafting", "Submitted", "UnderReview", "Awarded", "Active", "Closeout", "Closed", "Declined"],
+          "description": "The macro stage of the grant. Ordinal ordering enables progression / regression reasoning."
+        }
+      ]
+    },
+    {
+      "name": "Disbursement",
+      "displayName": "Disbursement / Drawdown",
+      "table": "fact_disbursement",
+      "key": "disbursement_id",
+      "properties": [
+        { "name": "label", "type": "string" },
+        { "name": "phase", "type": "string" },
+        { "name": "amount", "type": "currency" },
+        { "name": "federal_amount", "type": "currency" },
+        { "name": "city_amount", "type": "currency" },
+        { "name": "status", "type": "enum", "values": ["paid", "pending", "planned"] },
+        { "name": "event_date", "type": "date" },
+        { "name": "vendor", "type": "string" }
+      ]
+    },
+    {
+      "name": "Milestone",
+      "displayName": "Project Milestone",
+      "table": "fact_milestone",
+      "key": "milestone_id",
+      "properties": [
+        { "name": "title", "type": "string" },
+        { "name": "status", "type": "enum", "values": ["complete", "in-progress", "upcoming", "at-risk"] },
+        { "name": "progress_pct", "type": "integer" },
+        { "name": "due_date", "type": "date" },
+        { "name": "completed_date", "type": "date" },
+        { "name": "is_at_risk", "type": "boolean" },
+        { "name": "owner", "type": "string" }
+      ]
+    },
+    {
+      "name": "ComplianceItem",
+      "displayName": "Compliance Obligation",
+      "table": "fact_compliance",
+      "key": "compliance_id",
+      "properties": [
+        { "name": "title", "type": "string" },
+        { "name": "type", "type": "enum", "values": ["report", "audit", "clearance", "monitoring"] },
+        { "name": "status", "type": "enum", "values": ["current", "due-soon", "overdue", "complete"] },
+        { "name": "due_date", "type": "date" },
+        { "name": "frequency", "type": "string" },
+        { "name": "is_overdue", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "LifecycleEvent",
+      "displayName": "Lifecycle Event",
+      "table": "fact_lifecycle_event",
+      "key": "event_id",
+      "description": "One immutable entry in a grant's audit timeline. Powers the lifecycle visualization and lets agents answer 'what happened and when'.",
+      "properties": [
+        { "name": "event_date", "type": "date" },
+        { "name": "event_type", "type": "enum", "values": ["StageTransition", "MilestoneCompleted", "DisbursementPaid", "ComplianceFiled"] },
+        { "name": "from_state", "type": "string" },
+        { "name": "to_state", "type": "string" },
+        { "name": "stage_ordinal", "type": "integer" },
+        { "name": "detail", "type": "string" },
+        { "name": "actor", "type": "string" },
+        { "name": "amount", "type": "currency" }
+      ]
+    }
+  ],
+
+  "relationships": [
+    { "name": "awardedBy",     "from": "Grant", "to": "Agency",         "fromKey": "agency_id",  "toKey": "agency_id",  "cardinality": "many-to-one" },
+    { "name": "fundedUnder",   "from": "Grant", "to": "Program",        "fromKey": "program_id", "toKey": "program_id", "cardinality": "many-to-one" },
+    { "name": "appliedFor",    "from": "City",  "to": "Grant",          "fromKey": "city_id",    "toKey": "city_id",    "cardinality": "one-to-many" },
+    { "name": "hasDisbursement","from": "Grant","to": "Disbursement",   "fromKey": "grant_id",   "toKey": "grant_id",   "cardinality": "one-to-many" },
+    { "name": "hasMilestone",  "from": "Grant", "to": "Milestone",      "fromKey": "grant_id",   "toKey": "grant_id",   "cardinality": "one-to-many" },
+    { "name": "hasObligation", "from": "Grant", "to": "ComplianceItem", "fromKey": "grant_id",   "toKey": "grant_id",   "cardinality": "one-to-many" },
+    { "name": "hasEvent",      "from": "Grant", "to": "LifecycleEvent", "fromKey": "grant_id",   "toKey": "grant_id",   "cardinality": "one-to-many" },
+    { "name": "offeredBy",     "from": "Program","to": "Agency",        "fromKey": "agency_id",  "toKey": "agency_id",  "cardinality": "many-to-one" }
+  ],
+
+  "rules": [
+    {
+      "name": "MatchCoverageInvariant",
+      "appliesTo": "Grant",
+      "expression": "total_project == award_amount + city_match",
+      "severity": "error",
+      "message": "Total project cost must equal federal award plus local match."
+    },
+    {
+      "name": "DisbursementCannotExceedAward",
+      "appliesTo": "Grant",
+      "expression": "SUM(hasDisbursement.amount WHERE status == 'paid') <= award_amount",
+      "severity": "error",
+      "message": "Cumulative paid disbursements cannot exceed the awarded amount."
+    },
+    {
+      "name": "ActiveGrantMustHaveOpenCompliance",
+      "appliesTo": "Grant",
+      "expression": "lifecycle_state == 'Active' IMPLIES COUNT(hasObligation) > 0",
+      "severity": "warning",
+      "message": "An active grant should have at least one tracked compliance obligation."
+    },
+    {
+      "name": "NoOverdueComplianceBeforeCloseout",
+      "appliesTo": "Grant",
+      "expression": "lifecycle_state == 'Closeout' IMPLIES COUNT(hasObligation WHERE is_overdue) == 0",
+      "severity": "error",
+      "message": "All compliance obligations must be cleared before a grant can close out."
+    }
+  ],
+
+  "actions": [
+    {
+      "name": "RequestDrawdown",
+      "appliesTo": "Grant",
+      "description": "Initiate a reimbursement drawdown request for completed work on an in-progress milestone.",
+      "guard": "EXISTS(hasMilestone WHERE status == 'in-progress') AND NOT EXISTS(hasDisbursement WHERE status == 'pending')",
+      "parameters": [{ "name": "milestone_id", "type": "string" }, { "name": "amount", "type": "currency" }]
+    },
+    {
+      "name": "FileSF425",
+      "appliesTo": "Grant",
+      "description": "Generate and file the SF-425 Federal Financial Report from current actuals.",
+      "guard": "EXISTS(hasObligation WHERE title CONTAINS 'SF-425' AND status IN ['due-soon','overdue'])"
+    },
+    {
+      "name": "FileQuarterlyReport",
+      "appliesTo": "Grant",
+      "description": "Generate the quarterly progress report from milestone + disbursement state.",
+      "guard": "EXISTS(hasObligation WHERE title CONTAINS 'Quarterly' AND status IN ['due-soon','overdue'])"
+    },
+    {
+      "name": "FlagAtRiskMilestone",
+      "appliesTo": "Milestone",
+      "description": "Escalate a milestone that has slipped past its due date or been marked at-risk.",
+      "guard": "is_at_risk == true OR (status != 'complete' AND due_date < TODAY)"
+    },
+    {
+      "name": "AdvanceLifecycleState",
+      "appliesTo": "Grant",
+      "description": "Transition a grant to the next lifecycle stage and append a StageTransition LifecycleEvent.",
+      "parameters": [{ "name": "to_state", "type": "string" }]
+    }
+  ]
+}

@@ -19,6 +19,7 @@ import { adminChatRouter } from "./routes/adminChat";
 import { generateReportRouter } from "./routes/generateReport";
 import { grantsLiveRouter } from "./routes/grantsLive";
 import { workIqRouter } from "./routes/workIq";
+import { fabricIqRouter } from "./routes/fabricIq";
 import { checkHealth } from "./agent";
 
 const app = express();
@@ -79,6 +80,7 @@ app.use("/api/admin-chat", chatLimiter, adminChatRouter);
 app.use("/api/generate-report", chatLimiter, generateReportRouter);
 app.use("/api/grants-live", grantsLiveRouter);
 app.use("/api/work-iq", workIqRouter);
+app.use("/api/fabric-iq", fabricIqRouter);
 
 app.get("/api/health", async (_req, res) => {
   const health = await checkHealth();
@@ -101,3 +103,7 @@ app.listen(PORT, async () => {
     console.warn("[Health] Startup probe failed:", (err as Error).message);
   }
 });
+
+// Keep the event loop alive so ts-node doesn't exit after the async startup
+// callback resolves (common ts-node clean-exit bug with async listen callbacks)
+setInterval(() => {}, 1 << 30);
