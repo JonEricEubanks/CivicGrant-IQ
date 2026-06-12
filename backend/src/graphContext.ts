@@ -68,6 +68,7 @@ const MAX_FILE_BYTES = 8 * 1024 * 1024;
 const MAX_TEXT_PER_FILE = 4500;
 
 let cached: { context: CityContext; expiresAt: number } | null = null;
+let siteAndDriveCache: { siteId: string; siteUrl?: string; driveId: string } | null = null;
 let graphCredential: ClientSecretCredential | null = null;
 let openAi: AzureOpenAI | null = null;
 
@@ -134,6 +135,7 @@ async function listAll<T>(url: string): Promise<T[]> {
 }
 
 async function resolveSiteAndDrive(): Promise<{ siteId: string; siteUrl?: string; driveId: string }> {
+  if (siteAndDriveCache) return siteAndDriveCache;
   const sitePath = config.graphSitePath.startsWith("/") ? config.graphSitePath : `/${config.graphSitePath}`;
   const site = await graphGet<{ id: string; webUrl?: string }>(
     `/sites/${config.graphSiteHostname}:${sitePath}?$select=id,webUrl`
@@ -143,7 +145,8 @@ async function resolveSiteAndDrive(): Promise<{ siteId: string; siteUrl?: string
     ?? drives.find((d) => d.name.toLowerCase().includes(config.graphLibraryName.toLowerCase()))
     ?? drives.find((d) => d.name.toLowerCase() === "documents");
   if (!drive) throw new Error(`No SharePoint document library matched '${config.graphLibraryName}'`);
-  return { siteId: site.id, siteUrl: site.webUrl, driveId: drive.id };
+  siteAndDriveCache = { siteId: site.id, siteUrl: site.webUrl, driveId: drive.id };
+  return siteAndDriveCache;
 }
 
 async function collectFiles(driveId: string, itemId = "root", depth = 0): Promise<GraphDriveItem[]> {
@@ -152,16 +155,13 @@ async function collectFiles(driveId: string, itemId = "root", depth = 0): Promis
     ? `/drives/${driveId}/root/children?$select=id,name,size,webUrl,lastModifiedDateTime,folder,file`
     : `/drives/${driveId}/items/${itemId}/children?$select=id,name,size,webUrl,lastModifiedDateTime,folder,file`;
   const children = await listAll<GraphDriveItem>(path);
-  const out: GraphDriveItem[] = [];
-  for (const child of children) {
-    if (out.length >= MAX_FILES) break;
-    if (child.folder) {
-      out.push(...await collectFiles(driveId, child.id, depth + 1));
-    } else if (child.file) {
-      out.push(child);
-    }
-  }
-  return out.slice(0, MAX_FILES);
+  const directFiles = children.filter((c) => c.file);
+  const folders = children.filter((c) => c.folder);
+  // Traverse all sub-folders in parallel
+  const subResults = await Promise.all(
+    folders.map((folder) => collectFiles(driveId, folder.id, depth + 1))
+  );
+  return [...directFiles, ...subResults.flat()].slice(0, MAX_FILES);
 }
 
 async function extractText(name: string, buffer: Buffer, mimeType?: string): Promise<string> {
@@ -301,23 +301,33 @@ async function fetchGrantMail(): Promise<string[]> {
 async function loadSharePointDocuments(): Promise<{ docs: DocumentText[]; siteUrl?: string }> {
   const { driveId, siteUrl } = await resolveSiteAndDrive();
   const files = await collectFiles(driveId);
-  const docs: DocumentText[] = [];
-  for (const file of files) {
-    if ((file.size ?? 0) > MAX_FILE_BYTES) continue;
+  const eligible = files.filter((file) => {
+    if ((file.size ?? 0) > MAX_FILE_BYTES) return false;
     const ext = file.name.toLowerCase().split(".").pop() ?? "";
-    if (!["txt", "md", "csv", "json", "docx", "pdf"].includes(ext)) continue;
-    try {
+    return ["txt", "md", "csv", "json", "docx", "pdf"].includes(ext);
+  });
+  // Download and extract all eligible files in parallel
+  const results = await Promise.allSettled(
+    eligible.map(async (file) => {
       const [buffer, fields] = await Promise.all([
         graphDownload(`https://graph.microsoft.com/v1.0/drives/${driveId}/items/${file.id}/content`),
         fetchItemFields(driveId, file.id),
       ]);
       const text = (await extractText(file.name, buffer, file.file?.mimeType)).replace(/\s+/g, " ").trim();
-      if (text) docs.push({ name: file.name, webUrl: file.webUrl, text: text.slice(0, MAX_TEXT_PER_FILE), fields });
-    } catch (err) {
-      console.warn(`[WorkIQ] Failed to extract ${file.name}:`, (err as Error).message);
-    }
-  }
-  return { docs, siteUrl };
+      if (!text) return null;
+      return { name: file.name, webUrl: file.webUrl, text: text.slice(0, MAX_TEXT_PER_FILE), fields } as DocumentText;
+    })
+  );
+  results.forEach((r, i) => {
+    if (r.status === "rejected") console.warn(`[WorkIQ] Failed to extract ${eligible[i]?.name}:`, (r.reason as Error).message);
+  });
+  return {
+    docs: results
+      .filter((r): r is PromiseFulfilledResult<DocumentText | null> => r.status === "fulfilled")
+      .map((r) => r.value)
+      .filter((d): d is DocumentText => d !== null),
+    siteUrl,
+  };
 }
 
 function asStringArray(value: unknown): string[] {

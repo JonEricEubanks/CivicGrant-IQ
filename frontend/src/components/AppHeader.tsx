@@ -58,7 +58,7 @@ export function AppHeader({
       <div className="header-right">
         <div className="header-badge">
           <IconMicrosoft size={12} />
-          Powered by Microsoft Foundry IQ
+          Foundry IQ · Work IQ · Fabric IQ
         </div>
         {actions && (
           <>
