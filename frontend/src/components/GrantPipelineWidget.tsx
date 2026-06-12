@@ -10,6 +10,7 @@ export interface PipelineGrant {
   matchScore: number;
   deadline: string;
   focusArea: string;
+  grantId?: string;
   /** When present, grant came from live grants.gov data — show link badge */
   grantsGovUrl?: string;
   /** True when amount is real published program funding, not an AI estimate */

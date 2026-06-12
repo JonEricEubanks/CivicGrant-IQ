@@ -24,7 +24,7 @@ import {
   IconCopy, IconCheck, IconBolt,
   IconChart, IconFilePdf, IconFileText, IconGlobe,
   IconLink, IconScales, IconTarget, IconSparkle, IconAward,
-  IconPaperclip, IconDatabase, IconX, IconPanelRight,
+  IconPaperclip, IconDatabase, IconPanelRight,
   IconFabricIQ,
 } from "./Icons";
 import "./ChatInterface.css";
