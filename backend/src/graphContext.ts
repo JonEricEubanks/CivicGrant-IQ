@@ -445,6 +445,41 @@ async function distillContext(docs: DocumentText[], siteUrl?: string): Promise<C
   }
 }
 
+// ─── Demo M365 signals — shown when Graph credentials are not configured ──────
+// These mirror the kinds of signals a real M365-connected city would see.
+// Dates are computed at call time so they always appear "upcoming".
+function demoCalendarEvents(): string[] {
+  const now = new Date();
+  const addDays = (d: number) => new Date(now.getTime() + d * 86400000)
+    .toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return [
+    `FEMA BRIC Application Review — Kick-off with Public Works (${addDays(3)})`,
+    `USDOT RAISE Pre-Application Meeting — IL-83 / Aptakisic Rd (${addDays(11)})`,
+    `Grant Coordination Team Standup — FY2026 pipeline review (${addDays(17)})`,
+    `EPA SRF Stormwater Letter of Interest Deadline (${addDays(29)})`,
+  ];
+}
+
+function demoMailSignals(): string[] {
+  const now = new Date();
+  const addDays = (d: number) => new Date(now.getTime() - d * 86400000)
+    .toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return [
+    `Email from FEMA Region V (${addDays(2)}): "BRIC FY2025 Sub-application Portal Now Open"`,
+    `Email from IDOT District 1 (${addDays(5)}): "RAISE FY2026 Supplemental Guidance — scoring rubric attached"`,
+    `Email from HUD CPD (${addDays(9)}): "CDBG-DR Notice of Funding Availability — Public Comment Period"`,
+    `Email from Cook County GIS (${addDays(14)}): "Updated flood zone shapefiles for HMGP match documentation"`,
+  ];
+}
+
+function demoTeamsInsights(): string[] {
+  return [
+    "[Grant Team · BRIC 2025] Dir. Martinez: Match funding confirmed — $850K from stormwater reserves, meets 25% non-federal requirement",
+    "[Grant Team · RAISE IL-83] Eng. Chen: Traffic study complete, adaptive signal data ready for narrative Section 4",
+    "[Public Works · Capital Projects] CFO Ross: FY2026 budget amendment passed — $2.1M authorized for grant match pool",
+  ];
+}
+
 function localKbContext(error?: string): CityContext {
   const local = searchLocalKb("Buffalo Grove city profile capital improvement plan past grant applications strategic priorities", 5);
   const docs = local.citations.map((c) => ({ name: c.title, text: c.excerpt }));
@@ -455,6 +490,9 @@ function localKbContext(error?: string): CityContext {
       libraryName: "Local municipal KB",
       filesRead: local.citations.map((c) => c.title),
     }),
+    calendarEvents: demoCalendarEvents(),
+    mailSignals: demoMailSignals(),
+    teamsInsights: demoTeamsInsights(),
     error,
   };
 }
