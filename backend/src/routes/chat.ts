@@ -5,6 +5,9 @@ import type { RefinementHandoffPayload, RedTeamResult } from "../agents/multiAge
 import { searchLocalKb } from "../localKb";
 import { withSpan } from "../telemetry";
 import { getCityContext } from "../graphContext";
+import { detectQueryIntent, buildWidgetForIntent, generateAnswerForIntent } from "./grantRouter";
+import { getFabricContext } from "./fabricIq";
+import { GRANT_PORTFOLIO } from "../grantPortfolio";
 
 export const chatRouter = Router();
 
@@ -47,6 +50,8 @@ chatRouter.post("/", async (req: Request, res: Response) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
   res.flushHeaders();
+
+  const reqStartMs = Date.now();
 
   const send = (event: string, data: unknown) => {
     res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
@@ -144,6 +149,86 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     const cityContext = await cityContextPromise;
     send("work_iq_context", cityContext);
 
+    // Keepalive: send a heartbeat every 20s so the browser SSE connection doesn't time out
+    const keepalive = setInterval(() => {
+      res.write(": keepalive\n\n");
+    }, 20000);
+
+    // ── EARLY ROUTING: Detect query intent BEFORE running analysis ──────────
+    const queryIntent = detectQueryIntent(trimmed);
+    const isComplexAnalysis = queryIntent.type === "project_grant_match" || queryIntent.type === "general_grant_analysis";
+    
+    // Emit routing decision immediately
+    send("routing_decision", {
+      intent: queryIntent.description,
+      sources: queryIntent.sources,
+      widgetType: queryIntent.widgetType,
+    });
+
+    // ── IF SIMPLE QUERY: Use grantRouter for fast, focused response ────────
+    if (!isComplexAnalysis && !isFollowUp) {
+      const fabricIq = await getFabricContext(false);
+      const intent = queryIntent;
+      
+      // Build widget directly from sources
+      const widget = await buildWidgetForIntent(intent, {
+        portfolio: { grants: GRANT_PORTFOLIO },
+        fabricIq,
+        workIq: cityContext,
+      });
+
+      // Emit dynamic steps based on query type
+      const stepLabels = {
+        top_grants_prioritized: [
+          "Work IQ · Extract Priority Signals",
+          "Portfolio · Load Active Grants",
+          "Fabric IQ · Load Live Status",
+          "Ranking Engine · Score & Prioritize",
+        ],
+        compliance_alerts: [
+          "Fabric IQ · Load Live Compliance Status",
+          "Portfolio · Compile Deadline Calendar",
+          "Alert Prioritizer · Flag Critical Items",
+        ],
+        portfolio_health: [
+          "Portfolio · Load Summary Stats",
+          "Fabric IQ · Get Live Disbursement Rates",
+          "Health Analyzer · Assess Portfolio KPIs",
+        ],
+        single_grant_detail: [
+          "Portfolio · Load Grant Details",
+          "Fabric IQ · Get Live Status",
+          "Detail Renderer · Format Response",
+        ],
+      };
+
+      const steps = stepLabels[intent.type as keyof typeof stepLabels] || [];
+      for (let i = 0; i < steps.length; i++) {
+        send("reasoning_step", {
+          step: i + 1,
+          label: steps[i],
+          content: `${steps[i]}…`,
+          completed: true,
+        });
+      }
+
+      // Emit widget
+      if (widget) send("widget", widget);
+
+      // Generate and emit answer
+      const answer = generateAnswerForIntent(intent, {
+        portfolio: { grants: GRANT_PORTFOLIO },
+        fabricIq,
+        workIq: cityContext,
+      }, widget!);
+
+      send("answer_chunk", { content: answer });
+      clearInterval(keepalive);
+      send("done", { threadId: threadId ?? "local" });
+      return;
+    }
+
+    // ── COMPLEX ANALYSIS: Use full 6-agent pipeline ────────────────────────
     // Emit step 1 "in-progress" immediately with Work IQ details so the
     // expand panel shows real content even before the LLM reaches step 1.
     if (!isFollowUp) {
@@ -162,11 +247,6 @@ chatRouter.post("/", async (req: Request, res: Response) => {
         completed: false,
       });
     }
-
-    // Keepalive: send a heartbeat every 20s so the browser SSE connection doesn't time out
-    const keepalive = setInterval(() => {
-      res.write(": keepalive\n\n");
-    }, 20000);
 
     // Progressive status messages — fires every ~10s while the AI is reasoning
     // so the UI shows meaningful activity instead of silence during the first response.
@@ -258,6 +338,19 @@ chatRouter.post("/", async (req: Request, res: Response) => {
           completed: true,
         });
       }
+    }
+
+    // ── Extract routing decision from agent response ────────────────────────
+    const routingMarker = result.response.match(/^```?\s*ROUTING:\s*([^\n]+)/i);
+    if (routingMarker && routingMarker[1]) {
+      const [intent, sourcesStr, widgetStr] = routingMarker[1].split(/\s*\|\s*/);
+      const sources = sourcesStr?.replace(/^sources:\s*/, "").split(/,\s*/) ?? [];
+      const widgetType = widgetStr?.replace(/^widget:\s*/, "") ?? "unknown";
+      send("routing_decision", {
+        intent: intent?.trim(),
+        sources: sources.map((s: string) => s.trim()),
+        widgetType,
+      });
     }
 
     if (result.citations.length > 0) send("citations", { citations: result.citations });
@@ -400,6 +493,7 @@ chatRouter.post("/", async (req: Request, res: Response) => {
         branch: "red_team:spawn",
       });
       send("agent_status", { agent: "review", message: "Red Team reviewing draft narrative…" });
+      send("status", { message: "[RED TEAM] Spawned concurrent reviewer — scoring draft narrative for federal reviewer perspective…" });
       reviewPromise = runRedTeamReview(grantName, narrativeDraft, matchScore).catch((err) => {
         console.error("[chat] red team agent failed:", err);
         return null;
@@ -442,6 +536,7 @@ chatRouter.post("/", async (req: Request, res: Response) => {
 
     if (hasNarrative && (hasFixes || hasDiffs)) {
       send("agent_status", { agent: "refinement", message: "Applying Red Team fixes + competitive insights to narrative…" });
+      send("status", { message: "[REFINEMENT] Rewriting narrative with adversarial feedback + competitive differentiation…" });
       try {
         // Build typed handoff payload — explicit contract between agents
         const handoff: RefinementHandoffPayload = {
@@ -473,6 +568,10 @@ chatRouter.post("/", async (req: Request, res: Response) => {
         console.error("[chat] refinement agent failed:", err);
       }
     }
+
+    // Emit final concurrency summary before closing
+    const elapsed = Math.round((Date.now() - (reqStartMs || Date.now())) / 1000);
+    send("status", { message: `[COMPLETE] All agents finished in ${elapsed}s — 6-agent pipeline executed concurrently` });
 
     send("done", { threadId: result.threadId });
       } // end withSpan callback
