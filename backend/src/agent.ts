@@ -1219,6 +1219,9 @@ async function runViaAssistantsApi(
       kbSource: "azure_search",
     });
 
+    // GraphRAG: run synchronous knowledge graph traversal (same as Tier 2)
+    const graphResult = queryGraph(options.message);
+
     return {
       threadId: thread.id,
       runId,
@@ -1226,6 +1229,7 @@ async function runViaAssistantsApi(
       citations: [...kbCitations, ...extractCitations(annotations)],
       reasoningSteps: extractReasoningSteps(responseText),
       widget: rawWidget,
+      graphPaths: graphResult.paths.length > 0 ? graphResult.paths : undefined,
     };
   } finally {
     // Stateless: clean up assistant after each request
