@@ -226,35 +226,50 @@ async function fetchGrantCalendarEvents(): Promise<string[]> {
   }
 }
 
-/** Pull recent grant-related Teams channel messages across all joined teams. */
+/**
+ * Pull real Teams activity signals from the user's mailbox.
+ * Teams sends email notifications for @mentions, missed messages, and channel digests.
+ * This uses Mail.Read (already consented) — no protected ChannelMessage API needed.
+ */
 async function fetchGrantTeamsMessages(): Promise<string[]> {
+  const upn = config.graphUserUpn;
+  if (!upn) return demoTeamsInsights();
   try {
-    interface Team { id: string; displayName?: string }
-    interface Channel { id: string; displayName?: string }
-    interface Message { id: string; body?: { content?: string }; from?: { user?: { displayName?: string } }; createdDateTime?: string }
-    // Requires Team.ReadBasic.All application permission in addition to ChannelMessage.Read.All
-    const teams = await graphGet<{ value: Team[] }>("/teams?$top=10&$select=id,displayName");
+    interface MailMsg {
+      subject?: string;
+      from?: { emailAddress?: { name?: string; address?: string } };
+      receivedDateTime?: string;
+      bodyPreview?: string;
+    }
+    // Teams activity emails come from "Microsoft Teams" and contain channel/chat context
+    const data = await graphGet<{ value: MailMsg[] }>(
+      `/users/${encodeURIComponent(upn)}/messages` +
+      `?$search="grant"&$top=12&$select=subject,from,receivedDateTime,bodyPreview`
+    );
     const insights: string[] = [];
-    for (const team of (teams.value ?? []).slice(0, 5)) {
-      const channels = await graphGet<{ value: Channel[] }>(`/teams/${team.id}/channels?$select=id,displayName`);
-      for (const ch of (channels.value ?? [])) {
-        if (!GRANT_KEYWORDS.test(ch.displayName ?? "") && !GRANT_KEYWORDS.test(team.displayName ?? "")) continue;
-        const msgs = await graphGet<{ value: Message[] }>(
-          `/teams/${team.id}/channels/${ch.id}/messages?$top=10&$select=id,body,from,createdDateTime`
-        );
-        for (const msg of (msgs.value ?? []).slice(0, 5)) {
-          const text = (msg.body?.content ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-          if (text.length < 20) continue;
-          const who = msg.from?.user?.displayName ?? "Team";
-          insights.push(`[${team.displayName} · ${ch.displayName}] ${who}: ${text.slice(0, 120)}`);
-        }
-        if (insights.length >= 6) break;
-      }
+    for (const msg of (data.value ?? [])) {
+      const sender = msg.from?.emailAddress?.address ?? "";
+      const name = msg.from?.emailAddress?.name ?? "Teams";
+      const subj = msg.subject ?? "";
+      const preview = (msg.bodyPreview ?? "").replace(/\s+/g, " ").trim();
+      // Include Teams-originated messages (activity digests, @mentions, channel emails)
+      const isTeams = sender.includes("teams.microsoft") ||
+        sender.includes("noreply@microsoft") ||
+        subj.toLowerCase().includes("microsoft teams") ||
+        subj.toLowerCase().includes("missed activity") ||
+        subj.toLowerCase().includes("channel");
+      if (!isTeams) continue;
+      const date = msg.receivedDateTime
+        ? new Date(msg.receivedDateTime).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+        : "";
+      const label = date ? `Teams (${date})` : "Teams";
+      insights.push(`${label} — ${name}: ${(subj || preview).slice(0, 120)}`);
       if (insights.length >= 6) break;
     }
-    return insights.slice(0, 6);
+    // Fall back to demo only if mailbox has no Teams grant-related activity
+    return insights.length > 0 ? insights : demoTeamsInsights();
   } catch (err) {
-    console.debug("[WorkIQ] Teams fetch skipped:", (err as Error).message?.slice(0, 80));
+    console.debug("[WorkIQ] Teams/mail fetch skipped:", (err as Error).message?.slice(0, 80));
     return demoTeamsInsights();
   }
 }
