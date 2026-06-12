@@ -1,5 +1,5 @@
 /**
- * indexDocs.mjs — Upload Buffalo Grove docs to Azure AI Search Free tier
+ * indexDocs.mjs — Upload Buffalo Grove docs to Azure AI Search (Basic tier)
  * Run: node infra/indexDocs.mjs
  */
 import fs from "fs";
@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const ENDPOINT = process.env.SEARCH_ENDPOINT || "https://civicgrant-srch.search.windows.net";
+const ENDPOINT = process.env.SEARCH_ENDPOINT || "https://civicgrant-iq.search.windows.net";
 const KEY = process.env.SEARCH_API_KEY;
 if (!KEY) {
   console.error("ERROR: SEARCH_API_KEY environment variable is required. Set it before running this script.");
@@ -70,16 +70,62 @@ async function ensureIndex() {
 }
 
 // ─── Upload docs ─────────────────────────────────────────────────────────────
+// Azure AI Search Free tier: 32766 byte max per term. Chunk large docs into
+// ≤28 KB pieces so no single content field exceeds the limit.
+const CHUNK_SIZE = 18000;
+
+// Break any single token longer than 1000 chars (e.g. long URLs) so the
+// Azure AI Search analyzer doesn't choke on oversized terms.
+function sanitizeContent(text) {
+  return text.replace(/\S{1001,}/g, (m) => {
+    const out = [];
+    for (let i = 0; i < m.length; i += 800) out.push(m.slice(i, i + 800));
+    return out.join(" ");
+  });
+}
+
+function chunkDoc(doc, content) {
+  const clean = sanitizeContent(content);
+  if (clean.length <= CHUNK_SIZE) {
+    return [{ "@search.action": "upload", id: doc.id, title: doc.title, filename: doc.filename, content: clean }];
+  }
+  const chunks = [];
+  let i = 0, part = 0;
+  while (i < clean.length) {
+    // Break at paragraph boundary when possible
+    let end = Math.min(i + CHUNK_SIZE, clean.length);
+    if (end < clean.length) {
+      const boundary = clean.lastIndexOf("\n\n", end);
+      if (boundary > i + CHUNK_SIZE / 2) end = boundary;
+    }
+    const chunk = clean.slice(i, end);
+    chunks.push({
+      "@search.action": "upload",
+      id: `${doc.id}_p${part}`,
+      title: `${doc.title} (Part ${part + 1})`,
+      filename: doc.filename,
+      content: chunk,
+    });
+    i = end;
+    part++;
+  }
+  return chunks;
+}
+
 async function uploadDocs() {
-  const actions = DOCS.map((doc) => {
+  const actions = DOCS.flatMap((doc) => {
     const content = fs.readFileSync(path.join(DOCS_DIR, doc.filename), "utf-8");
-    return { "@search.action": "upload", id: doc.id, title: doc.title, filename: doc.filename, content };
+    return chunkDoc(doc, content);
   });
 
-  const result = await searchFetch(`/indexes/${INDEX_NAME}/docs/index`, "POST", { value: actions });
-  result.value.forEach((r) => {
-    console.log(`  ${r.key}: status=${r.status} statusCode=${r.statusCode} ${r.errorMessage || ""}`);
-  });
+  // Upload in batches of 10 (Search API limit per request)
+  for (let i = 0; i < actions.length; i += 10) {
+    const batch = actions.slice(i, i + 10);
+    const result = await searchFetch(`/indexes/${INDEX_NAME}/docs/index`, "POST", { value: batch });
+    result.value.forEach((r) => {
+      console.log(`  ${r.key}: status=${r.status} statusCode=${r.statusCode} ${r.errorMessage || ""}`);
+    });
+  }
 }
 
 // ─── Verify ──────────────────────────────────────────────────────────────────
