@@ -327,23 +327,15 @@ export function getProjectClient(): AIProjectClient {
  */
 function getFoundryOpenAIClient(): OpenAI {
   if (!_foundryOpenAI) {
-    try {
-      // The project client's /openai/v1 surface requires api-version on every request,
-      // but getOpenAIClient() only injects it for hosted-agent (agentName) calls.
-      // Supply it explicitly via defaultQuery, else Azure returns
-      // "400 api-version is not provided the URL query params."
-      _foundryOpenAI = getProjectClient().getOpenAIClient({
-        defaultQuery: { "api-version": "2025-01-01-preview" },
-      });
-    } catch {
-      // Fallback: direct Azure OpenAI (API key auth)
-      _foundryOpenAI = new AzureOpenAI({
-        endpoint: config.aoaiEndpoint,
-        apiKey: config.aoaiApiKey,
-        apiVersion: "2025-01-01-preview",
-        deployment: config.foundryModelDeployment,
-      });
-    }
+    // The Azure AI Foundry project endpoint (/openai/v1) does NOT support the
+    // Assistants API — it returns 404 for /assistants.
+    // Use the direct Azure OpenAI resource (API key auth) which does.
+    _foundryOpenAI = new AzureOpenAI({
+      endpoint: config.aoaiEndpoint,
+      apiKey: config.aoaiApiKey,
+      apiVersion: "2025-01-01-preview",
+      deployment: config.foundryModelDeployment,
+    });
   }
   return _foundryOpenAI;
 }
@@ -1096,26 +1088,22 @@ async function runViaAssistantsApi(
   t0: number
 ): Promise<AgentRunResult> {
   const oai = getFoundryOpenAIClient();
-  const mcpUrl = getKnowledgeBaseMcpUrl();
 
-  // Create assistant with Foundry IQ MCP tool for knowledge_base_retrieve
+  // Pre-fetch KB context and inject into the assistant message.
+  // MCP tool type requires Azure Enterprise tier and is unavailable on standard AOAI;
+  // injecting search results as context achieves equivalent grounding.
+  const { context: kbContext, citations: kbCitations } = await searchGrantKnowledgeBase(options.message);
+
+  const augmentedMessage = kbContext
+    ? `${options.message}\n\n---\n**Foundry IQ Knowledge Base Context:**\n${kbContext}`
+    : options.message;
+
+  // Create assistant (no tools — MCP not available on standard AOAI)
   const assistant = await oai.beta.assistants.create({
     model: config.foundryModelDeployment,
     name: "civicgrant-iq",
     instructions: systemPromptWithWorkIq(options.cityContext),
-    tools: [
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ...[{
-        type: "mcp",
-        mcp: {
-          server_label: "foundry-iq-kb",
-          server_url: mcpUrl,
-          require_approval: "never",
-          allowed_tools: ["knowledge_base_retrieve"],
-          headers: { "api-key": config.searchApiKey },
-        },
-      }] as unknown as OpenAI.Beta.Assistants.AssistantTool[],
-    ],
+    tools: [],
   });
 
   try {
@@ -1134,7 +1122,7 @@ async function runViaAssistantsApi(
 
     await oai.beta.threads.messages.create(thread.id, {
       role: "user",
-      content: options.message,
+      content: augmentedMessage,
     });
 
     let responseText = "";
@@ -1224,7 +1212,7 @@ async function runViaAssistantsApi(
       threadId: thread.id,
       runId,
       response: responseText,
-      citations: extractCitations(annotations),
+      citations: [...kbCitations, ...extractCitations(annotations)],
       reasoningSteps: extractReasoningSteps(responseText),
       widget: rawWidget,
     };
