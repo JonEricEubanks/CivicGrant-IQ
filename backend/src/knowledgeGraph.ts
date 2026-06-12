@@ -573,6 +573,7 @@ buildIndex();
 type KeywordMap = Record<string, string[]>;
 const GRANT_KEYWORDS: KeywordMap = {
   fema_bric:  ["bric", "flood", "resilience", "fema", "hazard", "mitigation", "creek", "rain garden", "lift station", "warning", "resilient", "infrastructure", "climate"],
+  fema_fma:   ["fma", "flood mitigation assistance", "flood mitigation", "nfip", "repetitive loss", "severe repetitive", "fiscal year 2024 flood", "fy2024 flood", "flood assistance"],
   raise:      ["raise", "transportation", "road", "safety", "intersection", "aptakisic", "il-83", "il83", "multimodal", "pedestrian", "bicycle", "bike", "metra", "signal", "crash", "traffic", "usdot", "dot"],
   smc_siip:   ["smc", "siip", "northwood", "stormwater", "wetland", "culvert", "drainage", "lake county", "stormwater management"],
   epa_cwsrf:  ["cwsrf", "clean water", "epa", "water quality", "srf", "green infrastructure", "wetland", "303d"],

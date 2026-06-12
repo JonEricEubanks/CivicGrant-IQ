@@ -4,14 +4,15 @@ import type { AdminGrant, AdminMilestone, AdminComplianceItem, AdminPortfolioSta
 import { fetchAdminPortfolio, streamAdminChat, streamGenerateReport } from "../api";
 import type { ReportType } from "../api";
 import { AdminDashboardSkeleton } from "./AdminDashboardSkeleton";
+import { IconCheck, IconAlert, IconCircleDot, IconClock, IconChevronDown } from "./Icons";
 import "./GrantAdminDashboard.css";
 
 // ─── Status badge helpers ────────────────────────────────────────────────────
-function milestoneIcon(status: AdminGrant["milestones"][number]["status"]): string {
-  if (status === "complete") return "✓";
-  if (status === "in-progress") return "◉";
-  if (status === "at-risk") return "⚠";
-  return "○";
+function milestoneIcon(status: AdminGrant["milestones"][number]["status"]): JSX.Element {
+  if (status === "complete") return <IconCheck size={13} />;
+  if (status === "in-progress") return <IconCircleDot size={13} />;
+  if (status === "at-risk") return <IconAlert size={13} />;
+  return <IconClock size={13} />;
 }
 
 function complianceDot(status: AdminGrant["compliance"][number]["status"]): string {
@@ -598,7 +599,7 @@ function GrantDetail({
                           <span className="dis-date">{d.date}</span>
                           <span className={`dis-badge dis-b-${d.status}`}>{d.status}</span>
                           {hasDetail && (
-                            <span className="dis-chevron">{isOpen ? "▲" : "▼"}</span>
+                            <span className={`dis-chevron${isOpen ? " dis-chevron--open" : ""}`}><IconChevronDown size={13} /></span>
                           )}
                         </div>
                       </button>
@@ -675,7 +676,7 @@ function GrantDetail({
                         title="Mark this milestone as complete"
                         onClick={() => onMilestoneComplete(m.id)}
                       >
-                        Mark Done ✓
+                        Mark Done <IconCheck size={12} />
                       </button>
                     )}
                   </div>

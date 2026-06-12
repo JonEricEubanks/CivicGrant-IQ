@@ -168,6 +168,67 @@ export const IconDocument = ico([
 ]);
 
 // ─── Status / tools ─────────────────────────────────────────────────────
+
+export const IconCheckCircle = ico([
+  <path key="a" d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />,
+  <polyline key="b" points="22 4 12 14.01 9 11.01" />,
+]);
+
+export const IconClock = ico([
+  <circle key="a" cx="12" cy="12" r="10" />,
+  <polyline key="b" points="12 6 12 12 16 14" />,
+]);
+
+export const IconLoader = ico([
+  <line key="a" x1="12" y1="2" x2="12" y2="6" />,
+  <line key="b" x1="12" y1="18" x2="12" y2="22" />,
+  <line key="c" x1="4.93" y1="4.93" x2="7.76" y2="7.76" />,
+  <line key="d" x1="16.24" y1="16.24" x2="19.07" y2="19.07" />,
+  <line key="e" x1="2" y1="12" x2="6" y2="12" />,
+  <line key="f" x1="18" y1="12" x2="22" y2="12" />,
+  <line key="g" x1="4.93" y1="19.07" x2="7.76" y2="16.24" />,
+  <line key="h" x1="16.24" y1="7.76" x2="19.07" y2="4.93" />,
+]);
+
+export const IconBrain = ico([
+  <path key="a" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.14" />,
+  <path key="b" d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.14" />,
+]);
+
+export const IconMap = ico([
+  <polygon key="a" points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />,
+  <line key="b" x1="9" y1="3" x2="9" y2="18" />,
+  <line key="c" x1="15" y1="6" x2="15" y2="21" />,
+]);
+
+export const IconPencil = ico([
+  <path key="a" d="M12 20h9" />,
+  <path key="b" d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />,
+]);
+
+export const IconInfo = ico([
+  <circle key="a" cx="12" cy="12" r="10" />,
+  <line key="b" x1="12" y1="8" x2="12" y2="12" />,
+  <line key="c" x1="12" y1="16" x2="12.01" y2="16" />,
+]);
+
+export const IconCircleDot = ico([
+  <circle key="a" cx="12" cy="12" r="10" />,
+  <circle key="b" cx="12" cy="12" r="3" />,
+]);
+
+export const IconXCircle = ico([
+  <circle key="a" cx="12" cy="12" r="10" />,
+  <line key="b" x1="15" y1="9" x2="9" y2="15" />,
+  <line key="c" x1="9" y1="9" x2="15" y2="15" />,
+]);
+
+export const IconTriangleAlert = ico([
+  <path key="a" d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />,
+  <line key="b" x1="12" y1="9" x2="12" y2="13" />,
+  <line key="c" x1="12" y1="17" x2="12.01" y2="17" />,
+]);
+
 export const IconPlug = ico([
   <path key="a" d="M12 22v-5M9 8V2M15 8V2M9 14H5a2 2 0 0 1-2-2v-1h14v1a2 2 0 0 1-2 2h-4z" />,
 ]);

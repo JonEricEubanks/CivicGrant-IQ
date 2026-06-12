@@ -12,6 +12,30 @@ import { queryGraph } from "./knowledgeGraph";
 import type { GraphPath } from "./knowledgeGraph";
 import { runSixStepChain } from "./agents/multiAgent";
 
+// ─── Compact system prompt for Tier 1 (Assistants API, S0 TPM budget) ──────────
+// Keep this under ~500 tokens so the run doesn't hit the S0 rate limit.
+// Full routing intelligence is handled in Tier 2 via the large SYSTEM_PROMPT.
+const TIER1_SYSTEM_PROMPT = `You are CivicGrant IQ, a municipal grant intelligence agent for Buffalo Grove, IL.
+
+Analyze the grant in exactly 6 steps:
+
+**Step 1 — Work IQ · Parse NOFO Requirements**: Extract grant name, agency, total funding, award range, deadline, eligible applicants, match %, key criteria.
+
+**Step 2 — Foundry IQ · Match City Projects**: Match Buffalo Grove's CIP projects and past applications to the grant. Buffalo Grove has $89.4M CIP, past BRIC/RAISE/SMC awards. Cross-reference KB context provided in the message.
+
+**Step 3 — Financial Agent · Verify Cost-Share Capacity**: BG has $14.6M reserves, Aa2 Moody's, 100% compliance record. Confirm match capacity.
+
+**Step 4 — Gap Analysis Agent · Score Eligibility**: List gaps: **Gap: <title>** — Severity: critical|moderate|minor. Suggestion: <how to close>. End with **Overall Match Rating: X%**.
+
+**Step 5 — Narrative Agent · Draft Project Story**: Write 150-200 words. Open: "Based on Buffalo Grove's [past app], which demonstrated [strength], this application applies the same approach to [focus]..."
+
+**Step 6 — Strategy Agent · Build Winning Plan**: 4 weekly action items (name dept), 1 winning differentiator, competition level (low/medium/high), 4-week milestone table.
+
+After Step 6, append EXACTLY this widget block (fill in all fields):
+\`\`\`widget
+{"type":"grant_match","data":{"grantName":"","agency":"","fundingAmount":0,"awardRange":"","deadline":"","matchScore":0,"gaps":[{"title":"","severity":"critical","suggestion":""}],"strengths":[],"narrativeDraft":"","strategy":{"actionItems":[],"winningDifferentiator":"","competitionLevel":"medium","weeklyMilestones":[{"week":1,"task":"","owner":""},{"week":2,"task":"","owner":""},{"week":3,"task":"","owner":""},{"week":4,"task":"","owner":""}]}}}
+\`\`\``;
+
 // ─── System prompt: 6-step grant reasoning chain ────────────────────────
 export const SYSTEM_PROMPT = `You are CivicGrant IQ, an expert municipal grant intelligence agent.
 You help local government staff identify, evaluate, and apply for federal and state grants.
@@ -1094,15 +1118,22 @@ async function runViaAssistantsApi(
   // injecting search results as context achieves equivalent grounding.
   const { context: kbContext, citations: kbCitations } = await searchGrantKnowledgeBase(options.message);
 
-  const augmentedMessage = kbContext
-    ? `${options.message}\n\n---\n**Foundry IQ Knowledge Base Context:**\n${kbContext}`
+  // Tier 1 uses the compact system prompt to stay within the S0 gpt-4o TPM budget.
+  // Truncate KB context to top-2 chunks, 400 chars each (~800 tokens max) so the
+  // total request (instructions + message + context) stays under the rate limit.
+  const truncatedKbContext = kbContext
+    ? kbContext.split("\n\n---\n\n").slice(0, 2).map(chunk => chunk.slice(0, 400)).join("\n\n---\n\n")
+    : "";
+
+  const augmentedMessage = truncatedKbContext
+    ? `${options.message}\n\n---\n**KB Context (top excerpts):**\n${truncatedKbContext}`
     : options.message;
 
   // Create assistant (no tools — MCP not available on standard AOAI)
   const assistant = await oai.beta.assistants.create({
     model: config.foundryModelDeployment,
     name: "civicgrant-iq",
-    instructions: systemPromptWithWorkIq(options.cityContext),
+    instructions: TIER1_SYSTEM_PROMPT,
     tools: [],
   });
 
@@ -1137,6 +1168,11 @@ async function runViaAssistantsApi(
 
     try {
       for await (const event of runStream) {
+      if (event.event === "thread.run.failed" || event.event === "thread.run.cancelled" || event.event === "thread.run.expired") {
+        const runData = event.data as { last_error?: { code?: string; message?: string }; status?: string };
+        const errMsg = runData?.last_error?.message ?? runData?.status ?? "unknown failure";
+        throw new Error(`Tier 1 run ${event.event}: ${errMsg}`);
+      }
       if (event.event === "thread.message.delta") {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const deltas: Array<{ type: string; text?: { value?: string } }> =
@@ -1192,14 +1228,23 @@ async function runViaAssistantsApi(
       }
     }
 
-    // Extract citations from Foundry IQ file_citation annotations on the final message
+    // Extract citations from Foundry IQ file_citation annotations on the final message.
+    // Also use the final message text as a fallback when delta streaming yielded no text
+    // (Azure AOAI Assistants API sometimes skips deltas and only delivers the completed message).
     const messages = await oai.beta.threads.messages.list(thread.id, { limit: 5 });
     const lastMsg = messages.data.find((m) => m.role === "assistant");
     const annotations: AnyAnnotation[] = [];
     if (lastMsg?.content) {
       for (const block of lastMsg.content) {
-        if (block.type === "text" && block.text.annotations) {
-          annotations.push(...(block.text.annotations as AnyAnnotation[]));
+        if (block.type === "text") {
+          if (block.text.annotations) {
+            annotations.push(...(block.text.annotations as AnyAnnotation[]));
+          }
+          // Fallback: if streaming accumulated nothing, use the completed message text
+          if (!responseText && block.text.value) {
+            responseText = block.text.value;
+            console.log("[Agent] Tier 1: delta stream was empty — text recovered from messages.list fallback");
+          }
         }
       }
     }
@@ -1405,6 +1450,11 @@ export async function runGrantAnalysis(options: AgentRunOptions): Promise<AgentR
   // ── Tier 1: Azure AI Foundry Assistants API + Foundry IQ MCP KB retrieval ─
   try {
     const tier1 = await runViaAssistantsApi(options, t0);
+    // Treat empty response as a Tier 1 failure — fall through to Tier 2 for a real LLM answer
+    if (!tier1.response || tier1.response.trim().length < 50) {
+      console.warn(`[Agent] Tier 1 (Foundry Assistants) returned empty/minimal response (${tier1.response.length} chars) — falling back to Tier 2`);
+      throw new Error("Tier 1 returned empty response");
+    }
     result = { ...tier1, tier: 1 };
     tier = 1;
     console.log(`[Agent] Tier 1 (Foundry Assistants) succeeded in ${Date.now() - t0}ms`);

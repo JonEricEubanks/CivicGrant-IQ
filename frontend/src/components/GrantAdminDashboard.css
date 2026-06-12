@@ -914,10 +914,15 @@
 .dis-b-planned { background: #f3f4f6; color: #6b7280; }
 
 .dis-chevron {
-  font-size: 9px;
   color: #9ca3af;
   width: 14px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.dis-chevron--open {
+  transform: rotate(180deg);
 }
 
 /* Expanded detail panel */

@@ -72,7 +72,7 @@ export function AgentOrchestraBar({
 
   const completedSteps = steps.filter((s) => s.completed).length;
   const reasoningActive = streaming && completedSteps < 6;
-  const retrievalDone = citationCount > 0 || completedSteps > 0;
+  const retrievalDone = citationCount > 0 || completedSteps >= 6;
 
   const agents: AgentChip[] = [
     {
@@ -85,7 +85,7 @@ export function AgentOrchestraBar({
       key: "reasoning",
       label: "Reasoning Engine",
       icon: <IconSparkle size={13} />,
-      state: completedSteps >= 6 ? "done" : reasoningActive ? "active" : completedSteps > 0 ? "active" : "pending",
+      state: !streaming && completedSteps > 0 ? "done" : reasoningActive ? "active" : completedSteps >= 6 ? "done" : "pending",
     },
     {
       key: "redteam",

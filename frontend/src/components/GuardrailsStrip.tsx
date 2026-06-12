@@ -1,5 +1,7 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import "./GuardrailsStrip.css";
+import { IconCheck, IconAlert, IconInfo, IconX, IconChevronDown } from "./Icons";
 
 export interface GuardrailRule {
   id: string;
@@ -35,7 +37,7 @@ export function GuardrailsStrip({ data }: GuardrailsStripProps) {
   return (
     <div className={`guardrails-strip ${hasViolations ? "guardrails-strip--warn" : "guardrails-strip--pass"}`}>
       <div className="guardrails-header" onClick={() => setExpanded(!expanded)}>
-        <span className="guardrails-icon">🛡</span>
+        <span className="guardrails-icon"><IconCheck size={14} /></span>
         <span className="guardrails-title">{data.rulesActive} Safety Guardrails</span>
         <span className={`guardrails-count ${hasViolations ? "guardrails-count--warn" : "guardrails-count--pass"}`}>
           {data.passCount} passed
@@ -45,7 +47,7 @@ export function GuardrailsStrip({ data }: GuardrailsStripProps) {
           <span className="guardrails-layer-chip">9 input</span>
           <span className="guardrails-layer-chip">8 output</span>
         </span>
-        <span className="guardrails-toggle">{expanded ? "▲" : "▼"}</span>
+        <span className={`guardrails-toggle${expanded ? " guardrails-toggle--open" : ""}`}><IconChevronDown size={14} /></span>
       </div>
 
       {expanded && (
@@ -69,10 +71,12 @@ export function GuardrailsStrip({ data }: GuardrailsStripProps) {
 }
 
 function RuleRow({ rule }: { rule: GuardrailRule }) {
-  const icons: Record<string, string> = { PASS: "✓", WARN: "⚠", INFO: "ℹ", BLOCK: "✗" };
+  const IconMap: Record<string, ReactNode> = {
+    PASS: <IconCheck size={12} />, WARN: <IconAlert size={12} />, INFO: <IconInfo size={12} />, BLOCK: <IconX size={12} />
+  };
   return (
     <div className={`guardrail-rule guardrail-rule--${rule.status.toLowerCase()}`} title={rule.message ?? rule.label}>
-      <span className="guardrail-rule__icon">{icons[rule.status]}</span>
+      <span className="guardrail-rule__icon">{IconMap[rule.status]}</span>
       <span className="guardrail-rule__id">{rule.id.split("_")[0]}</span>
       <span className="guardrail-rule__label">{rule.label}</span>
       {rule.message && rule.status !== "PASS" && (

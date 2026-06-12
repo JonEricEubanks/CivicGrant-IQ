@@ -1,7 +1,14 @@
 import type { ReasoningStep } from "../types";
 import "./ReasoningSteps.css";
+import { IconSearch, IconMap, IconDollar, IconAlert, IconPencil, IconBrain, IconCheckCircle, IconLoader } from "./Icons";
 
-const STEP_ICONS = ["🔍", "🗺️", "💰", "⚠️", "✍️"];
+const STEP_ICONS = [
+  <IconSearch size={14} />,
+  <IconMap size={14} />,
+  <IconDollar size={14} />,
+  <IconAlert size={14} />,
+  <IconPencil size={14} />,
+];
 
 interface Props {
   steps: ReasoningStep[];
@@ -20,7 +27,7 @@ export function ReasoningSteps({ steps, isLoading }: Props) {
   return (
     <div className="reasoning-steps">
       <h3 className="reasoning-title">
-        <span>🧠</span> Agent Reasoning
+        <IconBrain size={14} /> Agent Reasoning
       </h3>
       <div className="steps-list">
         {allStepLabels.map((label, i) => {
@@ -36,7 +43,7 @@ export function ReasoningSteps({ steps, isLoading }: Props) {
             <div key={stepNum} className={`step step--${status}`}>
               <div className="step-header">
                 <span className="step-icon">
-                  {status === "completed" ? "✅" : status === "active" ? "⏳" : STEP_ICONS[i]}
+                  {status === "completed" ? <IconCheckCircle size={14} /> : status === "active" ? <IconLoader size={14} /> : STEP_ICONS[i]}
                 </span>
                 <span className="step-label">
                   Step {stepNum}: {label}

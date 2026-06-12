@@ -23,7 +23,7 @@ import {
   IconChart, IconFilePdf, IconFileText, IconGlobe,
   IconLink, IconScales, IconTarget, IconSparkle, IconAward,
   IconPaperclip, IconDatabase, IconPanelRight,
-  IconFabricIQ,
+  IconFabricIQ, IconAlert, IconClock, IconChat,
 } from "./Icons";
 import "./ChatInterface.css";
 
@@ -341,13 +341,13 @@ function renderSectionedMarkdown(text: string): React.ReactNode {
   // Section icon heuristic based on heading text
   const sectionIcon = (heading: string): string => {
     const h = heading.toLowerCase();
-    if (/compet|municip|who else|cities/.test(h)) return "🏙";
+    if (/compet|municip|who else|cities/.test(h)) return "◈";
     if (/strength|advantage|edge|past|track record/.test(h)) return "✓";
     if (/gap|weakness|missing|risk|challenge/.test(h)) return "⚠";
     if (/strategy|next step|action|recommend|improve|boost/.test(h)) return "→";
     if (/comparison|compare|profile|buffalo/.test(h)) return "◈";
     if (/conclusion|summary|overall/.test(h)) return "◎";
-    if (/timeline|deadline|schedule/.test(h)) return "📅";
+    if (/timeline|deadline|schedule/.test(h)) return "◷";
     return "•";
   };
 
@@ -513,6 +513,179 @@ function AnswerPeek({ children, streaming, label }: { children: React.ReactNode;
           <div className="assistant-text">
             {children}
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Grant Detail Card — rich structured card for grant_detail widget type ─────
+function fmtUSDShort(n: number): string {
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
+  return `$${n}`;
+}
+
+function GrantDetailCard({ data }: { data: Record<string, unknown> | null }) {
+  if (!data) return null;
+  const d = data as {
+    name?: string; agency?: string; status?: string; awardAmount?: number; summary?: string;
+    disbursements?: Array<{ label?: string; phase?: string; amount: number; status: string }>;
+    milestones?: Array<{ title: string; status: string; dueDate: string }>;
+    compliance?: Array<{ title: string; status: string; dueDate: string }>;
+    fabricLive?: { pctDisbursed?: number; lifecycleState?: string; keyRisk?: string };
+  };
+
+  const disburse = d.disbursements ?? [];
+  const paid = disburse.filter(x => x.status === "paid").reduce((s, x) => s + x.amount, 0);
+  const total = disburse.reduce((s, x) => s + x.amount, 0) || d.awardAmount || 0;
+  const pctPaid = d.fabricLive?.pctDisbursed ?? (total > 0 ? Math.round((paid / total) * 100) : 0);
+  const openMilestones = (d.milestones ?? []).filter(m => m.status !== "complete");
+  const alerts = (d.compliance ?? []).filter(c => c.status === "overdue" || c.status === "due-soon");
+
+  const statusColor: Record<string, string> = {
+    paid: "#15803d", pending: "#b45309", planned: "#64748b", overdue: "#dc2626", "due-soon": "#d97706",
+  };
+
+  return (
+    <div className="gdc">
+      {/* Header — same navy gradient as GrantMatchWidget */}
+      <div className="gdc-header">
+        <div className="gdc-badge">Grant Status Report</div>
+        <div className="gdc-name">{d.name ?? "Grant Detail"}</div>
+        <div className="gdc-meta">
+          <span>{d.agency}</span>
+          {d.status && (
+            <span className={`gdc-status-badge gdc-status-badge--${d.status.toLowerCase()}`}>
+              {d.status.toUpperCase()}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* KPI row */}
+      <div className="gdc-kpis">
+        {d.awardAmount != null && (
+          <div className="gdc-kpi">
+            <span className="gdc-kpi-val">{fmtUSDShort(d.awardAmount)}</span>
+            <span className="gdc-kpi-lbl">Award</span>
+          </div>
+        )}
+        <div className="gdc-kpi">
+          <span className="gdc-kpi-val" style={{ color: pctPaid >= 50 ? "#15803d" : pctPaid >= 25 ? "#b45309" : "#1d4ed8" }}>{pctPaid}%</span>
+          <span className="gdc-kpi-lbl">Disbursed</span>
+        </div>
+        {d.fabricLive?.lifecycleState && (
+          <div className="gdc-kpi">
+            <span className="gdc-kpi-val gdc-kpi-val--sm">{d.fabricLive.lifecycleState}</span>
+            <span className="gdc-kpi-lbl">Lifecycle</span>
+          </div>
+        )}
+        {openMilestones.length > 0 && (
+          <div className="gdc-kpi">
+            <span className="gdc-kpi-val" style={{ color: "#7c3aed" }}>{openMilestones.length}</span>
+            <span className="gdc-kpi-lbl">Open Milestones</span>
+          </div>
+        )}
+        {alerts.length > 0 && (
+          <div className="gdc-kpi">
+            <span className="gdc-kpi-val" style={{ color: "#dc2626" }}>{alerts.length}</span>
+            <span className="gdc-kpi-lbl">Alerts</span>
+          </div>
+        )}
+      </div>
+
+      {/* Progress bar */}
+      {total > 0 && (
+        <div className="gdc-progress-wrap">
+          <div className="gdc-progress-track">
+            <div className="gdc-progress-fill" style={{ width: `${Math.min(pctPaid, 100)}%` }} />
+          </div>
+          <span className="gdc-progress-label">
+            {fmtUSDShort(paid)} of {fmtUSDShort(total)} disbursed
+          </span>
+        </div>
+      )}
+
+      {/* Fabric IQ live overlay */}
+      {d.fabricLive?.keyRisk && (
+        <div className="gdc-fabric-risk">
+          <span className="gdc-fabric-risk-icon"><IconAlert size={13} /></span>
+          <span className="gdc-fabric-risk-text"><strong>Key Risk (Fabric IQ):</strong> {d.fabricLive.keyRisk}</span>
+        </div>
+      )}
+
+      {/* Disbursements */}
+      {disburse.length > 0 && (
+        <div className="gdc-section">
+          <div className="gdc-section-title">
+            <span className="gdc-section-icon">$</span>DISBURSEMENTS
+          </div>
+          <div className="gdc-dis-list">
+            {disburse.map((dis, i) => (
+              <div key={i} className="gdc-dis-row">
+                <span className="gdc-dis-label">{dis.label ?? dis.phase}</span>
+                <span className="gdc-dis-amount">{fmtUSDShort(dis.amount)}</span>
+                <span className="gdc-dis-status" style={{ color: statusColor[dis.status] ?? "#64748b" }}>
+                  {dis.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Open milestones */}
+      {openMilestones.length > 0 && (
+        <div className="gdc-section">
+          <div className="gdc-section-title">
+            <span className="gdc-section-icon"><IconClock size={13} /></span>OPEN MILESTONES
+          </div>
+          <div className="gdc-milestone-list">
+            {openMilestones.slice(0, 5).map((m, i) => {
+              const due = new Date(m.dueDate);
+              const daysLeft = Math.ceil((due.getTime() - Date.now()) / 86_400_000);
+              const urgent = daysLeft < 30;
+              return (
+                <div key={i} className="gdc-milestone-row">
+                  <span className={`gdc-milestone-dot gdc-milestone-dot--${m.status}`} />
+                  <span className="gdc-milestone-title">{m.title}</span>
+                  <span className="gdc-milestone-meta">
+                    <span className={`gdc-milestone-date${urgent ? " gdc-milestone-date--urgent" : ""}`}>
+                      {due.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      {urgent && <IconAlert size={11} style={{ marginLeft: 3, verticalAlign: "middle" }} color="#dc2626" />}
+                    </span>
+                    <span className={`gdc-milestone-status gdc-milestone-status--${m.status}`}>{m.status}</span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Compliance alerts */}
+      {alerts.length > 0 && (
+        <div className="gdc-section gdc-section--alert">
+          <div className="gdc-section-title">
+            <span className="gdc-section-icon"><IconAlert size={13} /></span>COMPLIANCE ALERTS
+          </div>
+          <div className="gdc-alert-list">
+            {alerts.map((a, i) => (
+              <div key={i} className={`gdc-alert-row gdc-alert-row--${a.status}`}>
+                <span className="gdc-alert-title">{a.title}</span>
+                <span className="gdc-alert-due">due {new Date(a.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                <span className={`gdc-alert-badge gdc-alert-badge--${a.status}`}>{a.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Fabric IQ source tag */}
+      {d.fabricLive && (
+        <div className="gdc-fabric-tag">
+          <span className="gdc-fabric-dot" />Fabric IQ · Live overlay
         </div>
       )}
     </div>
@@ -1388,7 +1561,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
           (ctx.calendarEvents ?? []).forEach((e, i) => signals.push({
             id: `cal-${i}`,
             label: e,
-            desc: "📅 Outlook Calendar",
+            desc: "Outlook Calendar",
             source: "work-iq" as const,
             kind: "calendar" as const,
             content: `Calendar event: ${e}`,
@@ -1396,7 +1569,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
           (ctx.mailSignals ?? []).forEach((e, i) => signals.push({
             id: `mail-${i}`,
             label: e,
-            desc: "✉️ Outlook Mail",
+            desc: "Outlook Mail",
             source: "work-iq" as const,
             kind: "email" as const,
             content: `Email signal: ${e}`,
@@ -1404,7 +1577,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
           (ctx.teamsInsights ?? []).forEach((e, i) => signals.push({
             id: `teams-${i}`,
             label: e.length > 60 ? e.slice(0, 60) + "…" : e,
-            desc: "💬 Microsoft Teams",
+            desc: "Microsoft Teams",
             source: "work-iq" as const,
             kind: "teams" as const,
             content: `Teams message: ${e}`,
@@ -1914,13 +2087,17 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
         },
         onAnswer: ({ threadId: tid, content }) => {
           if (tid) setThreadId(tid);
-          // Replace accumulated chunks with the final clean version
+          // Replace accumulated chunks with the final clean version.
+          // If the final content is empty (widget-only response), keep whatever
+          // was already streamed via onChunk rather than blanking the message.
           const cleanContent = content.replace(/```widget[\s\S]*?```/g, "").trim();
           setMessages((prev) =>
             prev.map((m) => {
               if (m.id !== assistantId) return m;
               // NEVER overwrite m.widget here — onWidget already set it
-              return { ...m, content: cleanContent, streaming: false };
+              // Keep existing streamed content if the final answer would be blank
+              const finalContent = cleanContent || m.content || "";
+              return { ...m, content: finalContent, streaming: false };
             })
           );
         },
@@ -2556,8 +2733,15 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                           </div>
                         )}
 
-                        {/* Any text-only response (no widget) — streaming: peek or card; done: sectioned reply card */}
-                        {msg.content && !msg.widget && (
+                        {/* ── Grant Detail Card — structured view for single_grant_detail queries */}
+                        {msg.widget?.type === "grant_detail" && !msg.streaming && (
+                          <GrantDetailCard data={msg.widget.data} />
+                        )}
+
+                        {/* Any text-only response (no widget, OR widget has no inline renderer) */}
+                        {/* grant_detail uses GrantDetailCard above so exclude it here when not streaming */}
+                        {/* grant_match uses GrantMatchWidget above which already shows full narrative */}
+                        {msg.content && (!msg.widget || (msg.widget.type === "grant_detail" && msg.streaming) || msg.widget.type === "portfolio_health" || msg.widget.type === "compliance_board") && (
                           msg.streaming ? (
                             msg.isFollowUp ? (
                               /* Follow-up streaming → card with live tag + plain markdown */
@@ -2650,11 +2834,12 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
 
               const renderItem = (doc: AttachDoc) => {
                 const isSelected = attachedDocs.some((d) => d.id === doc.id);
-                const icon = doc.kind === "calendar" ? "📅"
-                  : doc.kind === "email" ? "✉️"
-                  : doc.kind === "teams" ? "💬"
-                  : doc.source === "foundry-iq" ? null
-                  : null;
+                const ItemIcon = doc.kind === "calendar" ? IconClock
+                  : doc.kind === "email" ? IconFileText
+                  : doc.kind === "teams" ? IconChat
+                  : doc.source === "foundry-iq" ? IconDatabase
+                  : doc.source === "fabric-iq" ? IconFabricIQ
+                  : IconFileText;
                 return (
                   <button
                     key={doc.id}
@@ -2662,14 +2847,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                     onClick={() => toggleAttachment(doc)}
                   >
                     <span className="picker-item-icon">
-                      {icon
-                        ? <span className="picker-item-emoji">{icon}</span>
-                        : doc.source === "foundry-iq"
-                          ? <IconDatabase size={15} />
-                          : doc.source === "fabric-iq"
-                          ? <IconFabricIQ size={15} />
-                          : <IconFileText size={15} />
-                      }
+                      <ItemIcon size={15} />
                     </span>
                     <span className="picker-item-body">
                       <span className="picker-item-label">{doc.label}</span>

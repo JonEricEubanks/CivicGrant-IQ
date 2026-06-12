@@ -195,6 +195,7 @@ export function detectQueryIntent(query: string): {
   description: string;
   sources: string[];
   widgetType: string;
+  grantHint?: string;
 } {
   // ── HIGHEST PRIORITY: Explicit grant analysis requests ─────────────────────
   // Must run before all other checks. Catches queries like:
@@ -230,6 +231,21 @@ export function detectQueryIntent(query: string): {
     };
   }
 
+  // Past application retrospective / lessons learned — must run BEFORE portfolio_health
+  // Catches: "what was the outcome of our BRIC application", "what did we learn",
+  // "apply those lessons to the next cycle", "why was our RAISE denied", "how did it go"
+  const isPastAppRetrospective =
+    /\b(outcome|what\s+did\s+we\s+learn|lessons?\s+learned|lessons?\s+from|apply\s+(those\s+)?lessons|next\s+cycle|why\s+(was|were|did)|how\s+did\s+(our|it|the)\b|rejected|denied|not\s+funded|what\s+happened|past\s+application|previous\s+application|last\s+(year|cycle|round)|historical)\b/i.test(query) &&
+    /\b(bric|raise|fma|smc|northwood|stormwater|aptakisic|application|grant|cycle)\b/i.test(query);
+  if (isPastAppRetrospective) {
+    return {
+      type: "general_grant_analysis",
+      description: "Analyzing past application outcomes and extracting lessons learned from Foundry IQ KB",
+      sources: ["foundry_iq", "portfolio", "work_iq"],
+      widgetType: "grant_match",
+    };
+  }
+
   // Prioritization queries — use \bprioritiz\b to avoid false-matching "priorities"
   // (e.g. "flood mitigation priorities" should NOT trigger this branch)
   if (/\btop\s+[345]\b|\bprioritiz\w*|\brank\b.*\bgrant|\bgrant\b.*\brank|\border.*\bgrant\b|\bwhich.*grant.*first\b|\bmost\s+urgent\b|\bhighest\s+priority\b|\bthis\s+quarter\b|\bthis\s+month\b/i.test(query)) {
@@ -239,6 +255,24 @@ export function detectQueryIntent(query: string): {
       sources: ["portfolio", "fabric_iq", "work_iq"],
       widgetType: "grant_pipeline",
     };
+  }
+
+  // Single grant detail queries — check BEFORE portfolio_health to avoid
+  // "disbursement status on the northwood grant" being swallowed by \bdisburs
+  const NAMED_GRANTS = /\b(northwood|bric|raise|smc|aptakisic|buffalo\s*creek|buffalo\s*grove|srf|cdbg|fema|hud|dot|epa|usda)\b/i;
+  if (
+    NAMED_GRANTS.test(query) &&
+    /\b(status|disburs|detail|tell|about|info|milestone|compliance|health|progress|update|spent|paid|balance|lifecycle|show|view|what.*happen|how.*going)\b/i.test(query)
+  ) {
+    const grantMatch = query.match(NAMED_GRANTS);
+    const grantHint = grantMatch ? grantMatch[1] : "grant";
+    return {
+      type: "single_grant_detail",
+      description: `Displaying detailed view of ${grantHint} grant including status, milestones, and disbursements`,
+      sources: ["portfolio", "fabric_iq"],
+      widgetType: "grant_detail",
+      grantHint: grantHint.toLowerCase(),
+    } as ReturnType<typeof detectQueryIntent>;
   }
 
   // Portfolio health/overview queries
@@ -261,7 +295,7 @@ export function detectQueryIntent(query: string): {
     };
   }
 
-  // Single grant detail queries
+  // Fallback single grant detail (tell me about, status of, etc.)
   if (/(?:the |a )?(northwood|bric|raise|smc|srf|cdbg|fema|hud|dot|epa|usda).*grant\b|\btell\s+me\s+about\b|\bstatus\s+of\b|\bdetails.*grant\b|\bwhat.*grant\b|\bgrant.*info\b/i.test(query)) {
     const grantMatch = query.match(/\b(northwood|bric|raise|smc|srf|cdbg|fema|hud|dot|epa|usda)\b/i);
     const grantHint = grantMatch ? grantMatch[1] : "grant";
@@ -270,7 +304,8 @@ export function detectQueryIntent(query: string): {
       description: `Displaying detailed view of ${grantHint} grant including status, milestones, compliance`,
       sources: ["portfolio", "fabric_iq"],
       widgetType: "grant_detail",
-    };
+      grantHint: grantHint.toLowerCase(),
+    } as ReturnType<typeof detectQueryIntent>;
   }
 
   // Financial capacity / cost-share queries
@@ -296,7 +331,7 @@ export function detectQueryIntent(query: string): {
  * Builds an appropriate widget based on the detected intent and source data.
  */
 export async function buildWidgetForIntent(
-  intent: { type: string; widgetType: string },
+  intent: { type: string; widgetType: string; grantHint?: string },
   sources: Record<string, unknown>
 ): Promise<{ type: string; data: unknown }> {
   const fabricIq = sources.fabricIq as any;
@@ -403,8 +438,25 @@ export async function buildWidgetForIntent(
     }
 
     case "grant_detail": {
-      // Single grant detailed view
-      const grant = portfolio?.grants?.[0];
+      // Find the specific named grant from the query hint, fall back to first
+      const hint = intent.grantHint?.toLowerCase() ?? "";
+      const allGrants: any[] = portfolio?.grants ?? [];
+      const grant =
+        (hint
+          ? allGrants.find((g: any) =>
+              g.name.toLowerCase().includes(hint) ||
+              g.id?.toLowerCase().includes(hint) ||
+              g.summary?.toLowerCase().includes(hint)
+            )
+          : null) ?? allGrants[0];
+
+      // Merge live Fabric IQ data if available
+      const fabricRow = fabricIq?.grantRows?.find(
+        (r: GrantTableRow) =>
+          r.grant_id === grant?.id ||
+          (typeof r.grant_name === "string" && r.grant_name?.toLowerCase().includes(hint))
+      );
+
       return {
         type: "grant_detail",
         data: grant
@@ -420,6 +472,14 @@ export async function buildWidgetForIntent(
               milestones: grant.milestones,
               compliance: grant.compliance,
               disbursements: grant.disbursements,
+              // Fabric IQ live overlay
+              fabricLive: fabricRow
+                ? {
+                    pctDisbursed: fabricRow.pct_disbursed,
+                    lifecycleState: fabricRow.lifecycle_state,
+                    keyRisk: fabricRow.key_risk,
+                  }
+                : null,
             }
           : null,
       };
@@ -531,6 +591,64 @@ export function generateAnswerForIntent(
         `2. ${data.overdueTasks > 0 ? "Priority: resolve " + data.overdueTasks + " overdue compliance items" : "Compliance on track"}`,
         `3. Review pending applications for follow-up actions`,
       ].join("\n");
+    }
+
+    case "single_grant_detail": {
+      const d = (widget.data as any);
+      if (!d) return `No grant found matching that name in the portfolio.`;
+      const lines: string[] = [
+        `## ${d.name}`,
+        ``,
+        `**Agency:** ${d.agency} | **Status:** ${d.status?.toUpperCase()} | **Award:** ${formatUSD(d.awardAmount)}`,
+        ``,
+        d.summary ?? "",
+        ``,
+      ];
+
+      // Fabric IQ live overlay
+      if (d.fabricLive) {
+        lines.push(`### Live Status (Fabric IQ)`);
+        lines.push(`- **Disbursed:** ${d.fabricLive.pctDisbursed ?? "—"}%`);
+        lines.push(`- **Lifecycle State:** ${d.fabricLive.lifecycleState ?? "—"}`);
+        if (d.fabricLive.keyRisk) lines.push(`- ⚠️ **Key Risk:** ${d.fabricLive.keyRisk}`);
+        lines.push(``);
+      }
+
+      // Disbursements from portfolio
+      if (d.disbursements?.length) {
+        lines.push(`### Disbursements`);
+        for (const dis of d.disbursements) {
+          lines.push(`- **${dis.label ?? dis.phase}** — ${formatUSD(dis.amount)} (${dis.status})`);
+        }
+        const paid = d.disbursements.filter((x: any) => x.status === "paid").reduce((s: number, x: any) => s + x.amount, 0);
+        const total = d.disbursements.reduce((s: number, x: any) => s + x.amount, 0);
+        lines.push(`- **Total paid:** ${formatUSD(paid)} of ${formatUSD(total)} (${total > 0 ? Math.round((paid / total) * 100) : 0}%)`);
+        lines.push(``);
+      }
+
+      // Milestones
+      if (d.milestones?.length) {
+        const open = d.milestones.filter((m: any) => m.status !== "complete");
+        if (open.length) {
+          lines.push(`### Open Milestones`);
+          for (const m of open.slice(0, 4)) {
+            lines.push(`- **${m.title}** — ${m.status} (due ${new Date(m.dueDate).toLocaleDateString()})`);
+          }
+          lines.push(``);
+        }
+      }
+
+      // Compliance
+      const alerts = (d.compliance ?? []).filter((c: any) => c.status === "overdue" || c.status === "due-soon");
+      if (alerts.length) {
+        lines.push(`### Compliance Alerts`);
+        for (const a of alerts) {
+          lines.push(`- ⚠️ **${a.title}** — ${a.status} (due ${new Date(a.dueDate).toLocaleDateString()})`);
+        }
+        lines.push(``);
+      }
+
+      return lines.join("\n");
     }
 
     default:

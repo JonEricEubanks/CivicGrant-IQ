@@ -70,8 +70,13 @@
 
 .guardrails-toggle {
   margin-left: auto;
-  font-size: 10px;
+  display: flex;
+  align-items: center;
   color: #6b7280;
+  transition: transform 0.15s ease;
+}
+.guardrails-toggle--open {
+  transform: rotate(180deg);
 }
 
 /* Body */

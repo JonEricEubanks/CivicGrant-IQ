@@ -2999,6 +2999,359 @@
   overflow: hidden;
 }
 
+/* ─── Grant Detail Card — matches GrantMatchWidget / GrantPipelineWidget design ── */
+.gdc {
+  background: #ffffff;
+  border: 1px solid #e8eef7;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 0.6px 1.8px rgba(15, 23, 42, 0.09),
+    0 3.2px 7.2px rgba(15, 23, 42, 0.12),
+    0 24px 48px rgba(37, 99, 235, 0.06);
+  animation: widgetSlideIn 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+
+/* Header — same navy gradient as GrantMatchWidget */
+.gdc-header {
+  position: relative;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(26,111,186,0.55) 0%, transparent 55%),
+    radial-gradient(120% 140% at 100% 0%, rgba(240,180,42,0.25) 0%, transparent 50%),
+    linear-gradient(120deg, #0e3a6e 0%, #0a2f5a 55%, #1a6fba 100%);
+  padding: 1.25rem 1.5rem 1.15rem;
+  overflow: hidden;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+.gdc-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 16px 16px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.gdc-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #c7d2fe;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  padding: 0.22rem 0.65rem;
+  margin-bottom: 0.55rem;
+}
+
+.gdc-name {
+  position: relative;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 0.25rem;
+}
+
+.gdc-meta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #c8dff5;
+  font-size: 0.79rem;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.gdc-status-badge {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 100px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.gdc-status-badge--active  { background: rgba(34,197,94,0.2);  color: #86efac; }
+.gdc-status-badge--applied { background: rgba(99,179,237,0.2); color: #93c5fd; }
+.gdc-status-badge--closed  { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+.gdc-status-badge--pending { background: rgba(251,191,36,0.2); color: #fde68a; }
+
+/* KPI strip — same as hero-stats gradient */
+.gdc-kpis {
+  display: flex;
+  gap: 0;
+  background: linear-gradient(180deg, #fbfcfe 0%, #f4f7fc 100%);
+  border-bottom: 1px solid #eef2f8;
+}
+
+.gdc-kpi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.5rem;
+  position: relative;
+  text-align: center;
+  transition: background 0.2s;
+}
+.gdc-kpi:hover { background: rgba(37, 99, 235, 0.025); }
+.gdc-kpi + .gdc-kpi::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, #e2e8f0 30%, #e2e8f0 70%, transparent);
+}
+
+.gdc-kpi-val {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.gdc-kpi-val--sm {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.gdc-kpi-lbl {
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* Progress bar */
+.gdc-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #eef2f8;
+}
+
+.gdc-progress-track {
+  flex: 1;
+  height: 5px;
+  background: #e2e8f0;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.gdc-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gdc-progress-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* Fabric IQ risk banner */
+.gdc-fabric-risk {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: #fff7ed;
+  border-bottom: 1px solid #fed7aa;
+  font-size: 0.77rem;
+  color: #7c2d12;
+  line-height: 1.5;
+}
+.gdc-fabric-risk-icon { color: #ea580c; flex-shrink: 0; margin-top: 1px; }
+
+/* Section rows */
+.gdc-section {
+  padding: 0.75rem 1.25rem 0.8rem;
+  border-bottom: 1px solid #eef2f8;
+}
+.gdc-section:last-of-type { border-bottom: none; }
+.gdc-section--alert { background: #fefce8; }
+
+.gdc-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #94a3b8;
+  margin-bottom: 0.55rem;
+}
+.gdc-section-icon { font-style: normal; color: #cbd5e1; }
+
+/* Disbursements */
+.gdc-dis-list { display: flex; flex-direction: column; }
+
+.gdc-dis-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  transition: background 0.15s;
+}
+.gdc-dis-row:hover { background: #f8fafc; }
+
+.gdc-dis-label {
+  flex: 1;
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gdc-dis-amount {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.gdc-dis-status {
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-width: 52px;
+  text-align: right;
+}
+
+/* Milestones */
+.gdc-milestone-list { display: flex; flex-direction: column; gap: 1px; }
+
+.gdc-milestone-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.gdc-milestone-row:hover {
+  background: #f8fafc;
+  box-shadow: inset 3px 0 0 #1a6fba;
+}
+
+.gdc-milestone-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.gdc-milestone-dot--complete    { background: #22c55e; }
+.gdc-milestone-dot--in-progress { background: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+.gdc-milestone-dot--upcoming    { background: #fff; border: 2px solid #94a3b8; }
+.gdc-milestone-dot--pending     { background: #fbbf24; }
+.gdc-milestone-dot--overdue     { background: #ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.2); }
+
+.gdc-milestone-title {
+  flex: 1;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.gdc-milestone-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.gdc-milestone-date { font-size: 0.7rem; color: #64748b; }
+.gdc-milestone-date--urgent { color: #dc2626; font-weight: 600; }
+
+.gdc-milestone-status {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.gdc-milestone-status--in-progress { background: #dbeafe; color: #1d4ed8; }
+.gdc-milestone-status--upcoming    { background: #f1f5f9; color: #475569; }
+.gdc-milestone-status--pending     { background: #fef3c7; color: #b45309; }
+.gdc-milestone-status--overdue     { background: #fee2e2; color: #dc2626; }
+
+/* Compliance alerts */
+.gdc-alert-list { display: flex; flex-direction: column; gap: 3px; }
+
+.gdc-alert-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+.gdc-alert-row--overdue  { background: #fef2f2; }
+.gdc-alert-row--due-soon { background: #fffbeb; }
+
+.gdc-alert-title { flex: 1; color: #1e293b; font-weight: 500; }
+.gdc-alert-due   { font-size: 0.7rem; color: #64748b; white-space: nowrap; }
+
+.gdc-alert-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+.gdc-alert-badge--overdue  { background: #fee2e2; color: #dc2626; }
+.gdc-alert-badge--due-soon { background: #fef3c7; color: #b45309; }
+
+/* Fabric IQ footer — same green-tinted style as pipeline footer */
+.gdc-fabric-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1.25rem;
+  background: #f0fdf4;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #15803d;
+  border-top: 1px solid #dcfce7;
+}
+.gdc-fabric-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 2s infinite;
+}
+
 .tool-call-chip__icon {
   font-size: 11px;
   flex-shrink: 0;

@@ -252,12 +252,12 @@ async function fetchGrantTeamsMessages(): Promise<string[]> {
       const name = msg.from?.emailAddress?.name ?? "Teams";
       const subj = msg.subject ?? "";
       const preview = (msg.bodyPreview ?? "").replace(/\s+/g, " ").trim();
-      // Include Teams-originated messages (activity digests, @mentions, channel emails)
+      // Include only Teams-originated messages (activity digests, @mentions, channel emails)
       const isTeams = sender.includes("teams.microsoft") ||
-        sender.includes("noreply@microsoft") ||
+        sender.includes("ema.teams.microsoft") ||
         subj.toLowerCase().includes("microsoft teams") ||
-        subj.toLowerCase().includes("missed activity") ||
-        subj.toLowerCase().includes("channel");
+        subj.toLowerCase().includes("missed activity in") ||
+        (subj.toLowerCase().includes("channel") && sender.toLowerCase().includes("microsoft"));
       if (!isTeams) continue;
       const date = msg.receivedDateTime
         ? new Date(msg.receivedDateTime).toLocaleDateString("en-US", { month: "short", day: "numeric" })

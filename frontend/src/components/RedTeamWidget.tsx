@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { RedTeamResult, ReviewCriterion } from "../types";
 import "./RedTeamWidget.css";
+import { IconScales, IconAlert, IconCheck, IconX, IconTriangleAlert } from "./Icons";
 
 interface Props {
   data: RedTeamResult;
@@ -32,12 +33,12 @@ function ScoreBar({ score, delay }: { score: number; delay: number }) {
 }
 
 function CriterionRow({ c, index }: { c: ReviewCriterion; index: number }) {
-  const icons = { pass: "✓", warn: "△", fail: "✕" } as const;
   const colors = { pass: "#16a34a", warn: "#c27a0e", fail: "#dc2626" };
+  const StatusIcon = c.status === "pass" ? IconCheck : c.status === "warn" ? IconTriangleAlert : IconX;
   return (
     <div className={`rt-criterion rt-criterion--${c.status}`}>
       <div className="rt-criterion-header">
-        <span className="rt-criterion-icon" style={{ color: colors[c.status] }}>{icons[c.status]}</span>
+        <span className="rt-criterion-icon" style={{ color: colors[c.status] }}><StatusIcon size={14} /></span>
         <span className="rt-criterion-name">{c.name}</span>
         <span className="rt-criterion-score" style={{ color: colors[c.status] }}>{c.score}/5</span>
       </div>
@@ -93,12 +94,12 @@ export function RedTeamWidget({ data, isStreaming = false }: Props) {
       <div className="redteam-widget">
         <div className="rt-header">
           <div className="rt-badge">
-            <span className="rt-badge-icon">⚖</span>
+            <span className="rt-badge-icon"><IconScales size={13} /></span>
             Red Team Review
           </div>
         </div>
         <div style={{ padding: "24px 16px", textAlign: "center", color: "#6b7280" }}>
-          <div style={{ fontSize: "2rem", marginBottom: "8px" }}>⚠️</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}><IconAlert size={28} color="#f59e0b" /></div>
           <strong style={{ display: "block", color: "#374151", marginBottom: "4px" }}>Red Team Agent Unavailable</strong>
           <span style={{ fontSize: "0.85rem" }}>LLM service unreachable — no fabricated review shown.<br />Re-run when service recovers.</span>
         </div>
@@ -117,7 +118,7 @@ export function RedTeamWidget({ data, isStreaming = false }: Props) {
     <div className={`redteam-widget${isStreaming ? " redteam-widget--loading" : ""}`}>
       <div className="rt-header">
         <div className="rt-badge">
-          <span className="rt-badge-icon">⚖</span>
+          <span className="rt-badge-icon"><IconScales size={13} /></span>
           Red Team Review
         </div>
         <div className="rt-header-right">
