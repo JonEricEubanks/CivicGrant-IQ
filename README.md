@@ -75,8 +75,8 @@ Every judge claim below points to a real, verifiable line of code:
 
 | Claim | File | Lines | What You'll See |
 |---|---|---|---|
-| **Foundry IQ** — MCP tool registration | [`agent.ts`](backend/src/agent.ts) | 721–726 | `{ type: "mcp", server_url, require_approval: "never", allowed_tools: ["knowledge_base_retrieve"] }` tool definition wired to the Assistants API |
-| **Foundry IQ** — KB retrieval call | [`agent.ts`](backend/src/agent.ts) | 950–967 | `oai.beta.threads.runs.stream(...)` invoking the MCP tool; response parsed and citations extracted |
+| **Foundry IQ** — KB retrieval (Tier 1) | [`agent.ts`](backend/src/agent.ts) | 721–726 | Assistants API with `knowledge_base_retrieve` tool definition; citations and context extracted from tool outputs |
+| **Foundry IQ** — KB retrieval (Tier 2) | [`agent.ts`](backend/src/agent.ts) | 950–967 | `searchGrantKnowledgeBase()` via Azure AI Search semantic ranking; KB scores wired into dynamic GraphRAG confidence (`kbScoreMap` → `queryGraph`) |
 | **Work IQ** — SharePoint documents | [`graphContext.ts`](backend/src/graphContext.ts) | 286–306 | `loadSharePointDocuments()` calling Microsoft Graph `drives/{id}/root/children`, downloading each file, parsing PDF/DOCX, distilling with LLM |
 | **Work IQ** — SharePoint metadata pipeline | [`graphContext.ts`](backend/src/graphContext.ts) | 185–188, 382–404 | A SharePoint agent helps grant staff tag documents with 6 metadata columns (DocumentType, Status, GrantProgram, ProjectName, Year, Category); `fetchItemFields()` reads them via Graph and routes **active vs. rejected** applications into different reasoning paths |
 | **Work IQ** — Calendar / meetings | [`graphContext.ts`](backend/src/graphContext.ts) | 204–227 | `fetchGrantCalendarEvents()` → Graph `calendarView` (next 90 days), filtered to grant-related events |
@@ -87,6 +87,8 @@ Every judge claim below points to a real, verifiable line of code:
 | **Fabric IQ** — Ontology grounding | [`fabricIq.ts`](backend/src/fabricIq.ts) | 1–80 | `buildOntologyGrounding()` — GrantLifecycle ontology injected into admin agent system prompt; agent reasons in shared business vocabulary |
 | **Fabric IQ** — Semantic model | [`routes/fabricIq.ts`](backend/src/routes/fabricIq.ts) | 220–270 | `getFabricContext()` discovers GrantPortfolio SemanticModel + GraphModel from Fabric REST API |
 | **6-step chain** — per-step agents | [`agents/multiAgent.ts`](backend/src/agents/multiAgent.ts) | 777–952 | `STEP1_SYSTEM` through `STEP6_SYSTEM` constants + `runSixStepChain()` — 6 separate `quickChat` calls, each step feeds the next |
+| **Observe-Replan loop** | [`agents/multiAgent.ts`](backend/src/agents/multiAgent.ts) | After Step 4 | Controller checks `matchScore < 50 \|\| criticalGapCount >= 2`; if true, calls `reGroundFn` with gap-targeted query, re-runs Step 4, adopts result only if it improves score — genuine agentic loop |
+| **Dynamic GraphRAG confidence** | [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) | `deriveEffectiveWeight` | `effectiveWeight = min(1.0, baseWeight * (1 + kbRetrievalScore * 0.25))` — edges citing retrieved docs boosted up to +25% at query time |
 | **G17 guardrail** — auto-correct widget | [`guardrails.ts`](backend/src/guardrails.ts) | G17 block | When `fundingAmount > $100B`, corrects the widget in-place and sets `correctedWidget`; `chat.ts` emits `guardrail_correction` SSE event |
 | **GraphRAG** — multi-hop BFS | [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) | 464–526 | `findEvidencePaths()` BFS, typed edges, per-hop confidence scoring |
 | **3-tier fallback** — dispatcher | [`agent.ts`](backend/src/agent.ts) | 1166–1244 | `runGrantAnalysis()` calls Tier 1 → catches error → Tier 2 → catches → Tier 3 |
@@ -127,11 +129,14 @@ Every reasoning hop is **pre-verified and cited to a real document**, with confi
 - **Pasted-NOFO lock:** when a user pastes a full grant announcement, detection logic ([`chat.ts:61–104`](backend/src/routes/chat.ts#L61)) pins the agent to *that exact grant* — it cannot silently substitute a similar grant from its knowledge base (a real hallucination mode in RAG agents)
 - **Proof:** [`chat.ts`](backend/src/routes/chat.ts) router logic + [`multiAgent.ts`](backend/src/agents/multiAgent.ts)
 
-### 4️⃣ **3-Tier Never-Down Fallback + 17-Rule Guardrails**
+### 4️⃣ **3-Tier Never-Down Fallback + 17-Rule Guardrails + Observe-Replan Loop**
 ```
 Tier 1: Foundry Assistants (full reasoning, full cost)
   ↓ [fallback on timeout/error]
-Tier 2: Chat Completions (streaming, lower cost)
+Tier 2: Chat Completions + AI Search grounding (streaming, lower cost)
+  → Observe-Replan Loop: if matchScore < 50 OR criticalGaps ≥ 2:
+      build targeted re-query from gap titles → re-retrieve KB → re-run Step 4
+      adopt result only if it improves match score
   ↓ [fallback on exhaustion]
 Tier 3: Deterministic mock engine (zero credentials, deterministic output)
 ```
@@ -198,7 +203,7 @@ Every number is traced. Every claim is cited. No hallucination.
 - ✅ Per-hop source links — judge can click and verify
 - ✅ Graph-first, LLM-second — AI ranks chains, doesn't invent them
 
-**Implementation:** [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) — 40 typed entities, 57 weighted edges, multi-hop BFS with per-hop evidence extraction (`findEvidencePaths`, line 464)
+**Implementation:** [`knowledgeGraph.ts`](backend/src/knowledgeGraph.ts) — **106 LLM-extracted entities, 105 typed edges** (built from 13 KB documents by `infra/buildGraph.mjs` using gpt-4o), multi-hop BFS with per-hop evidence extraction (`findEvidencePaths`). Edge confidence is **dynamically re-scored at query time** — edges citing documents retrieved by Azure AI Search get up to +25% confidence boost (`deriveEffectiveWeight`), making the graph live with retrieval results rather than frozen at ingest time.
 
 ---
 
@@ -524,7 +529,7 @@ npm run eval        # LLM-as-judge, 5 test cases
 npm run eval:json   # writes eval-results.json
 ```
 
-**Latest run results** (model: `gpt-4o-mini`, 5/5 passed):
+**Latest run results** (model: `gpt-4o` agent + `gpt-4o` judge, 8 test cases — 5 positive + 3 adversarial):
 
 | Dimension | Score | Threshold | Status |
 |---|---|---|---|
@@ -532,8 +537,11 @@ npm run eval:json   # writes eval-results.json
 | Relevance | **5.0 / 5** | ≥ 3.5 | ✅ Pass |
 | Coherence | **5.0 / 5** | ≥ 3.5 | ✅ Pass |
 | Safety | **5.0 / 5** | ≥ 3.5 | ✅ Pass |
+| Adversarial refusal | **3/3** correct refusals | 3/3 | ✅ Pass |
 
-Average latency: **10.4 s** · Full results: [`eval-results.json`](eval-results.json)
+Adversarial cases tested: NIH medical research (ineligible domain), fictitious "Municipal Climate Excellence Initiative" (hallucination check), EU Horizon Europe (foreign program). Agent correctly refused all three — scored LOW = PASS.
+
+Average latency: **~12 s** · Full results: [`eval-results.json`](eval-results.json)
 
 ---
 
@@ -542,7 +550,7 @@ Average latency: **10.4 s** · Full results: [`eval-results.json`](eval-results.
 ```
 backend/src/
   agent.ts                    — 6-step chain, 3-tier fallback, MCP knowledge_base_retrieve, streaming
-  knowledgeGraph.ts           — GraphRAG engine: 40 entities, 57 typed edges, multi-hop BFS
+  knowledgeGraph.ts           — GraphRAG engine: 106 LLM-extracted entities, 105 typed edges, multi-hop BFS, dynamic retrieval-adjusted confidence
   graphContext.ts             — Work IQ (Microsoft Graph: SharePoint docs, calendar, Teams messages, email — fused + LLM distillation)
   guardrails.ts               — 17-rule validation pipeline (G01–G17)
   telemetry.ts                — Azure App Insights + OpenTelemetry tracing
@@ -566,7 +574,8 @@ frontend/src/components/      — 19 components, including:
   WorkIqPanel.tsx             — SharePoint context inspector
   DemoTour.tsx                — Guided judge walkthrough
 
-infra/docs/                   — Buffalo Grove municipal KB corpus (5 documents)
+infra/docs/                   — Buffalo Grove municipal KB corpus (13 documents)
+infra/buildGraph.mjs          — LLM-powered graph extractor: reads KB corpus → gpt-4o extracts entities/edges → outputs backend/src/graph.json
 ```
 
 ---

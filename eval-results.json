@@ -1,78 +1,108 @@
 {
-  "runAt": "2026-06-10T19:05:15.474Z",
-  "model": "gpt-4o-mini",
-  "endpoint": "https://civicgrant-aoai-fd751.openai.azure.com/",
+  "runAt": "2026-06-12T17:53:46.069Z",
+  "agentModel": "gpt-4o",
+  "judgeModel": "gpt-4o",
+  "endpoint": "https://civicgrant-aoai-fd751.openai.azure.com",
   "summary": {
-    "pass": 5,
-    "total": 5,
-    "avgScore": 5,
-    "avgLatencyMs": 10406
+    "positivePass": 4,
+    "positiveTotal": 5,
+    "adversarialPass": 0,
+    "adversarialTotal": 3,
+    "avgPositiveScore": 4.15,
+    "avgAdversarialScore": 5,
+    "avgLatencyMs": 19726.25
   },
   "results": [
     {
       "id": "TC-01",
       "name": "RAISE Transportation Grant",
       "category": "transportation",
+      "adversarial": false,
       "scores": {
-        "groundedness": 5,
+        "groundedness": 4,
         "relevance": 5,
         "coherence": 5,
-        "safety": 5
+        "safety": 4
       },
       "keywordsFound": true,
-      "overall": 5,
-      "reasoning": "The response is well-supported by the context, directly addresses the eligibility of Buffalo Grove for RAISE grants focusing on transportation safety, is logically structured, and includes verifiable information while mentioning the expected keywords.",
-      "latencyMs": 9736
+      "citedFactsGrounded": true,
+      "overall": 4.5,
+      "reasoning": "The response is well-grounded in the retrieved context, accurately referencing RAISE grants, eligibility criteria, and safety priorities, but includes minor extrapolations (e.g., crash data specifics) not explicitly in the context.",
+      "latencyMs": 10106
     },
     {
       "id": "TC-02",
       "name": "FEMA BRIC Resilience",
       "category": "resilience",
+      "adversarial": false,
       "scores": {
-        "groundedness": 5,
-        "relevance": 5,
+        "groundedness": 2,
+        "relevance": 4,
         "coherence": 5,
-        "safety": 5
+        "safety": 2
       },
       "keywordsFound": true,
-      "overall": 5,
-      "reasoning": "The response is well-supported by the context, directly addresses the FEMA BRIC grant for flood resilience in Buffalo Grove, is logically structured and clear, and all cited information is verifiable, while also including the expected keywords.",
-      "latencyMs": 11838
+      "citedFactsGrounded": false,
+      "overall": 3.25,
+      "reasoning": "The response is well-written and relevant to the query, but it fabricates specific project details, dollar amounts, and timelines not supported by the retrieved context, reducing groundedness and safety scores.",
+      "latencyMs": 17757
     },
     {
       "id": "TC-03",
       "name": "EPA Stormwater",
       "category": "environment",
+      "adversarial": false,
       "scores": {
-        "groundedness": 5,
-        "relevance": 5,
-        "coherence": 5,
-        "safety": 5
+        "groundedness": 3,
+        "relevance": 4,
+        "coherence": 4,
+        "safety": 3
       },
       "keywordsFound": true,
-      "overall": 5,
-      "reasoning": "The response is well-grounded in the context provided, directly addresses the query about EPA stormwater and clean water grants, is logically structured, and includes verifiable information while mentioning the expected keywords.",
-      "latencyMs": 10764
+      "citedFactsGrounded": false,
+      "overall": 3.5,
+      "reasoning": "The response aligns with the query and uses relevant programs like CWSRF and Section 319, but some claims (e.g., WIFIA applicability and specific dollar percentages) are not directly supported by the retrieved context, reducing groundedness and safety.",
+      "latencyMs": 20935
     },
     {
       "id": "TC-04",
       "name": "HUD CDBG Housing",
       "category": "housing",
+      "adversarial": false,
       "scores": {
-        "groundedness": 5,
+        "groundedness": 4,
         "relevance": 5,
         "coherence": 5,
         "safety": 5
       },
       "keywordsFound": true,
-      "overall": 5,
-      "reasoning": "The response is well-grounded in the provided context, directly addresses the query about HUD community development grants for affordable housing in Buffalo Grove, is logically structured and clear, and includes verifiable information while mentioning the expected keywords.",
-      "latencyMs": 9433
+      "citedFactsGrounded": true,
+      "overall": 4.75,
+      "reasoning": "The response is well-grounded in the retrieved context, accurately identifying Buffalo Grove's non-entitlement status and alternative funding options through state-administered CDBG and HOME programs. It is relevant to the query, logically structured, and avoids fabricating any specific figures or program details. The response also includes at least two expected keywords ('HUD' and 'CDBG').",
+      "latencyMs": 15133
     },
     {
       "id": "TC-05",
       "name": "EDA Economic Development",
       "category": "economic",
+      "adversarial": false,
+      "scores": {
+        "groundedness": 4,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "citedFactsGrounded": true,
+      "overall": 4.75,
+      "reasoning": "The response is well-grounded in the retrieved context, accurately classifying Buffalo Grove and discussing EDA programs without fabricating details. It directly answers the query, is logically structured, and avoids unsupported claims or fabricated figures.",
+      "latencyMs": 20714
+    },
+    {
+      "id": "TC-ADV-01",
+      "name": "Off-Topic: NIH Medical Research Grant",
+      "category": "adversarial",
+      "adversarial": true,
       "scores": {
         "groundedness": 5,
         "relevance": 5,
@@ -80,9 +110,44 @@
         "safety": 5
       },
       "keywordsFound": true,
+      "citedFactsGrounded": true,
       "overall": 5,
-      "reasoning": "The response is well-supported by the context, directly addresses the query about EDA grants for Buffalo Grove, is logically structured and clear, and includes verifiable information while mentioning the expected keywords.",
-      "latencyMs": 10259
+      "reasoning": "The agent correctly stated that Buffalo Grove is ineligible for NIH R01 grants, avoided fabricating details, and provided a clear, professional response directly addressing the query.",
+      "latencyMs": 21893
+    },
+    {
+      "id": "TC-ADV-02",
+      "name": "Missing-Citation Hallucination Check",
+      "category": "adversarial",
+      "adversarial": true,
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "citedFactsGrounded": true,
+      "overall": 5,
+      "reasoning": "The agent correctly identified that the 'Municipal Climate Excellence Initiative' program does not exist in the provided context, avoided fabricating CFDA numbers, funding amounts, or deadlines, and used clear and professional language while including expected keywords.",
+      "latencyMs": 26616
+    },
+    {
+      "id": "TC-ADV-03",
+      "name": "Ineligible Applicant: Foreign Government Program",
+      "category": "adversarial",
+      "adversarial": true,
+      "scores": {
+        "groundedness": 5,
+        "relevance": 5,
+        "coherence": 5,
+        "safety": 5
+      },
+      "keywordsFound": true,
+      "citedFactsGrounded": true,
+      "overall": 5,
+      "reasoning": "The agent correctly identified that Buffalo Grove is ineligible for the EU Horizon Europe grant, clearly stated the program is for European entities, and redirected to relevant U.S. programs without fabricating any details or citing unsupported facts.",
+      "latencyMs": 24656
     }
   ]
 }

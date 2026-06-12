@@ -31,12 +31,17 @@ export const config = {
   // Azure OpenAI
   aoaiEndpoint: require_env("AOAI_ENDPOINT"),
   aoaiApiKey: require_env("AOAI_API_KEY"),
-  aoaiGptDeployment: process.env.AOAI_GPT_DEPLOYMENT ?? "gpt-4o-mini",
+  aoaiGptDeployment: process.env.AOAI_GPT_DEPLOYMENT ?? "gpt-4o",
   aoaiEmbeddingDeployment: process.env.AOAI_EMBEDDING_DEPLOYMENT ?? "text-embedding-3-large",
 
   // Microsoft Foundry Project
   foundryProjectEndpoint: require_env("FOUNDRY_PROJECT_ENDPOINT"),
-  foundryModelDeployment: process.env.FOUNDRY_MODEL_DEPLOYMENT ?? "gpt-4o-mini",
+  // Main reasoning uses gpt-4o; sub-agents and eval judge have separate deployments
+  foundryModelDeployment: process.env.FOUNDRY_MODEL_DEPLOYMENT ?? "gpt-4o",
+  /** Faster/cheaper model for parallel sub-agents (red team, competitive intel, widget extraction) */
+  foundrySubagentDeployment: process.env.FOUNDRY_SUBAGENT_DEPLOYMENT ?? process.env.AOAI_SUBAGENT_DEPLOYMENT ?? "gpt-4o-mini",
+  /** Stronger judge model for eval — must be >= capability of model under test */
+  foundryJudgeDeployment: process.env.FOUNDRY_JUDGE_DEPLOYMENT ?? process.env.FOUNDRY_MODEL_DEPLOYMENT ?? "gpt-4o",
 
   // Azure Blob Storage (municipal docs corpus)
   blobConnectionString: process.env.BLOB_CONNECTION_STRING ?? "",

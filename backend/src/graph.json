@@ -1,0 +1,1633 @@
+{
+  "_meta": {
+    "generatedAt": "2026-06-12T17:50:18.331Z",
+    "docsDir": "C:\\CodeApps\\Skillsfest\\CivicGrant-IQ\\infra\\docs",
+    "docCount": 13,
+    "model": "gpt-4o",
+    "entityCount": 106,
+    "edgeCount": 105,
+    "extractionLog": [
+      {
+        "file": "BG-CapitalImprovementPlan-2026-2030.txt",
+        "entities": 19,
+        "edges": 19,
+        "extractedAt": "2026-06-12T17:48:43.884Z"
+      },
+      {
+        "file": "BG-CityProfile-2026.txt",
+        "entities": 8,
+        "edges": 9,
+        "extractedAt": "2026-06-12T17:48:49.505Z"
+      },
+      {
+        "file": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt",
+        "entities": 8,
+        "edges": 8,
+        "extractedAt": "2026-06-12T17:48:55.244Z"
+      },
+      {
+        "file": "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt",
+        "entities": 6,
+        "edges": 6,
+        "extractedAt": "2026-06-12T17:48:59.502Z"
+      },
+      {
+        "file": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt",
+        "entities": 8,
+        "edges": 8,
+        "extractedAt": "2026-06-12T17:49:05.401Z"
+      },
+      {
+        "file": "Equity-Justice40-GrantFraming-2026.txt",
+        "entities": 12,
+        "edges": 8,
+        "extractedAt": "2026-06-12T17:49:11.975Z"
+      },
+      {
+        "file": "FEDERAL-MajorGrantPrograms-2026.txt",
+        "entities": 0,
+        "edges": 0,
+        "extractedAt": "2026-06-12T17:49:23.757Z"
+      },
+      {
+        "file": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt",
+        "entities": 9,
+        "edges": 8,
+        "extractedAt": "2026-06-12T17:49:29.403Z"
+      },
+      {
+        "file": "GrantCalendar-FY2026-Deadlines.txt",
+        "entities": 16,
+        "edges": 6,
+        "extractedAt": "2026-06-12T17:49:35.265Z"
+      },
+      {
+        "file": "METRO-SUBURBAN-GrantLandscape-2026.txt",
+        "entities": 12,
+        "edges": 11,
+        "extractedAt": "2026-06-12T17:49:44.276Z"
+      },
+      {
+        "file": "MultiGrant-Stacking-Strategies.txt",
+        "entities": 17,
+        "edges": 14,
+        "extractedAt": "2026-06-12T17:49:54.663Z"
+      },
+      {
+        "file": "SMALLCITY-RURAL-GrantGuide-2026.txt",
+        "entities": 0,
+        "edges": 0,
+        "extractedAt": "2026-06-12T17:50:07.748Z"
+      },
+      {
+        "file": "UNIVERSAL-CityGrantFramework-2026.txt",
+        "entities": 11,
+        "edges": 10,
+        "extractedAt": "2026-06-12T17:50:18.331Z"
+      }
+    ]
+  },
+  "entities": {
+    "bg": {
+      "id": "bg",
+      "type": "city",
+      "label": "Buffalo Grove, IL",
+      "props": {
+        "population": 41496
+      }
+    },
+    "raise_usdot": {
+      "id": "raise_usdot",
+      "type": "grant",
+      "label": "RAISE (USDOT)"
+    },
+    "cmaq_stp": {
+      "id": "cmaq_stp",
+      "type": "grant",
+      "label": "CMAQ/STP"
+    },
+    "stp_urban": {
+      "id": "stp_urban",
+      "type": "grant",
+      "label": "STP-Urban"
+    },
+    "itep_tap": {
+      "id": "itep_tap",
+      "type": "grant",
+      "label": "ITEP/TAP"
+    },
+    "fta_raise_build": {
+      "id": "fta_raise_build",
+      "type": "grant",
+      "label": "RAISE / BUILD / FTA"
+    },
+    "smc_siip": {
+      "id": "smc_siip",
+      "type": "grant",
+      "label": "SMC SIIP"
+    },
+    "aptakisic_il83": {
+      "id": "aptakisic_il83",
+      "type": "project",
+      "label": "Aptakisic Road / IL-83 Intersection Reconstruction",
+      "props": {}
+    },
+    "lake_cook_corridor": {
+      "id": "lake_cook_corridor",
+      "type": "project",
+      "label": "Lake-Cook Road Corridor Improvements"
+    },
+    "weiland_phase_ii": {
+      "id": "weiland_phase_ii",
+      "type": "project",
+      "label": "Weiland Road Reconstruction (Phase II)"
+    },
+    "long_grove_trail": {
+      "id": "long_grove_trail",
+      "type": "project",
+      "label": "Long Grove Road Trail Connection"
+    },
+    "prairie_view_station": {
+      "id": "prairie_view_station",
+      "type": "project",
+      "label": "Prairie View Metra Station Area Improvements"
+    },
+    "northwood_stormwater": {
+      "id": "northwood_stormwater",
+      "type": "project",
+      "label": "Northwood Neighborhood Stormwater Improvements (Phase I)"
+    },
+    "critical_priority": {
+      "id": "critical_priority",
+      "type": "requirement",
+      "label": "Critical Priority"
+    },
+    "high_priority": {
+      "id": "high_priority",
+      "type": "requirement",
+      "label": "High Priority"
+    },
+    "medium_priority": {
+      "id": "medium_priority",
+      "type": "requirement",
+      "label": "Medium Priority"
+    },
+    "adt_traffic": {
+      "id": "adt_traffic",
+      "type": "metric",
+      "label": "ADT Traffic Volume"
+    },
+    "pci_road": {
+      "id": "pci_road",
+      "type": "metric",
+      "label": "Pavement Condition Index (PCI)"
+    },
+    "daily_metra_boardings": {
+      "id": "daily_metra_boardings",
+      "type": "metric",
+      "label": "Daily Metra Boardings"
+    },
+    "buffalo_grove_il": {
+      "id": "buffalo_grove_il",
+      "type": "city",
+      "label": "Buffalo Grove, IL",
+      "props": {
+        "population": 41496
+      }
+    },
+    "fema_bric": {
+      "id": "fema_bric",
+      "type": "grant",
+      "label": "FEMA BRIC Resilience Grant",
+      "props": {
+        "focus": "Building Resilient Infrastructure and Communities",
+        "application_year": "FY2024"
+      }
+    },
+    "raise_fy2026": {
+      "id": "raise_fy2026",
+      "type": "grant",
+      "label": "RAISE FY2026",
+      "props": {}
+    },
+    "lake_county_smc": {
+      "id": "lake_county_smc",
+      "type": "agency",
+      "label": "Lake County Stormwater Management Commission (SMC)",
+      "props": {}
+    },
+    "northwood_phase_1": {
+      "id": "northwood_phase_1",
+      "type": "project",
+      "label": "Northwood Neighborhood Stormwater Improvements — Phase I",
+      "props": {
+        "total_cost": 13800000,
+        "local_match": 8300000,
+        "grant_request": 5500000
+      }
+    },
+    "fire_station_25": {
+      "id": "fire_station_25",
+      "type": "project",
+      "label": "Fire Station 25 Rebuild",
+      "props": {}
+    },
+    "buffalo_creek_study": {
+      "id": "buffalo_creek_study",
+      "type": "project",
+      "label": "Buffalo Creek Flood Mitigation Study",
+      "props": {}
+    },
+    "buffalo_creek_flood_resilience": {
+      "id": "buffalo_creek_flood_resilience",
+      "type": "project",
+      "label": "Buffalo Creek Watershed Flood Resilience Infrastructure — Phase I",
+      "props": {
+        "total_cost": 4250000,
+        "grant_request": 3400000,
+        "non_federal_cost_share": 850000
+      }
+    },
+    "iema": {
+      "id": "iema",
+      "type": "agency",
+      "label": "Illinois Emergency Management Agency (IEMA)",
+      "props": {}
+    },
+    "lhmp": {
+      "id": "lhmp",
+      "type": "requirement",
+      "label": "Local Hazard Mitigation Plan (LHMP)",
+      "props": {
+        "expiration": "June 2027",
+        "adopted": "May 2022"
+      }
+    },
+    "crs_class_7": {
+      "id": "crs_class_7",
+      "type": "metric",
+      "label": "Community Rating System (CRS) Class 7",
+      "props": {
+        "savings": 280000
+      }
+    },
+    "flood_warning_system": {
+      "id": "flood_warning_system",
+      "type": "project",
+      "label": "Flood Early Warning System Expansion",
+      "props": {
+        "cost": 890000
+      }
+    },
+    "buffalo_creek": {
+      "id": "buffalo_creek",
+      "type": "project",
+      "label": "Buffalo Creek Watershed",
+      "props": {
+        "length_miles": 3.4,
+        "watershed_acres": 12200
+      }
+    },
+    "siip": {
+      "id": "siip",
+      "type": "grant",
+      "label": "Stormwater Infrastructure Improvement Program (SIIP)",
+      "props": {
+        "application_year": 2023,
+        "award_year": 2024
+      }
+    },
+    "flood_risk_reduction": {
+      "id": "flood_risk_reduction",
+      "type": "metric",
+      "label": "Flood Risk Reduction",
+      "props": {
+        "description": "Eliminates 10-year flood risk for 234 homes"
+      }
+    },
+    "water_quality_improvement": {
+      "id": "water_quality_improvement",
+      "type": "metric",
+      "label": "Water Quality Improvement",
+      "props": {
+        "description": "Treats 187 million gallons of stormwater runoff annually"
+      }
+    },
+    "raise_fy24": {
+      "id": "raise_fy24",
+      "type": "grant",
+      "label": "RAISE Discretionary Grants FY2024",
+      "props": {
+        "agency": "U.S. Department of Transportation"
+      }
+    },
+    "aptakisic_il83_project": {
+      "id": "aptakisic_il83_project",
+      "type": "project",
+      "label": "Aptakisic Road / IL-83 Intersection Safety and Capacity Reconstruction",
+      "props": {
+        "total_cost": 8250000,
+        "local_match": 3250000
+      }
+    },
+    "idot_corridor_study": {
+      "id": "idot_corridor_study",
+      "type": "requirement",
+      "label": "2022 IL-83 Corridor Safety Study",
+      "props": {}
+    },
+    "safety_metric": {
+      "id": "safety_metric",
+      "type": "metric",
+      "label": "Safety Improvements",
+      "props": {
+        "injury_crash_reduction": 12,
+        "fatality_reduction": 0.4
+      }
+    },
+    "congestion_metric": {
+      "id": "congestion_metric",
+      "type": "metric",
+      "label": "Congestion Reduction",
+      "props": {
+        "peak_hour_volume_exceeds_capacity": 22
+      }
+    },
+    "pedestrian_metric": {
+      "id": "pedestrian_metric",
+      "type": "metric",
+      "label": "Pedestrian Connectivity",
+      "props": {
+        "sidewalk_gap": 0.6
+      }
+    },
+    "bicycle_metric": {
+      "id": "bicycle_metric",
+      "type": "metric",
+      "label": "Bicycle Connectivity",
+      "props": {
+        "protected_lane_distance": 2.1
+      }
+    },
+    "executive_order_13985": {
+      "id": "executive_order_13985",
+      "type": "requirement",
+      "label": "Executive Order 13985",
+      "props": {
+        "description": "Advancing Racial Equity",
+        "date": "January 2021"
+      }
+    },
+    "justice40_initiative": {
+      "id": "justice40_initiative",
+      "type": "requirement",
+      "label": "Justice40 Initiative",
+      "props": {
+        "description": "40% of benefits of federal climate and clean energy investments to disadvantaged communities",
+        "date": "January 2021"
+      }
+    },
+    "executive_order_14008": {
+      "id": "executive_order_14008",
+      "type": "requirement",
+      "label": "Executive Order 14008",
+      "props": {
+        "description": "Tied to Justice40 Initiative",
+        "date": "January 2021"
+      }
+    },
+    "raise": {
+      "id": "raise",
+      "type": "grant",
+      "label": "RAISE",
+      "props": {
+        "focus": "Infrastructure projects with equity and safety as top criteria"
+      }
+    },
+    "ss4a": {
+      "id": "ss4a",
+      "type": "grant",
+      "label": "SS4A",
+      "props": {
+        "focus": "Safe Streets and Roads for All"
+      }
+    },
+    "epa_srf": {
+      "id": "epa_srf",
+      "type": "grant",
+      "label": "EPA SRF",
+      "props": {
+        "focus": "State Revolving Fund for water infrastructure"
+      }
+    },
+    "eda": {
+      "id": "eda",
+      "type": "agency",
+      "label": "Economic Development Administration",
+      "props": {}
+    },
+    "cejst": {
+      "id": "cejst",
+      "type": "metric",
+      "label": "Climate and Economic Justice Screening Tool",
+      "props": {
+        "description": "Identifies disadvantaged census tracts based on 18+ burden indicators"
+      }
+    },
+    "ejscreen": {
+      "id": "ejscreen",
+      "type": "metric",
+      "label": "EPA EJScreen",
+      "props": {
+        "description": "Environmental Justice Screening Tool calculating EJ Index"
+      }
+    },
+    "iija": {
+      "id": "iija",
+      "type": "requirement",
+      "label": "Infrastructure Investment and Jobs Act (IIJA)",
+      "props": {
+        "description": "Statutory equity requirements for federal grants"
+      }
+    },
+    "trump_eo_2025": {
+      "id": "trump_eo_2025",
+      "type": "requirement",
+      "label": "Trump Administration EO (2025)",
+      "props": {
+        "description": "Rescinded EO 14008 and ended Justice40 Initiative",
+        "date": "January 20, 2025"
+      }
+    },
+    "idots_high_injury_network": {
+      "id": "idots_high_injury_network",
+      "type": "metric",
+      "label": "IDOT's High-Injury Network",
+      "props": {}
+    },
+    "idots_2022_il83_safety_corridor_study": {
+      "id": "idots_2022_il83_safety_corridor_study",
+      "type": "metric",
+      "label": "IDOT 2022 IL-83 Safety Corridor Study",
+      "props": {}
+    },
+    "crash_rate": {
+      "id": "crash_rate",
+      "type": "metric",
+      "label": "Crash Rate",
+      "props": {}
+    },
+    "ghg_reduction": {
+      "id": "ghg_reduction",
+      "type": "metric",
+      "label": "GHG Reduction",
+      "props": {}
+    },
+    "justice40": {
+      "id": "justice40",
+      "type": "requirement",
+      "label": "Justice40",
+      "props": {}
+    },
+    "equity_action_plan": {
+      "id": "equity_action_plan",
+      "type": "requirement",
+      "label": "Equity Action Plan",
+      "props": {}
+    },
+    "epa_cwsrf": {
+      "id": "epa_cwsrf",
+      "type": "grant",
+      "label": "EPA Clean Water State Revolving Fund (CWSRF)",
+      "props": {}
+    },
+    "epa_dwsrf": {
+      "id": "epa_dwsrf",
+      "type": "grant",
+      "label": "EPA Drinking Water SRF — Lead Service Line Replacement",
+      "props": {}
+    },
+    "usda_rd_water_env": {
+      "id": "usda_rd_water_env",
+      "type": "grant",
+      "label": "USDA Rural Development — Water & Environmental Programs",
+      "props": {}
+    },
+    "usda_rd_community_facilities": {
+      "id": "usda_rd_community_facilities",
+      "type": "grant",
+      "label": "USDA Rural Development — Community Facilities",
+      "props": {}
+    },
+    "fema_hmgp": {
+      "id": "fema_hmgp",
+      "type": "grant",
+      "label": "FEMA Hazard Mitigation Grant Program (HMGP)",
+      "props": {}
+    },
+    "doj_byrne_jag": {
+      "id": "doj_byrne_jag",
+      "type": "grant",
+      "label": "DOJ Byrne JAG (Justice Assistance Grants)",
+      "props": {}
+    },
+    "usdot_ss4a": {
+      "id": "usdot_ss4a",
+      "type": "grant",
+      "label": "USDOT Safe Streets & Roads for All (SS4A)",
+      "props": {}
+    },
+    "epa_brownfields": {
+      "id": "epa_brownfields",
+      "type": "grant",
+      "label": "EPA Brownfields Grants",
+      "props": {}
+    },
+    "state_cdbg": {
+      "id": "state_cdbg",
+      "type": "grant",
+      "label": "State CDBG Programs",
+      "props": {}
+    },
+    "vision_zero": {
+      "id": "vision_zero",
+      "type": "requirement",
+      "label": "Vision Zero resolution",
+      "props": {}
+    },
+    "five_year_crash_data": {
+      "id": "five_year_crash_data",
+      "type": "metric",
+      "label": "5-year crash data by location, type, and severity (KABCO scale)",
+      "props": {}
+    },
+    "high_injury_network": {
+      "id": "high_injury_network",
+      "type": "metric",
+      "label": "High-Injury Network (top 5-10% of road segments with highest injury crash density)",
+      "props": {}
+    },
+    "bca_hazus_analysis": {
+      "id": "bca_hazus_analysis",
+      "type": "requirement",
+      "label": "BCA/Hazus analysis",
+      "props": {}
+    },
+    "engineering_concept": {
+      "id": "engineering_concept",
+      "type": "requirement",
+      "label": "Engineering concept with cost estimate",
+      "props": {}
+    },
+    "buffalo_grove": {
+      "id": "buffalo_grove",
+      "type": "city",
+      "label": "Buffalo Grove, IL",
+      "props": {
+        "population": 41496
+      }
+    },
+    "hud_cdbg": {
+      "id": "hud_cdbg",
+      "type": "grant",
+      "label": "Community Development Block Grant (CDBG)",
+      "props": {}
+    },
+    "hud_home": {
+      "id": "hud_home",
+      "type": "grant",
+      "label": "HOME Investment Partnerships",
+      "props": {}
+    },
+    "hud_htf": {
+      "id": "hud_htf",
+      "type": "grant",
+      "label": "Housing Trust Fund (HTF)",
+      "props": {}
+    },
+    "hud": {
+      "id": "hud",
+      "type": "agency",
+      "label": "U.S. Department of Housing and Urban Development (HUD)",
+      "props": {}
+    },
+    "cdbg_lmi_rule": {
+      "id": "cdbg_lmi_rule",
+      "type": "requirement",
+      "label": "70% LMI Benefit Rule",
+      "props": {}
+    },
+    "cdbg_public_participation": {
+      "id": "cdbg_public_participation",
+      "type": "requirement",
+      "label": "Public Participation Requirements",
+      "props": {}
+    },
+    "cdbg_ai_afh": {
+      "id": "cdbg_ai_afh",
+      "type": "requirement",
+      "label": "Analysis of Impediments to Fair Housing (AI) or Assessment of Fair Housing (AFH)",
+      "props": {}
+    },
+    "home_chdo_set_aside": {
+      "id": "home_chdo_set_aside",
+      "type": "requirement",
+      "label": "15% CHDO Set-Aside",
+      "props": {}
+    },
+    "home_25_percent_match": {
+      "id": "home_25_percent_match",
+      "type": "requirement",
+      "label": "25% Match from Non-Federal Sources",
+      "props": {}
+    },
+    "htf_extremely_low_income": {
+      "id": "htf_extremely_low_income",
+      "type": "requirement",
+      "label": "Affordable Housing for Extremely Low Income (≤ 30% AMI)",
+      "props": {}
+    },
+    "htf_very_low_income": {
+      "id": "htf_very_low_income",
+      "type": "requirement",
+      "label": "Affordable Housing for Very Low Income (≤ 50% AMI)",
+      "props": {}
+    },
+    "bric": {
+      "id": "bric",
+      "type": "grant",
+      "label": "BRIC Grant",
+      "props": {}
+    },
+    "eda_public_works": {
+      "id": "eda_public_works",
+      "type": "grant",
+      "label": "EDA Public Works Grant",
+      "props": {}
+    },
+    "cmaq": {
+      "id": "cmaq",
+      "type": "grant",
+      "label": "CMAQ Grant",
+      "props": {}
+    },
+    "hsip": {
+      "id": "hsip",
+      "type": "grant",
+      "label": "HSIP Grant",
+      "props": {}
+    },
+    "tap": {
+      "id": "tap",
+      "type": "grant",
+      "label": "TAP/ITEP Grant",
+      "props": {}
+    },
+    "state_dot": {
+      "id": "state_dot",
+      "type": "agency",
+      "label": "State DOT",
+      "props": {}
+    },
+    "local_bonds": {
+      "id": "local_bonds",
+      "type": "grant",
+      "label": "Local Bonds",
+      "props": {}
+    },
+    "srtf": {
+      "id": "srtf",
+      "type": "grant",
+      "label": "Safe Routes to School (SRTS)",
+      "props": {}
+    },
+    "ada_funding": {
+      "id": "ada_funding",
+      "type": "grant",
+      "label": "ADA Supplemental Funding",
+      "props": {}
+    },
+    "signalized_intersection": {
+      "id": "signalized_intersection",
+      "type": "project",
+      "label": "Signalized Intersection Reconstruction",
+      "props": {
+        "cost": 5000000
+      }
+    },
+    "complete_street_corridor": {
+      "id": "complete_street_corridor",
+      "type": "project",
+      "label": "Complete Street Corridor",
+      "props": {
+        "cost": 8000000
+      }
+    },
+    "local_match": {
+      "id": "local_match",
+      "type": "requirement",
+      "label": "Local Match Requirement",
+      "props": {
+        "percentage": 20
+      }
+    },
+    "leveraged_funding": {
+      "id": "leveraged_funding",
+      "type": "metric",
+      "label": "Leveraged Funding",
+      "props": {
+        "points": 40
+      }
+    },
+    "local_commitment": {
+      "id": "local_commitment",
+      "type": "metric",
+      "label": "Local/Non-Federal Commitment",
+      "props": {}
+    },
+    "leverage_ratio": {
+      "id": "leverage_ratio",
+      "type": "metric",
+      "label": "Leverage Ratio",
+      "props": {}
+    },
+    "usda_rural_development": {
+      "id": "usda_rural_development",
+      "type": "grant",
+      "label": "USDA Rural Development",
+      "props": {}
+    },
+    "cdbg": {
+      "id": "cdbg",
+      "type": "grant",
+      "label": "CDBG",
+      "props": {}
+    },
+    "usdot_raise": {
+      "id": "usdot_raise",
+      "type": "grant",
+      "label": "USDOT RAISE",
+      "props": {}
+    },
+    "usda_cf": {
+      "id": "usda_cf",
+      "type": "grant",
+      "label": "USDA Community Facilities",
+      "props": {}
+    },
+    "state_infrastructure_programs": {
+      "id": "state_infrastructure_programs",
+      "type": "grant",
+      "label": "State Infrastructure Programs",
+      "props": {}
+    },
+    "tier_2_population": {
+      "id": "tier_2_population",
+      "type": "requirement",
+      "label": "Population 10,000–50,000",
+      "props": {}
+    }
+  },
+  "edges": [
+    {
+      "from": "bg",
+      "to": "aptakisic_il83",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "The Village of Buffalo Grove's 5-Year CIP includes Aptakisic Road / IL-83 Intersection Reconstruction.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "bg",
+      "to": "lake_cook_corridor",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "The Village of Buffalo Grove's 5-Year CIP includes Lake-Cook Road Corridor Improvements.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "bg",
+      "to": "weiland_phase_ii",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "The Village of Buffalo Grove's 5-Year CIP includes Weiland Road Reconstruction (Phase II).",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "bg",
+      "to": "long_grove_trail",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "The Village of Buffalo Grove's 5-Year CIP includes Long Grove Road Trail Connection.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "bg",
+      "to": "prairie_view_station",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "The Village of Buffalo Grove's 5-Year CIP includes Prairie View Metra Station Area Improvements.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "bg",
+      "to": "northwood_stormwater",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "The Village of Buffalo Grove's 5-Year CIP includes Northwood Neighborhood Stormwater Improvements (Phase I).",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "aptakisic_il83",
+      "to": "raise_usdot",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "RAISE FY2024 application submitted September 2024.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "lake_cook_corridor",
+      "to": "cmaq_stp",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "CMAP call for projects (STP) submitted 2024.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "weiland_phase_ii",
+      "to": "stp_urban",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "Grant Target: $1,800,000 (STP-Urban).",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "long_grove_trail",
+      "to": "itep_tap",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "ITEP call for projects — next cycle opens FY2026.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "prairie_view_station",
+      "to": "fta_raise_build",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "Eligible for FTA RAISE and BUILD.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "northwood_stormwater",
+      "to": "smc_siip",
+      "rel": "awarded",
+      "weight": 1,
+      "evidence": "SMC SIIP Grant Awarded: $5,500,000.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "aptakisic_il83",
+      "to": "critical_priority",
+      "rel": "requires",
+      "weight": 1,
+      "evidence": "Priority: CRITICAL.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "lake_cook_corridor",
+      "to": "high_priority",
+      "rel": "requires",
+      "weight": 1,
+      "evidence": "Priority: HIGH.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "weiland_phase_ii",
+      "to": "high_priority",
+      "rel": "requires",
+      "weight": 1,
+      "evidence": "Priority: HIGH.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "long_grove_trail",
+      "to": "medium_priority",
+      "rel": "requires",
+      "weight": 1,
+      "evidence": "Priority: MEDIUM.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "aptakisic_il83",
+      "to": "adt_traffic",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "ADT: 28,400 vehicles/day.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "lake_cook_corridor",
+      "to": "pci_road",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "PCI 32 — 'Very Poor'.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "prairie_view_station",
+      "to": "daily_metra_boardings",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "Daily Metra boardings: 1,240.",
+      "source": "BG-CapitalImprovementPlan-2026-2030.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "fema_bric",
+      "rel": "qualifies_for",
+      "weight": 0.85,
+      "evidence": "Federal target: FEMA BRIC Resilience Grant",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "raise_fy2026",
+      "rel": "applied_for",
+      "weight": 0.9,
+      "evidence": "Pursuing RAISE FY2026 ($5M ask)",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "lake_county_smc",
+      "to": "northwood_phase_1",
+      "rel": "awarded",
+      "weight": 0.95,
+      "evidence": "Funding: $5.5M Lake County SMC Grant",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "northwood_phase_1",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Northwood Neighborhood Stormwater Improvements — Phase I",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "aptakisic_il83",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Aptakisic Road / IL-83 Intersection Reconstruction",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "fire_station_25",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Fire Station 25 Rebuild",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "buffalo_creek_study",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Buffalo Creek Flood Mitigation Study",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "buffalo_creek_study",
+      "to": "fema_bric",
+      "rel": "applied_for",
+      "weight": 0.9,
+      "evidence": "Federal target: FEMA BRIC Resilience Grant",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "aptakisic_il83",
+      "to": "raise_fy2026",
+      "rel": "applied_for",
+      "weight": 0.9,
+      "evidence": "Pursuing RAISE FY2026 ($5M ask)",
+      "source": "BG-CityProfile-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "fema_bric",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "Submitted: January 31, 2025",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "buffalo_creek_flood_resilience",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Project Title: Buffalo Creek Watershed Flood Resilience Infrastructure — Phase I",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "buffalo_creek_flood_resilience",
+      "to": "fema_bric",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "The Village of Buffalo Grove requests $3,400,000 in FEMA BRIC funding",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "iema",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "Application Status: Submitted to Illinois IEMA",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "lhmp",
+      "rel": "requires",
+      "weight": 1,
+      "evidence": "Current FEMA-approved Local Hazard Mitigation Plan (LHMP): Yes",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "crs_class_7",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "Community Rating System (CRS) Class 7 rating",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "buffalo_creek_flood_resilience",
+      "to": "flood_warning_system",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "COMPONENT A — Flood Early Warning System Expansion ($890,000)",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "buffalo_creek",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Buffalo Creek runs through 3.4 miles of Buffalo Grove",
+      "source": "BG-PastApplication-BRIC-BuffaloCreek-2025.txt"
+    },
+    {
+      "from": "bg",
+      "to": "siip",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "Applicant: Village of Buffalo Grove, Illinois",
+      "source": "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt"
+    },
+    {
+      "from": "bg",
+      "to": "northwood_phase_1",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Project Title: Northwood Neighborhood Stormwater Improvements — Phase I",
+      "source": "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt"
+    },
+    {
+      "from": "siip",
+      "to": "northwood_phase_1",
+      "rel": "awarded",
+      "weight": 1,
+      "evidence": "Award Status: AWARDED — Construction commenced January 2025",
+      "source": "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt"
+    },
+    {
+      "from": "lake_county_smc",
+      "to": "siip",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "GRANT APPLICATION — LAKE COUNTY STORMWATER MANAGEMENT COMMISSION",
+      "source": "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt"
+    },
+    {
+      "from": "northwood_phase_1",
+      "to": "flood_risk_reduction",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "Phase I eliminates the 10-year flood risk for 234 homes",
+      "source": "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt"
+    },
+    {
+      "from": "northwood_phase_1",
+      "to": "water_quality_improvement",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "The wetland naturalization component treats an estimated 187 million gallons of annual stormwater runoff",
+      "source": "BG-PastApplication-Northwood-Stormwater-SMC-2024.txt"
+    },
+    {
+      "from": "bg",
+      "to": "raise_fy24",
+      "rel": "applied_for",
+      "weight": 1,
+      "evidence": "Applicant: Village of Buffalo Grove, Illinois",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "bg",
+      "to": "aptakisic_il83_project",
+      "rel": "has_project",
+      "weight": 1,
+      "evidence": "Project Title: Aptakisic Road / IL-83 Intersection Safety and Capacity Reconstruction",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "raise_fy24",
+      "rel": "matches_focus",
+      "weight": 0.95,
+      "evidence": "RAISE grant funding to reconstruct the Aptakisic Road / Illinois Route 83 intersection",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "idot_corridor_study",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "2022 IL-83 Corridor Safety Study recommended geometric reconstruction",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "safety_metric",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "This project will prevent an estimated 12 injury crashes and 0.4 fatalities annually",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "congestion_metric",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "PM peak hour volume: 3,840 vehicles/hour (exceeds design capacity by 22%)",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "pedestrian_metric",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "Sidewalk gaps: 0.6-mile gap on Aptakisic Road east of the intersection",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "bicycle_metric",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "Bicycle facility: None — nearest protected lane is 2.1 miles away",
+      "source": "BG-PastApplication-RAISE-Aptakisic-IL83-2024.txt"
+    },
+    {
+      "from": "raise",
+      "to": "executive_order_13985",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "RAISE: 'Equity' was explicitly elevated to equal weight with Safety in FY2023+",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "fema_bric",
+      "to": "justice40_initiative",
+      "rel": "requires",
+      "weight": 0.85,
+      "evidence": "FEMA BRIC: New 40-point equity category added in FY2024",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "ss4a",
+      "to": "justice40_initiative",
+      "rel": "requires",
+      "weight": 0.8,
+      "evidence": "SS4A: Community engagement with disadvantaged populations is a required element",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "epa_srf",
+      "to": "iija",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "EPA SRF: Principal forgiveness mandated for disadvantaged communities (IIJA requirement)",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "eda",
+      "to": "justice40_initiative",
+      "rel": "matches_focus",
+      "weight": 0.8,
+      "evidence": "EDA: Justice40-community projects receive priority scoring",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "cejst",
+      "to": "justice40_initiative",
+      "rel": "closes_gap",
+      "weight": 0.85,
+      "evidence": "CEJST identifies census tracts as 'disadvantaged' based on 18+ burden indicators",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "ejscreen",
+      "to": "justice40_initiative",
+      "rel": "closes_gap",
+      "weight": 0.8,
+      "evidence": "EJScreen calculates EJ Index = environmental burden × demographic factor",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "trump_eo_2025",
+      "to": "justice40_initiative",
+      "rel": "requires",
+      "weight": 0.7,
+      "evidence": "Trump EO rescinded EO 14008 and ended Justice40 Initiative",
+      "source": "Equity-Justice40-GrantFraming-2026.txt"
+    },
+    {
+      "from": "bg",
+      "to": "raise_fy2026",
+      "rel": "applied_for",
+      "weight": 0.9,
+      "evidence": "Buffalo Grove's highest-crash intersection cited in RAISE application",
+      "source": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "idots_high_injury_network",
+      "rel": "has_metric",
+      "weight": 0.9,
+      "evidence": "Placing it on IDOT's High-Injury Network",
+      "source": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "idots_2022_il83_safety_corridor_study",
+      "rel": "has_metric",
+      "weight": 0.9,
+      "evidence": "Triggering the IDOT 2022 IL-83 Safety Corridor Study",
+      "source": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "crash_rate",
+      "rel": "has_metric",
+      "weight": 0.9,
+      "evidence": "Crash rate of 1.42 per million VMT vs. Illinois statewide average of 0.68",
+      "source": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt"
+    },
+    {
+      "from": "aptakisic_il83_project",
+      "to": "ghg_reduction",
+      "rel": "has_metric",
+      "weight": 0.85,
+      "evidence": "Reducing annual CO2 emissions by an estimated 142 metric tons",
+      "source": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt"
+    },
+    {
+      "from": "raise_fy2026",
+      "to": "justice40",
+      "rel": "requires",
+      "weight": 0.8,
+      "evidence": "Projects in Justice40 communities get extra consideration here",
+      "source": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt"
+    },
+    {
+      "from": "raise_fy2026",
+      "to": "equity_action_plan",
+      "rel": "requires",
+      "weight": 0.85,
+      "evidence": "Does the applicant have an Equity Action Plan?",
+      "source": "FederalGrant-ScoringRubrics-WinningCriteria-2026.txt"
+    },
+    {
+      "from": "usdot_ss4a",
+      "to": "vision_zero",
+      "rel": "requires",
+      "weight": 0.95,
+      "evidence": "Adopt a Vision Zero resolution at city council (required for Implementation grants)",
+      "source": "GrantCalendar-FY2026-Deadlines.txt"
+    },
+    {
+      "from": "usdot_ss4a",
+      "to": "five_year_crash_data",
+      "rel": "has_metric",
+      "weight": 0.9,
+      "evidence": "Compile 5-year crash data by location, type, and severity (KABCO scale)",
+      "source": "GrantCalendar-FY2026-Deadlines.txt"
+    },
+    {
+      "from": "usdot_ss4a",
+      "to": "high_injury_network",
+      "rel": "has_metric",
+      "weight": 0.9,
+      "evidence": "Map your High-Injury Network (top 5-10% of road segments with highest injury crash density)",
+      "source": "GrantCalendar-FY2026-Deadlines.txt"
+    },
+    {
+      "from": "fema_bric",
+      "to": "lhmp",
+      "rel": "requires",
+      "weight": 0.92,
+      "evidence": "Confirm LHMP is current (must not expire before award date)",
+      "source": "GrantCalendar-FY2026-Deadlines.txt"
+    },
+    {
+      "from": "fema_bric",
+      "to": "bca_hazus_analysis",
+      "rel": "requires",
+      "weight": 0.88,
+      "evidence": "Commission BCA/Hazus analysis for your project",
+      "source": "GrantCalendar-FY2026-Deadlines.txt"
+    },
+    {
+      "from": "fema_bric",
+      "to": "engineering_concept",
+      "rel": "requires",
+      "weight": 0.85,
+      "evidence": "Develop engineering concept with cost estimate",
+      "source": "GrantCalendar-FY2026-Deadlines.txt"
+    },
+    {
+      "from": "buffalo_grove",
+      "to": "hud_cdbg",
+      "rel": "applied_for",
+      "weight": 0.85,
+      "evidence": "Buffalo Grove (below threshold, state CDBG)",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud",
+      "to": "hud_cdbg",
+      "rel": "awarded",
+      "weight": 0.95,
+      "evidence": "Cities ≥ 50,000 population OR principal cities of MSAs receive direct HUD allocation",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud",
+      "to": "hud_home",
+      "rel": "awarded",
+      "weight": 0.95,
+      "evidence": "Participating Jurisdictions (PJs) = cities ≥ 65,000 + suburban consortia",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud",
+      "to": "hud_htf",
+      "rel": "awarded",
+      "weight": 0.95,
+      "evidence": "Recipients: States (not localities directly)",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud_cdbg",
+      "to": "cdbg_lmi_rule",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "Must adhere to 70% LMI benefit rule",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud_cdbg",
+      "to": "cdbg_public_participation",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "Must adhere to public participation requirements",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud_cdbg",
+      "to": "cdbg_ai_afh",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "Must maintain Analysis of Impediments to Fair Housing (AI) or Assessment of Fair Housing (AFH)",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud_home",
+      "to": "home_chdo_set_aside",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "15% of HOME allocation must go to Community Housing Development Organizations (CHDOs)",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud_home",
+      "to": "home_25_percent_match",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "Required: 25% match from non-federal sources",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud_htf",
+      "to": "htf_extremely_low_income",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "Affordable housing for extremely low income (≤ 30% AMI)",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "hud_htf",
+      "to": "htf_very_low_income",
+      "rel": "requires",
+      "weight": 0.9,
+      "evidence": "Affordable housing for very low income (≤ 50% AMI)",
+      "source": "METRO-SUBURBAN-GrantLandscape-2026.txt"
+    },
+    {
+      "from": "raise",
+      "to": "signalized_intersection",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "RAISE covers roadway reconstruction, bridge, intersection, ADA, multimodal",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "hsip",
+      "to": "signalized_intersection",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "HSIP covers safety improvements like signal hardware, signing, pavement marking",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "cmaq",
+      "to": "signalized_intersection",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "CMAQ covers multimodal/ATC components; RAISE covers roadway",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "tap",
+      "to": "signalized_intersection",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "TAP covers bike lanes, pedestrian paths, safe routes to school, trail connections",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "local_bonds",
+      "to": "signalized_intersection",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "Local bonds provide required local match",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "ss4a",
+      "to": "complete_street_corridor",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "SS4A is designed for pedestrian/bike safety projects",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "cmaq",
+      "to": "complete_street_corridor",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "CMAQ covers air quality benefits of reduced car trips from mode shift",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "tap",
+      "to": "complete_street_corridor",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "TAP is designed for pedestrian and bicycle infrastructure",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "srtf",
+      "to": "complete_street_corridor",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "SRTS available if project is within 2 miles of a K-12 school",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "ada_funding",
+      "to": "complete_street_corridor",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "ADA compliance funding available for accessible pedestrian infrastructure",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "local_match",
+      "to": "raise",
+      "rel": "requires",
+      "weight": 1,
+      "evidence": "Applicants who demonstrate ≥ 20% local match score higher",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "leveraged_funding",
+      "to": "bric",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "BRIC: 'Leveraged Funding' is a 40-point category",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "local_commitment",
+      "to": "raise",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "RAISE: Local/Non-Federal Commitment is a scored criterion",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "leverage_ratio",
+      "to": "eda_public_works",
+      "rel": "has_metric",
+      "weight": 1,
+      "evidence": "EDA: Leverage ratio is a scored criterion",
+      "source": "MultiGrant-Stacking-Strategies.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "tier_2_population",
+      "rel": "matches_focus",
+      "weight": 1,
+      "evidence": "Buffalo Grove IL (41,496)",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "usda_rural_development",
+      "rel": "qualifies_for",
+      "weight": 0.85,
+      "evidence": "Below $50K population threshold for USDA Community Facilities",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "cdbg",
+      "rel": "qualifies_for",
+      "weight": 0.88,
+      "evidence": "Primary funding sources: CDBG (if HUD entitlement or state-administered)",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "usdot_raise",
+      "rel": "qualifies_for",
+      "weight": 0.9,
+      "evidence": "Primary funding sources: USDOT RAISE",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "epa_srf",
+      "rel": "qualifies_for",
+      "weight": 0.85,
+      "evidence": "Primary funding sources: EPA SRF",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "usda_cf",
+      "rel": "qualifies_for",
+      "weight": 0.87,
+      "evidence": "Primary funding sources: USDA CF (if rural designation)",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "state_dot",
+      "rel": "qualifies_for",
+      "weight": 0.9,
+      "evidence": "Primary funding sources: state DOT",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "state_infrastructure_programs",
+      "rel": "qualifies_for",
+      "weight": 0.88,
+      "evidence": "Primary funding sources: state infrastructure programs",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    },
+    {
+      "from": "buffalo_grove_il",
+      "to": "eda",
+      "rel": "qualifies_for",
+      "weight": 0.9,
+      "evidence": "Primary funding sources: EDA",
+      "source": "UNIVERSAL-CityGrantFramework-2026.txt"
+    }
+  ]
+}

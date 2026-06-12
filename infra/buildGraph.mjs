@@ -18,7 +18,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "fs";
 import { resolve, join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { AzureOpenAI } from "openai";
+import { AzureOpenAI } from "../backend/node_modules/openai/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");

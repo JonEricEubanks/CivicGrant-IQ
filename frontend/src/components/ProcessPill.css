@@ -1,0 +1,400 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   ProcessPill — Mission Control strip for CivicGrant IQ agent traces
+   Design: dark header bar with colored metric chips, timeline body
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Live streaming container */
+.pp-live {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Collapsed pill ──────────────────────────────────────────────────────── */
+.pp-pill {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #3b82f6;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  margin-bottom: 4px;
+  transition: box-shadow 0.2s;
+}
+
+.pp-pill:has(.pp-pill__body) {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+}
+
+/* ── Summary bar ─────────────────────────────────────────────────────────── */
+.pp-pill__summary {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pp-pill__summary:hover .pp-pill__left {
+  background: #f1f5f9;
+}
+
+/* Left zone: icon + metrics */
+.pp-pill__left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px 8px 12px;
+  flex: 1;
+  flex-wrap: wrap;
+  transition: background 0.15s;
+  min-width: 0;
+}
+
+/* Right zone: expand button */
+.pp-pill__right {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px 8px 8px;
+  border-left: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  gap: 5px;
+  transition: background 0.15s;
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.pp-pill__summary:hover .pp-pill__right {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.pp-pill__icon {
+  display: flex;
+  align-items: center;
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+/* Metric chips — each has its own color token */
+.pp-pill__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.pp-pill__chip--steps {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.pp-pill__chip--agents {
+  background: #ede9fe;
+  color: #6d28d9;
+  border-color: #ddd6fe;
+}
+
+.pp-pill__chip--time {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.pp-pill__chip--guardrails-ok {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.pp-pill__chip--guardrails-warn {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.pp-pill__chip--redteam {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.pp-pill__chip--win {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.pp-pill__chip--refinement {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.pp-pill__sep {
+  color: #334155;
+  user-select: none;
+  font-size: 0.65rem;
+}
+
+.pp-pill__spacer {
+  flex: 1;
+  min-width: 4px;
+}
+
+.pp-pill__expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.pp-pill__summary:hover .pp-pill__expand-btn {
+  color: #475569;
+}
+
+.pp-pill__chevron {
+  display: inline-block;
+  transition: transform 0.2s;
+  transform: rotate(90deg);
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.pp-pill__chevron--open {
+  transform: rotate(-90deg);
+}
+
+/* ── Route badge — sits below header bar ─────────────────────────────────── */
+.pp-pill__route-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 14px;
+  background: rgba(26,111,186,0.08);
+  border-top: 1px solid rgba(26,111,186,0.15);
+  font-size: 0.69rem;
+}
+
+.pp-pill__route-chip {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1e40af;
+  background: #dbeafe;
+  border: 1px solid #bfdbfe;
+  border-radius: 4px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+}
+
+.pp-pill__route-label {
+  color: #334155;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* ── Expanded body ───────────────────────────────────────────────────────── */
+.pp-pill__body {
+  border-top: 1px solid #e2e8f0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Prevent flex from squishing any child */
+.pp-pill__body > * {
+  flex-shrink: 0;
+}
+
+/* Section divider label inside the body */
+.pp-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px 5px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #475569;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 0;
+}
+
+.pp-section-label:first-child {
+  border-top: none;
+}
+
+.pp-section-label__line {
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+/* Wrap each section's content with padding */
+.pp-section-content {
+  padding: 0 14px 12px;
+}
+
+/* ── Status log timeline ──────────────────────────────────────────────────── */
+.pp-status-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 6px;
+}
+
+.tc-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.69rem;
+  color: #64748b;
+  padding: 3px 0 3px 18px;
+  line-height: 1.45;
+  position: relative;
+}
+
+/* Timeline connector */
+.tc-line::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #e2e8f0;
+}
+
+.tc-line__dot {
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: 1.5px solid #fff;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px #e2e8f0;
+}
+
+.tc-line--done .tc-line__text {
+  color: #64748b;
+}
+
+.tc-line--redteam .tc-line__dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 1px #fecaca;
+}
+
+.tc-line--redteam .tc-line__text {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.tc-line--refine .tc-line__dot {
+  background: #8b5cf6;
+  box-shadow: 0 0 0 1px #ddd6fe;
+}
+
+.tc-line--refine .tc-line__text {
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.tc-line:last-child::before {
+  bottom: 50%;
+}
+
+/* ── ThoughtProcess override inside pill body ────────────────────────────── */
+.pp-pill__body .thought-process {
+  margin: 0;
+}
+
+.pp-pill__body .thought-process .thought-toggle {
+  display: none;
+}
+
+.pp-pill__body .thought-process .tp-accordion {
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* ── Thought process simplified (streaming fallback) ────────────────────── */
+.pp-thought {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pp-thought__step {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+
+.pp-thought__step--done {
+  color: #475569;
+  background: #f8fafc;
+}
+
+.pp-thought__step--active {
+  color: #1a6fba;
+  background: #eff6ff;
+  font-weight: 600;
+}
+
+.pp-thought__check {
+  color: #16a34a;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+}
+
+.pp-thought__label {
+  line-height: 1.4;
+}
+
+.pp-thought__spinner {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #bfdbfe;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: pp-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pp-spin {
+  to { transform: rotate(360deg); }
+}

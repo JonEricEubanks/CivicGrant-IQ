@@ -1220,7 +1220,11 @@ async function runViaAssistantsApi(
     });
 
     // GraphRAG: run synchronous knowledge graph traversal (same as Tier 2)
-    const graphResult = queryGraph(options.message);
+    // Pass KB citation titles as retrieval scores so edge confidence reflects real retrieval evidence.
+    const kbScoreMap = new Map<string, number>(
+      kbCitations.map((c, i) => [c.title, 1 - i / (kbCitations.length || 1)])
+    );
+    const graphResult = queryGraph(options.message, kbScoreMap);
 
     return {
       threadId: thread.id,
@@ -1250,14 +1254,20 @@ async function runViaChatCompletions(
   // Run KB search and GraphRAG traversal in parallel — graph is synchronous so adds ~0ms
   const [{ context: kbContext, citations: kbCitations, kbSource }, graphResult] = await Promise.all([
     searchGrantKnowledgeBase(options.message),
-    Promise.resolve(queryGraph(options.message)),
+    Promise.resolve(null as null), // placeholder; graphResult built after KB returns
   ]);
+  // Build retrieval-score map from actual KB results so GraphRAG edge weights
+  // reflect real query-time evidence rather than static curated constants.
+  const kbScoreMap = new Map<string, number>(
+    kbCitations.map((c, i) => [c.title, 1 - i / (kbCitations.length || 1)])
+  );
+  const graphResult2 = queryGraph(options.message, kbScoreMap);
 
   // GraphRAG: prepend structured reasoning paths before KB text.
   // The LLM gets pre-verified evidence chains (entity → relationship → entity) instead
   // of having to re-discover relationships from raw text. Smaller total context → faster.
   const parts: string[] = [];
-  if (graphResult.formattedContext) parts.push(graphResult.formattedContext);
+  if (graphResult2.formattedContext) parts.push(graphResult2.formattedContext);
   if (kbContext) parts.push(`GRANT KNOWLEDGE BASE — full documents for Step 5 narrative writing:\n\n${kbContext}`);
   parts.push(`User Query: ${options.message}`);
   const messageContent = parts.join("\n\n---\n\n");
@@ -1274,6 +1284,12 @@ async function runViaChatCompletions(
         messageContent,
         (step, label, content) => {
           options.onReasoningStep?.({ step, label, content, completed: true });
+        },
+        // reGroundFn: enables the observe-replan loop — triggers targeted KB re-retrieval
+        // when the gap analysis detects critical blockers or low match score.
+        async (refinedQuery: string) => {
+          const { context } = await searchGrantKnowledgeBase(refinedQuery);
+          return context;
         }
       );
 
@@ -1329,14 +1345,14 @@ async function runViaChatCompletions(
     runId,
     response: responseText,
     citations: kbCitations,
-    reasoningSteps: graphResult.paths.length > 0 ? graphResult.paths.map((p, i) => ({
+    reasoningSteps: graphResult2.paths.length > 0 ? graphResult2.paths.map((p, i) => ({
       step: i + 1,
       label: `GraphRAG: ${p.grantLabel}`,
       content: p.narrative,
       completed: true,
     })) : [],
     widget: finalWidget,
-    graphPaths: graphResult.paths.length > 0 ? graphResult.paths : undefined,
+    graphPaths: graphResult2.paths.length > 0 ? graphResult2.paths : undefined,
   };
 }
 

@@ -21,6 +21,7 @@ import { GuardrailsStrip } from "./GuardrailsStrip";
 import { AppHeader } from "./AppHeader";
 import { TierBadge } from "./TierBadge";
 import { GraphPathsPanel } from "./GraphPathsPanel";
+import { ProcessPill } from "./ProcessPill";
 import {
   IconBuilding, IconSearch, IconSettings, IconNewChat,
   IconCopy, IconCheck, IconBolt,
@@ -570,7 +571,7 @@ function FollowUpCard({ content = "", streaming, isFollowUp = true }: { content:
 }
 
 // ─── Thought Process — vertical timeline ────────────────────────────────────
-function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStreaming: boolean }) {
+function ThoughtProcess({ steps, isStreaming, forceOpen }: { steps: ReasoningStep[]; isStreaming: boolean; forceOpen?: boolean }) {
   const [open, setOpen] = useState(true);
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
 
@@ -582,8 +583,8 @@ function ThoughtProcess({ steps, isStreaming }: { steps: ReasoningStep[]; isStre
   const totalSteps = isStreaming ? Math.max(6, maxSeenStep) : (maxCompletedStep > 0 ? maxCompletedStep : maxSeenStep > 0 ? maxSeenStep : 6);
   const allDone = !isStreaming && completedCount >= totalSteps;
 
-  // Collapse to the clean summary bar once all steps finish
-  useEffect(() => { if (allDone) setOpen(false); }, [allDone]);
+  // Collapse to the clean summary bar once all steps finish — unless forced open (e.g. inside ProcessPill)
+  useEffect(() => { if (allDone && !forceOpen) setOpen(false); }, [allDone, forceOpen]);
 
   if (!steps.length) return null;
   const progress = Math.round((completedCount / totalSteps) * 100);
@@ -996,6 +997,13 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
                             {redTeamReview.overallScore}
                             <span className="ws-intel-score-denom">/100</span>
                           </span>
+                          <span className="ws-intel-score-sub">
+                            {redTeamReview.overallScore >= 80
+                              ? "Federal reviewer would likely approve"
+                              : redTeamReview.overallScore >= 60
+                              ? "Approve with conditions"
+                              : "Significant revisions needed"}
+                          </span>
                         </div>
                       </div>
                       <div className="ws-intel-verdict">
@@ -1037,12 +1045,15 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
                             {competitorIntel.winProbability}%
                             <span className="ws-intel-score-denom"> win</span>
                           </span>
+                          <span className="ws-intel-score-sub">
+                            ~{competitorIntel.estimatedApplicants} applicants expected
+                          </span>
                         </div>
                       </div>
                       <div className="ws-intel-verdict">
                         <span className={`ws-level-dot ws-level-dot--${competitorIntel.competitionLevel}`} />
                         {competitorIntel.competitionLevel.charAt(0).toUpperCase() + competitorIntel.competitionLevel.slice(1)} competition
-                        <span className="ws-intel-applicants"> · ~{competitorIntel.estimatedApplicants} applicants</span>
+                        <span className="ws-intel-applicants"> · stronger position than average</span>
                       </div>
                     </>
                   ) : (
@@ -1070,6 +1081,9 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
                           <span className="ws-intel-score-num" style={{ color: "#22c55e" }}>
                             pts
                             <span className="ws-intel-score-denom"> projected gain</span>
+                          </span>
+                          <span className="ws-intel-score-sub">
+                            Narrative hardened by adversarial self-critique
                           </span>
                         </div>
                       </div>
@@ -2382,109 +2396,30 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                       <div className="assistant-avatar"><IconBuilding size={16} color="#1a6fba" /></div>
                       <div className="assistant-body">
 
-                        {/* Tool call lines — always shown (status connection messages) */}
-                        {msg.statusLog && msg.statusLog.map((s, i) => (
-                          <ToolCallLine
-                            key={i}
-                            status={s}
-                            done={!msg.streaming || i < (msg.statusLog?.length ?? 0) - 1}
-                          />
-                        ))}
-
-                        {/* Skeleton — pure loading animation, only before any steps arrive */}
-                        {msg.streaming && !(msg.reasoningSteps?.length) && (
-                          <GrantRadarSkeleton
-                            statusLog={msg.statusLog ?? []}
-                            completedSteps={0}
-                          />
-                        )}
-
-                        {/* Process block — shown at top while streaming for live progress;
-                            when done these collapse to compact bars and sit above the widget */}
-                        {(msg.reasoningSteps?.length ?? 0) > 0 && (
-                          <ThoughtProcess
-                            steps={msg.reasoningSteps ?? []}
-                            isStreaming={msg.streaming ?? false}
-                          />
-                        )}
-
-                        {/* Dynamic routing — the agent's autonomous branch decisions */}
-                        {(msg.decisions?.length ?? 0) > 0 && (
-                          <div className="decision-trail">
-                            <div className="decision-trail-head">
-                              <IconBolt size={13} />
-                              Adaptive routing — {msg.decisions!.length} path{msg.decisions!.length === 1 ? "" : "s"} taken
-                            </div>
-                            {msg.decisions!.map((d) => (
-                              <div
-                                key={d.id}
-                                className={`decision-row decision-row--${d.kind}${d.branch === "red_team:skip" ? " decision-row--skip" : ""}`}
-                              >
-                                <span className="decision-badge">{d.kind === "requery" ? "RE-QUERY" : "ROUTE"}</span>
-                                <div className="decision-body">
-                                  <span className="decision-label">{d.label}</span>
-                                  <span className="decision-detail">{d.detail}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Multi-agent orchestration strip — live mission control */}
-                        {(msg.reasoningSteps?.length ?? 0) > 0 && (
-                          <AgentOrchestraBar
-                            steps={msg.reasoningSteps ?? []}
-                            citationCount={msg.citations?.length ?? 0}
-                            redTeamReview={msg.redTeamReview}
-                            redTeamSkipped={msg.decisions?.some((d) => d.branch === "red_team:skip") ?? false}
-                            competitorIntel={msg.competitorIntel}
-                            refinedNarrative={msg.refinedNarrative}
-                            reviewStreaming={msg.reviewStreaming}
-                            competitorStreaming={msg.competitorStreaming}
-                            refinementStreaming={msg.refinementStreaming}
-                            streaming={msg.streaming}
-                            startedAt={msg.startedAt}
-                            completedAt={msg.completedAt}
-                            refinementDelta={msg.refinedNarrative?.estimatedScoreDelta}
-                            redTeamScore={msg.redTeamReview?.overallScore}
-                            winProbability={msg.competitorIntel?.winProbability}
-                            competitionLevel={msg.competitorIntel?.competitionLevel}
-                          />
-                        )}
-
-                        {/* A2A Handoff Trace — live typed payloads flowing between agents */}
-                        {(msg.agentHandoffs?.length ?? 0) > 0 && (
-                          <AgentHandoffTrace handoffs={msg.agentHandoffs ?? []} />
-                        )}
-
-                        {/* Tier provenance badge — shows which LLM tier ran and guardrails status */}
-                        {msg.tierInfo && (
-                          <TierBadge
-                            tier={msg.tierInfo.tier}
-                            label={msg.tierInfo.label}
-                            guardrailsPassed={msg.tierInfo.guardrailsPassed}
-                            violations={msg.tierInfo.violations}
-                          />
-                        )}
-
-                        {/* Foundry MCP tool calls — shows knowledge_base_retrieve in action */}
-                        {(msg.toolCalls?.length ?? 0) > 0 && (
-                          <div className="tool-calls-strip">
-                            {msg.toolCalls!.map((tc, i) => (
-                              <div key={i} className="tool-call-chip" title={`Source: ${tc.source}`}>
-                                <span className="tool-call-chip__icon">⚙</span>
-                                <span className="tool-call-chip__name">{tc.tool}</span>
-                                <span className="tool-call-chip__query">"{tc.query}"</span>
-                                <span className="tool-call-chip__tier">Tier {tc.tier}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Guardrails summary — 17-rule safety pipeline audit */}
-                        {msg.guardrailsSummary && (
-                          <GuardrailsStrip data={msg.guardrailsSummary} />
-                        )}
+                        {/* ── Process Pill — collapses all agent trace into expandable summary ── */}
+                        <ProcessPill
+                          streaming={msg.streaming}
+                          statusLog={msg.statusLog}
+                          reasoningSteps={msg.reasoningSteps}
+                          decisions={msg.decisions}
+                          redTeamReview={msg.redTeamReview}
+                          competitorIntel={msg.competitorIntel}
+                          refinedNarrative={msg.refinedNarrative}
+                          reviewStreaming={msg.reviewStreaming}
+                          competitorStreaming={msg.competitorStreaming}
+                          refinementStreaming={msg.refinementStreaming}
+                          agentHandoffs={msg.agentHandoffs}
+                          tierInfo={msg.tierInfo}
+                          toolCalls={msg.toolCalls}
+                          guardrailsSummary={msg.guardrailsSummary}
+                          startedAt={msg.startedAt}
+                          completedAt={msg.completedAt}
+                          processContent={
+                            (msg.reasoningSteps?.length ?? 0) > 0
+                              ? <ThoughtProcess steps={msg.reasoningSteps!} isStreaming={msg.streaming ?? false} forceOpen />
+                              : undefined
+                          }
+                        />
 
                         {/* GraphRAG paths: accessible via References sidebar */}
 

@@ -49,7 +49,7 @@ async function quickChat(
   const run = async () => {
     const oai = getOpenAIClient();
     const resp = await oai.chat.completions.create({
-      model: config.foundryModelDeployment,
+      model: config.foundrySubagentDeployment, // sub-agents use the faster model
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userContent },
@@ -1125,24 +1125,36 @@ function parseStep6(content: string): Pick<SixStepResult["strategy"], "actionIte
  * Orchestrates 6 real agent functions — each is a separate LLM call with its own
  * withFallback(), quality gate, and focused system prompt.
  *
- * Execution graph (optimized for latency):
+ * Execution graph (with agentic observe-replan loop):
+ *
  *   Step 1 (Parse)
  *     ├── Step 2 (Match)    ─┐  ← parallel: both only need step 1
  *     └── Step 3 (Financial)─┘
  *              └── Step 4 (Gap Analysis)    ← waits for 2+3
- *                       └── Step 5 (Narrative)
- *                                └── Step 6 (Strategy)
+ *                       │
+ *                    [OBSERVE] ← controller evaluates gap severity + match score
+ *                       │
+ *                    [REPLAN?] ← if critical gaps + low score: re-ground with targeted query
+ *                       │
+ *                    Step 4b (Gap Analysis — rerun with enriched context)
+ *                       │
+ *                    Step 5 (Narrative)    ← uses best gap analysis
+ *                             └── Step 6 (Strategy)
  *
- * Steps 2+3 run concurrently → saves one full LLM round-trip vs. pure sequential.
+ * The observe-replan loop is what separates "agentic reasoning" from sequential
+ * prompt chaining: the controller DECIDES based on intermediate results whether
+ * more retrieval is needed before proceeding, and can iterate up to 2 times.
  *
  * @param query    User's grant query
  * @param kbContext  Retrieved KB context (graph paths + raw docs)
  * @param onStep   Callback fired when each agent completes (drives real-time UI updates)
+ * @param reGroundFn  Optional: function to retrieve additional KB context (enables the replan loop)
  */
 export async function runSixStepChain(
   query: string,
   kbContext: string,
-  onStep?: (step: number, label: string, content: string) => void
+  onStep?: (step: number, label: string, content: string) => void,
+  reGroundFn?: (refinedQuery: string) => Promise<string>
 ): Promise<SixStepResult> {
   const t0 = Date.now();
 
@@ -1166,9 +1178,52 @@ export async function runSixStepChain(
   ]);
 
   // ── Step 4: Gap Analysis (needs 1+2+3) ──────────────────────────────────
-  const step4Out = await runStep4GapAgent(query, step1Out, step2Out, step3Out);
+  let step4Out = await runStep4GapAgent(query, step1Out, step2Out, step3Out);
   onStep?.(4, STEP_LABELS[3], step4Out);
   console.log(`[SixStepChain] Step 4 done in ${Date.now() - t0}ms`);
+
+  // ── OBSERVE + REPLAN LOOP ────────────────────────────────────────────────
+  // Parse the initial gap analysis to determine if re-grounding is warranted.
+  let { matchScore, gaps, strengths } = parseStep4(step4Out);
+
+  const criticalGapCount = gaps.filter(g => g.severity === "critical").length;
+  const needsReplan = matchScore < 50 || criticalGapCount >= 2;
+
+  if (needsReplan && reGroundFn) {
+    // Build a targeted re-ground query addressing the specific gaps found
+    const gapTitles = gaps.map(g => g.title).join(", ");
+    const refinedQuery = `Buffalo Grove grant eligibility evidence for: ${gapTitles}. Grant: ${query.slice(0, 200)}`;
+
+    console.log(`[SixStepChain] REPLAN triggered — matchScore=${matchScore}%, criticalGaps=${criticalGapCount}. Re-grounding on: ${gapTitles.slice(0, 80)}`);
+    onStep?.(4, STEP_LABELS[3], `${step4Out}\n\n[AGENT OBSERVE: Match score ${matchScore}%, ${criticalGapCount} critical gaps detected. Triggering re-grounding retrieval...]`);
+
+    try {
+      const enrichedContext = await reGroundFn(refinedQuery);
+      if (enrichedContext && enrichedContext.length > 200) {
+        // Re-run step 4 with enriched context
+        const enrichedKbContext = `${kbContext}\n\n--- TARGETED RE-GROUNDING CONTEXT ---\n${enrichedContext}`;
+        const step4bOut = await runStep4GapAgent(query, step1Out, step2Out, step3Out + `\n\nADDITIONAL CONTEXT:\n${enrichedContext.slice(0, 1500)}`);
+        const reparsed = parseStep4(step4bOut);
+        // Only use the re-run result if it actually improved things
+        if (reparsed.matchScore > matchScore || reparsed.gaps.filter(g => g.severity === "critical").length < criticalGapCount) {
+          console.log(`[SixStepChain] REPLAN improved: ${matchScore}% → ${reparsed.matchScore}%, critical gaps ${criticalGapCount} → ${reparsed.gaps.filter(g => g.severity === "critical").length}`);
+          step4Out = `${step4bOut}\n\n[AGENT REPLAN: Re-ran gap analysis with targeted retrieval. Score improved from ${matchScore}% to ${reparsed.matchScore}%.]`;
+          matchScore = reparsed.matchScore;
+          gaps = reparsed.gaps;
+          strengths = reparsed.strengths;
+          onStep?.(4, STEP_LABELS[3], step4Out);
+        } else {
+          console.log(`[SixStepChain] REPLAN: re-grounding did not improve scores — using original step 4`);
+        }
+      }
+    } catch (err) {
+      console.warn(`[SixStepChain] REPLAN re-grounding failed: ${(err as Error).message?.slice(0, 80)}`);
+    }
+  } else if (needsReplan && !reGroundFn) {
+    // No re-ground function — log that we would replan if available
+    console.log(`[SixStepChain] OBSERVE: low score (${matchScore}%) but no re-ground function available — proceeding`);
+  }
+  // ── END OBSERVE+REPLAN ───────────────────────────────────────────────────
 
   // ── Step 5: Narrative (needs 1+2+4) ─────────────────────────────────────
   const step5Out = await runStep5NarrativeAgent(query, kbContext, step1Out, step2Out, step4Out);
@@ -1180,8 +1235,7 @@ export async function runSixStepChain(
   onStep?.(6, STEP_LABELS[5], step6Out);
   console.log(`[SixStepChain] Step 6 done in ${Date.now() - t0}ms`);
 
-  // ── Parse structured data out of step 4 and step 6 ──────────────────────
-  const { matchScore, gaps, strengths } = parseStep4(step4Out);
+  // ── Parse structured data out of step 6 ─────────────────────────────────
   const strategyParts = parseStep6(step6Out);
 
   // Extract grant name + agency from step 1
