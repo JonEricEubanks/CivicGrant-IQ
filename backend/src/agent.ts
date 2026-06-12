@@ -1135,7 +1135,8 @@ async function runViaAssistantsApi(
       assistant_id: assistant.id,
     }) as AsyncIterable<{ event: string; data: Record<string, unknown> }>;
 
-    for await (const event of runStream) {
+    try {
+      for await (const event of runStream) {
       if (event.event === "thread.message.delta") {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const deltas: Array<{ type: string; text?: { value?: string } }> =
@@ -1178,6 +1179,16 @@ async function runViaAssistantsApi(
       }
       if (event.event === "thread.run.completed") {
         runId = String((event.data as { id?: string })?.id ?? runId);
+      }
+      }
+    } catch (streamErr) {
+      // Azure Assistants API sends `event: keepalive` with empty data; the OpenAI SDK
+      // tries JSON.parse("") and throws SyntaxError. If we already have response text,
+      // treat this as a graceful stream end rather than a Tier 1 failure.
+      if (streamErr instanceof SyntaxError && responseText.length > 0) {
+        console.warn("[Agent] Tier 1 stream ended with keepalive — treating as complete");
+      } else {
+        throw streamErr;
       }
     }
 
