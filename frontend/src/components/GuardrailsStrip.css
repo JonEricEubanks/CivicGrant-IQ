@@ -1,0 +1,151 @@
+.guardrails-strip {
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #d1fae5;
+  background: #f0fdf4;
+  overflow: hidden;
+}
+
+.guardrails-strip--warn {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.guardrails-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.guardrails-header:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.guardrails-icon {
+  font-size: 13px;
+}
+
+.guardrails-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #064e3b;
+  letter-spacing: 0.02em;
+}
+
+.guardrails-count {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 20px;
+}
+
+.guardrails-count--pass {
+  color: #065f46;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+}
+
+.guardrails-count--warn {
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+}
+
+.guardrails-layers {
+  display: flex;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.guardrails-layer-chip {
+  font-size: 10px;
+  color: #6b7280;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1px 6px;
+}
+
+.guardrails-toggle {
+  margin-left: auto;
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+/* Body */
+.guardrails-body {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.6);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.guardrails-section {
+  flex: 1;
+  min-width: 200px;
+}
+
+.guardrails-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.guardrails-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Rule row */
+.guardrail-rule {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.guardrail-rule--pass   { color: #065f46; }
+.guardrail-rule--warn   { color: #92400e; background: #fffbeb; }
+.guardrail-rule--info   { color: #1e40af; }
+.guardrail-rule--block  { color: #991b1b; background: #fef2f2; }
+
+.guardrail-rule__icon {
+  font-size: 10px;
+  width: 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.guardrail-rule__id {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #9ca3af;
+  min-width: 22px;
+}
+
+.guardrail-rule__label {
+  font-weight: 500;
+  flex: 1;
+}
+
+.guardrail-rule__msg {
+  font-size: 10px;
+  color: #b45309;
+  font-style: italic;
+  flex-shrink: 0;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

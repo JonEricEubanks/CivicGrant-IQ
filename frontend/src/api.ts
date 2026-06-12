@@ -16,6 +16,8 @@ type SSEHandler = {
   onCompetitorIntel?: (data: import("./types").CompetitorIntelResult) => void;
   onRefinedNarrative?: (data: import("./types").RefinedNarrativeResult) => void;
   onAgentHandoff?: (data: import("./types").AgentHandoff) => void;
+  onToolCall?: (data: import("./types").ToolCallEvent) => void;
+  onGuardrailsSummary?: (data: import("./types").GuardrailsSummaryData) => void;
   onTierInfo?: (data: { tier: number; label: string; guardrailsPassed: boolean; violations: number }) => void;
   onGraphPaths?: (data: { paths: import("./types").GraphPath[] }) => void;
   onDone?: (threadId: string) => void;
@@ -77,6 +79,8 @@ export async function streamChat(
         if (event === "competitor_intel") handlers.onCompetitorIntel?.(parsed);
         if (event === "refined_narrative") handlers.onRefinedNarrative?.(parsed);
         if (event === "agent_handoff") handlers.onAgentHandoff?.(parsed);
+        if (event === "tool_call") handlers.onToolCall?.(parsed);
+        if (event === "guardrails_summary") handlers.onGuardrailsSummary?.(parsed);
         if (event === "answer") handlers.onAnswer?.(parsed);
         if (event === "done") handlers.onDone?.(parsed.threadId);
         if (event === "error") handlers.onError?.(parsed.message);

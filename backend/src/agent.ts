@@ -384,6 +384,8 @@ export interface AgentRunOptions {
   onRetrying?: (waitMs: number) => void;
   onChunk?: (text: string) => void;
   onReasoningStep?: (step: ReasoningStep) => void;
+  /** Fired when the Foundry Assistants API calls a tool (e.g. knowledge_base_retrieve) */
+  onToolCall?: (toolName: string, input: string) => void;
 }
 
 export interface AgentRunResult {
@@ -1166,6 +1168,23 @@ async function runViaAssistantsApi(
                 }
               }
             }
+          }
+        }
+      }
+      // Detect MCP / function tool calls so the UI can show "Foundry IQ KB retrieve" in real time
+      if (event.event === "thread.run.step.delta" && options.onToolCall) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const stepDelta = (event.data as any)?.delta?.step_details;
+        if (stepDelta?.type === "tool_calls") {
+          for (const tc of stepDelta.tool_calls ?? []) {
+            const toolName: string = tc?.function?.name ?? tc?.mcp?.name ?? "knowledge_base_retrieve";
+            const toolInput: string =
+              typeof tc?.function?.arguments === "string"
+                ? tc.function.arguments
+                : typeof tc?.mcp?.arguments === "string"
+                ? tc.mcp.arguments
+                : JSON.stringify(tc?.mcp ?? tc?.function ?? {});
+            options.onToolCall(toolName, toolInput);
           }
         }
       }

@@ -10,6 +10,7 @@ interface AgentChip {
   label: string;
   icon: React.ReactNode;
   state: AgentState;
+  badge?: string;
 }
 
 export interface AgentOrchestraBarProps {
@@ -26,6 +27,10 @@ export interface AgentOrchestraBarProps {
   startedAt?: number;
   completedAt?: number;
   refinementDelta?: number;
+  /** Score badges shown on done chips for judge visibility */
+  redTeamScore?: number;
+  winProbability?: number;
+  competitionLevel?: string;
 }
 
 /**
@@ -52,6 +57,9 @@ export function AgentOrchestraBar({
   startedAt,
   completedAt,
   refinementDelta,
+  redTeamScore,
+  winProbability,
+  competitionLevel,
 }: AgentOrchestraBarProps) {
   const [now, setNow] = useState(() => Date.now());
 
@@ -84,18 +92,21 @@ export function AgentOrchestraBar({
       label: redTeamSkipped ? "Red Team — skipped" : "Red Team Reviewer",
       icon: <IconScales size={13} />,
       state: redTeamReview ? "done" : redTeamSkipped ? "skipped" : reviewStreaming ? "active" : "pending",
+      badge: redTeamReview && typeof redTeamScore === "number" ? `${redTeamScore}/100` : undefined,
     },
     {
       key: "competitor",
       label: "Competitive Intel",
       icon: <IconTarget size={13} />,
       state: competitorIntel ? "done" : competitorStreaming ? "active" : "pending",
+      badge: competitorIntel && typeof winProbability === "number" ? `${winProbability}% win` : competitorIntel && competitionLevel ? competitionLevel.toUpperCase() : undefined,
     },
     {
       key: "refiner",
       label: "Self-Critique Refiner",
       icon: <IconBolt size={13} />,
       state: refinedNarrative ? "done" : refinementStreaming ? "active" : "pending",
+      badge: refinedNarrative && typeof refinementDelta === "number" && refinementDelta > 0 ? `+${refinementDelta} pts` : undefined,
     },
   ];
 
@@ -132,6 +143,7 @@ export function AgentOrchestraBar({
               </span>
               <span className="orchestra-node-label">{a.label}</span>
               {a.state === "active" && <span className="orchestra-node-dots"><span /><span /><span /></span>}
+              {a.state === "done" && a.badge && <span className="orchestra-node-badge">{a.badge}</span>}
             </div>
             {i < agents.length - 1 && (
               <span className={`orchestra-link ${a.state === "done" ? "orchestra-link--done" : ""}`} />

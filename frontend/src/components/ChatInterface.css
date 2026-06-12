@@ -2968,6 +2968,60 @@
   color: #dc2626;
 }
 
+/* ── Foundry MCP tool call strip ───────────────────────────────────────────── */
+.tool-calls-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.tool-call-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #4338ca;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.tool-call-chip__icon {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.tool-call-chip__name {
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.tool-call-chip__query {
+  font-style: italic;
+  color: #6366f1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.tool-call-chip__tier {
+  font-size: 9px;
+  font-weight: 700;
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.12);
+  border-radius: 8px;
+  padding: 1px 5px;
+  flex-shrink: 0;
+}
+
 /* --- Workspace artifact log ----------------------------------- */
 .ws-artifact-item {
   align-items: center;

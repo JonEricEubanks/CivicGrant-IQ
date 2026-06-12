@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
 import { streamChat, streamScan, generatePackage, draftApplication, fetchGrantUrl, fetchMonitor, fetchHeroGrants, fetchFabricContext } from "../api";
 import type { FetchedUrl, MonitorData, HeroGrantResult, FabricIqContext } from "../api";
-import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext, CityProfile, AgentHandoff } from "../types";
+import type { ReasoningStep, Citation, RedTeamResult, CompetitorIntelResult, RefinedNarrativeResult, OrchestrationDecision, WorkIqCityContext, CityProfile, AgentHandoff, ToolCallEvent, GuardrailsSummaryData } from "../types";
 import { GrantMatchWidget } from "./GrantMatchWidget";
 import type { GrantMatchData } from "./GrantMatchWidget";
 import { GrantPipelineWidget } from "./GrantPipelineWidget";
@@ -17,6 +17,7 @@ import type { ReportPayload } from "./ReportPreviewModal";
 import { GrantRadarSkeleton } from "./GrantRadarSkeleton";
 import { AgentOrchestraBar } from "./AgentOrchestraBar";
 import { AgentHandoffTrace } from "./AgentHandoffTrace";
+import { GuardrailsStrip } from "./GuardrailsStrip";
 import { AppHeader } from "./AppHeader";
 import { TierBadge } from "./TierBadge";
 import { GraphPathsPanel } from "./GraphPathsPanel";
@@ -47,6 +48,8 @@ interface Message {
   competitorIntel?: CompetitorIntelResult;
   refinedNarrative?: RefinedNarrativeResult;
   agentHandoffs?: AgentHandoff[];
+  toolCalls?: ToolCallEvent[];
+  guardrailsSummary?: GuardrailsSummaryData;
   workIqContext?: WorkIqCityContext;
   tierInfo?: { tier: 1 | 2 | 3; label: string; guardrailsPassed: boolean; violations: number };
   graphPaths?: import("../types").GraphPath[];
@@ -1855,6 +1858,22 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
             )
           );
         },
+        onToolCall: (tc) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? { ...m, toolCalls: [...(m.toolCalls ?? []), tc] }
+                : m
+            )
+          );
+        },
+        onGuardrailsSummary: (summary) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId ? { ...m, guardrailsSummary: summary } : m
+            )
+          );
+        },
         onTierInfo: (info) => {
           setMessages((prev) =>
             prev.map((m) =>
@@ -2427,12 +2446,15 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                             startedAt={msg.startedAt}
                             completedAt={msg.completedAt}
                             refinementDelta={msg.refinedNarrative?.estimatedScoreDelta}
+                            redTeamScore={msg.redTeamReview?.overallScore}
+                            winProbability={msg.competitorIntel?.winProbability}
+                            competitionLevel={msg.competitorIntel?.competitionLevel}
                           />
+                        )}
 
                         {/* A2A Handoff Trace — live typed payloads flowing between agents */}
                         {(msg.agentHandoffs?.length ?? 0) > 0 && (
                           <AgentHandoffTrace handoffs={msg.agentHandoffs ?? []} />
-                        )}
                         )}
 
                         {/* Tier provenance badge — shows which LLM tier ran and guardrails status */}
@@ -2445,7 +2467,26 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                           />
                         )}
 
-                        {/* GraphRAG paths: accessible via References sidebar — click the GraphRAG entry to open popout */}
+                        {/* Foundry MCP tool calls — shows knowledge_base_retrieve in action */}
+                        {(msg.toolCalls?.length ?? 0) > 0 && (
+                          <div className="tool-calls-strip">
+                            {msg.toolCalls!.map((tc, i) => (
+                              <div key={i} className="tool-call-chip" title={`Source: ${tc.source}`}>
+                                <span className="tool-call-chip__icon">⚙</span>
+                                <span className="tool-call-chip__name">{tc.tool}</span>
+                                <span className="tool-call-chip__query">"{tc.query}"</span>
+                                <span className="tool-call-chip__tier">Tier {tc.tier}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Guardrails summary — 17-rule safety pipeline audit */}
+                        {msg.guardrailsSummary && (
+                          <GuardrailsStrip data={msg.guardrailsSummary} />
+                        )}
+
+                        {/* GraphRAG paths: accessible via References sidebar */}
 
                         {/* ── VALUE SECTION ── Widget */}
                         {msg.widget?.type === "grant_match" && (

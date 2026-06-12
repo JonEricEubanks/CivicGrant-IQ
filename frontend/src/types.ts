@@ -167,6 +167,30 @@ export interface AgentHandoff {
   };
 }
 
+// ─── Foundry MCP tool call ────────────────────────────────────────────────────
+export interface ToolCallEvent {
+  tool: string;
+  query: string;
+  tier: number;
+  source: string;
+}
+
+// ─── Guardrails summary ───────────────────────────────────────────────────────
+export interface GuardrailRule {
+  id: string;
+  label: string;
+  layer: "input" | "output";
+  status: "PASS" | "WARN" | "INFO" | "BLOCK";
+  message?: string;
+}
+
+export interface GuardrailsSummaryData {
+  rulesActive: number;
+  rules: GuardrailRule[];
+  passCount: number;
+  violationCount: number;
+}
+
 // ─── Portfolio Orchestrator ──────────────────────────────────────────────────
 export interface PortfolioItem {
   grantName: string;
