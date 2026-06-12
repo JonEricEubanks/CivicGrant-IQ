@@ -1,0 +1,11 @@
+{
+  "location": "eastus2",
+  "sku": {
+    "name": "developer"
+  },
+  "properties": {
+    "replicaCount": 1,
+    "partitionCount": 1,
+    "hostingMode": "default"
+  }
+}
