@@ -48,6 +48,8 @@ interface Message {
   workIqContext?: WorkIqCityContext;
   tierInfo?: { tier: 1 | 2 | 3; label: string; guardrailsPassed: boolean; violations: number };
   graphPaths?: import("../types").GraphPath[];
+  routingDecision?: { intent: string; sources: string[]; widgetType: string };
+  concurrencyLog?: string[];
   reviewStreaming?: boolean;
   competitorStreaming?: boolean;
   refinementStreaming?: boolean;
@@ -1267,9 +1269,22 @@ const LOCAL_WORK_IQ_DOCS: AttachDoc[] = [
 ];
 
 const FOUNDRY_IQ_DOCS: AttachDoc[] = [
-  { id: "fiq-city", label: "City Profile 2026", desc: "Foundry IQ vector index \u00b7 demographics & financials", source: "foundry-iq" },
-  { id: "fiq-cip", label: "Capital Improvement Plan", desc: "Foundry IQ vector index \u00b7 projects & budgets", source: "foundry-iq" },
-  { id: "fiq-past-apps", label: "Past Grant Applications", desc: "Foundry IQ vector index \u00b7 BRIC, SMC, RAISE precedents", source: "foundry-iq" },
+  // City & Capital context
+  { id: "fiq-city", label: "City Profile 2026", desc: "Foundry IQ · demographics, financials & city overview", source: "foundry-iq" },
+  { id: "fiq-cip", label: "Capital Improvement Plan 2026–2030", desc: "Foundry IQ · infrastructure projects, budgets & timelines", source: "foundry-iq" },
+  // Past applications
+  { id: "fiq-bric-2025", label: "BRIC Application — Buffalo Creek 2025", desc: "Foundry IQ · past application narrative & scoring feedback", source: "foundry-iq" },
+  { id: "fiq-smc-2024", label: "SMC Award — Northwood Stormwater 2024", desc: "Foundry IQ · awarded application with compliance data", source: "foundry-iq" },
+  { id: "fiq-raise-2024", label: "RAISE Application — Aptakisic IL83 2024", desc: "Foundry IQ · transportation grant application & scoring", source: "foundry-iq" },
+  // Grant intelligence
+  { id: "fiq-federal-programs", label: "Federal Major Grant Programs 2026", desc: "Foundry IQ · BRIC, RAISE, CDBG-DR, BUILD, EPA programs", source: "foundry-iq" },
+  { id: "fiq-scoring-rubrics", label: "Federal Grant Scoring Rubrics", desc: "Foundry IQ · winning criteria & reviewer scoring logic", source: "foundry-iq" },
+  { id: "fiq-calendar", label: "Grant Calendar FY2026 Deadlines", desc: "Foundry IQ · upcoming deadlines & notice of funding dates", source: "foundry-iq" },
+  { id: "fiq-metro-landscape", label: "Metro/Suburban Grant Landscape 2026", desc: "Foundry IQ · competitive landscape for suburban municipalities", source: "foundry-iq" },
+  { id: "fiq-smallcity", label: "Small City & Rural Grant Guide", desc: "Foundry IQ · programs sized for communities under 50K", source: "foundry-iq" },
+  { id: "fiq-framework", label: "Universal City Grant Framework", desc: "Foundry IQ · cross-program strategy & eligibility matrix", source: "foundry-iq" },
+  { id: "fiq-equity", label: "Equity & Justice40 Framing Guide", desc: "Foundry IQ · DAC scoring, equity narratives & J40 criteria", source: "foundry-iq" },
+  { id: "fiq-stacking", label: "Multi-Grant Stacking Strategies", desc: "Foundry IQ · layering federal, state & local funding", source: "foundry-iq" },
 ];
 
 const FABRIC_IQ_DOCS: AttachDoc[] = [
@@ -1279,7 +1294,7 @@ const FABRIC_IQ_DOCS: AttachDoc[] = [
   { id: "fab-graph", label: "Grant Graph Relationships", desc: "Fabric IQ \u00b7 GQL-powered relationship map across programs & agencies", source: "fabric-iq" },
 ];
 
-export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, autoScan, onScanTriggered }: { onSwitchToScan?: () => void; onSwitchToAdmin?: () => void; tourButton?: ReactNode; autoScan?: boolean; onScanTriggered?: () => void }) {
+export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, autoScan, onScanTriggered }: { onSwitchToScan?: () => void; onSwitchToAdmin?: (grantId?: string) => void; tourButton?: ReactNode; autoScan?: boolean; onScanTriggered?: () => void }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [threadId, setThreadId] = useState<string | undefined>();
@@ -1721,6 +1736,15 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
             prev.map((m) => (m.id === assistantId ? { ...m, isFollowUp } : m))
           );
         },
+        onRoutingDecision: ({ intent, sources, widgetType }) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? { ...m, routingDecision: { intent, sources, widgetType }, concurrencyLog: [`📍 ROUTING: ${intent} | Sources: ${sources.join(", ")} | Widget: ${widgetType}`] }
+                : m
+            )
+          );
+        },
         onWorkIqContext: (context) => {
           setMessages((prev) =>
             prev.map((m) => (m.id === assistantId ? { ...m, workIqContext: context } : m))
@@ -1751,7 +1775,14 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
               const updated = idx >= 0
                 ? existing.map((s) => s.step === step.step ? step : s)
                 : [...existing, step];
-              return { ...m, reasoningSteps: updated };
+              
+              // Track concurrency markers
+              const concurrencyMarkers = step.content.match(/\[(Competitive Intel|Red Team|Refinement|All agents|awaiting).*?\]/gi) ?? [];
+              const newConcurrencyLog = concurrencyMarkers.length > 0
+                ? [...(m.concurrencyLog ?? []), ...concurrencyMarkers]
+                : m.concurrencyLog;
+
+              return { ...m, reasoningSteps: updated, concurrencyLog: newConcurrencyLog };
             })
           );
         },
@@ -2415,6 +2446,9 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                             grants={msg.widget.data.grants}
                             cityName={msg.widget.data.cityName}
                             totalOpportunity={msg.widget.data.totalOpportunity}
+                            onViewAdmin={(grant) => {
+                              onSwitchToAdmin?.(grant.grantId);
+                            }}
                           />
                         )}
 
@@ -2613,8 +2647,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                 { id: "meetings", label: "Meetings", count: calItems.length },
                 { id: "emails", label: "Emails", count: mailItems.length },
                 ...(teamsItems.length > 0 ? [{ id: "teams" as PickerTab, label: "Teams", count: teamsItems.length }] : []),
-                { id: "foundry-iq", label: "Foundry IQ" },
-                { id: "fabric-iq", label: "Fabric IQ" },
+                { id: "foundry-iq", label: "Foundry IQ", count: FOUNDRY_IQ_DOCS.length },
+                { id: "fabric-iq", label: "Fabric IQ", count: FABRIC_IQ_DOCS.length },
               ];
 
               const q = attachSearch.toLowerCase();

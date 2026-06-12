@@ -306,21 +306,34 @@ adminChatRouter.post("/", async (req: Request, res: Response) => {
 /**
  * GET /api/admin-chat/portfolio
  * Returns the full grant portfolio as JSON (for initial dashboard load).
+ *
+ * Performance: always returns immediately with static data. If the Fabric
+ * context is already cached (warm), we overlay live data at zero extra cost.
+ * A cold Fabric call is kicked off in the background so the next request hits
+ * the cache instead of waiting on SQL + REST timeouts.
  */
 adminChatRouter.get("/portfolio", async (_req: Request, res: Response) => {
   let fabricLive = false;
   let fabricPulledAt: string | null = null;
   let grants = GRANT_PORTFOLIO as typeof GRANT_PORTFOLIO;
 
+  // Only use Fabric if the cache is already warm (avoids cold-start delay)
   try {
-    const fabricCtx = await getFabricContext(false);
-    if (fabricCtx.source !== "fabric-offline" && fabricCtx.grantRows.length) {
+    const fabricCtx = await Promise.race([
+      getFabricContext(false),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 50)),
+    ]);
+    if (fabricCtx && fabricCtx.source !== "fabric-offline" && fabricCtx.grantRows.length) {
       const { merged, liveCount } = mergePortfolioWithFabric(fabricCtx.grantRows);
       if (liveCount > 0) {
         grants = merged as typeof GRANT_PORTFOLIO;
         fabricLive = true;
         fabricPulledAt = fabricCtx.pulledAt;
       }
+    }
+    // If cache was cold (null returned), warm it in the background
+    if (!fabricCtx) {
+      getFabricContext(false).catch(() => { /* silent background warm */ });
     }
   } catch {
     // Fabric unavailable — fall back to static data

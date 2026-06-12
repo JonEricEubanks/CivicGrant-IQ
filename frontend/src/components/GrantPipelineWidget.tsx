@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IconPanelRight } from "./Icons";
 import "./GrantPipelineWidget.css";
 
 export interface PipelineGrant {
@@ -29,31 +30,38 @@ interface Props {
   cityName: string;
   totalOpportunity: number;
   onAnalyze?: (grant: PipelineGrant) => void;
+  onViewAdmin?: (grant: PipelineGrant) => void;
 }
 
 function BarProgress({ score, delay }: { score: number; delay: number }) {
   const [width, setWidth] = useState(0);
+  const displayScore = Math.round(score);
   const color = score >= 70 ? "#22c55e" : score >= 45 ? "#f59e0b" : "#ef4444";
   useEffect(() => {
     const t = setTimeout(() => setWidth(score), delay);
     return () => clearTimeout(t);
   }, [score, delay]);
   return (
-    <div className="bar-track">
-      <div
-        className="bar-fill"
-        style={{ width: `${width}%`, background: color, boxShadow: `0 0 8px ${color}66`, transition: `width 0.8s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms` }}
-      />
-      <span className="bar-score" style={{ color }}>{score}%</span>
+    <div className="bar-progress">
+      <div className="bar-track">
+        <div
+          className="bar-fill"
+          style={{ width: `${width}%`, background: color, boxShadow: `0 0 8px ${color}66`, transition: `width 0.8s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms` }}
+        />
+      </div>
+      <span className="bar-score" style={{ color, borderColor: color, backgroundColor: `${color}14` }}>
+        <span className="bar-score-label">Match</span>
+        <span className="bar-score-value">{displayScore}%</span>
+      </span>
     </div>
   );
 }
 
-export function GrantPipelineWidget({ grants, cityName, totalOpportunity, onAnalyze }: Props) {
+export function GrantPipelineWidget({ grants, cityName, totalOpportunity, onAnalyze, onViewAdmin }: Props) {
   return (
     <div className="pipeline-widget">
       <div className="pipeline-header">
-        <div className="pipeline-badge">📊 Grant Pipeline</div>
+        <div className="pipeline-badge">Grant Pipeline</div>
         <div className="pipeline-city">{cityName}</div>
         <div className="pipeline-total">
           <span className="pipeline-total-label">Total Opportunity</span>
@@ -73,7 +81,7 @@ export function GrantPipelineWidget({ grants, cityName, totalOpportunity, onAnal
                 <div className="pipeline-meta">
                   <span className="pipeline-agency">{g.agency}</span>
                   <span className="pipeline-focus">{g.focusArea}</span>
-                  {urgent && <span className="pipeline-urgent-badge">⏰ {daysLeft}d left</span>}
+                  {urgent && <span className="pipeline-urgent-badge">Due in {daysLeft}d</span>}
                   {g.grantsGovUrl && (
                     <a
                       className="pipeline-live-badge"
@@ -82,7 +90,7 @@ export function GrantPipelineWidget({ grants, cityName, totalOpportunity, onAnal
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      🟢 Live on grants.gov ↗
+                      Live on grants.gov
                     </a>
                   )}
                 </div>
@@ -93,11 +101,23 @@ export function GrantPipelineWidget({ grants, cityName, totalOpportunity, onAnal
                 {g.fundingVerified && (
                   <div className="pipeline-amount-verified" title="Real published program funding from Grants.gov">✓ verified</div>
                 )}
-                {onAnalyze && (
-                  <button className="analyze-btn" onClick={() => onAnalyze(g)}>
-                    Analyze →
-                  </button>
-                )}
+                <div className="button-group">
+                  {onViewAdmin && (
+                    <button
+                      className="view-admin-btn"
+                      onClick={() => onViewAdmin(g)}
+                      title="Open the admin dashboard for this grant"
+                      aria-label="Open admin dashboard"
+                    >
+                      <IconPanelRight size={14} />
+                    </button>
+                  )}
+                  {onAnalyze && (
+                    <button className="analyze-btn" onClick={() => onAnalyze(g)}>
+                      Analyze
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           );

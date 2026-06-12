@@ -10,13 +10,17 @@ type Tab = "chat" | "scan" | "admin";
 
 export default function App(): JSX.Element {
   const [tab, setTab] = useState<Tab>("chat");
+  const [selectedAdminGrantId, setSelectedAdminGrantId] = useState<string | null>(null);
   const tourButton = <DemoTour onNavigate={setTab} />;
 
   if (tab === "chat" || tab === "scan") {
     return (
       <ChatInterface
         onSwitchToScan={() => setTab("scan")}
-        onSwitchToAdmin={() => setTab("admin")}
+        onSwitchToAdmin={(grantId) => {
+          setSelectedAdminGrantId(grantId ?? null);
+          setTab("admin");
+        }}
         tourButton={tourButton}
         autoScan={tab === "scan"}
         onScanTriggered={() => setTab("chat")}
@@ -29,7 +33,7 @@ export default function App(): JSX.Element {
       <a href="#main-content" className="skip-nav">Skip to main content</a>
       <AppHeader active="admin" onNavigate={setTab} actions={tourButton} />
       <main id="main-content" className="admin-page">
-        <GrantAdminDashboard />
+        <GrantAdminDashboard initialSelectedGrantId={selectedAdminGrantId} />
       </main>
     </div>
   );

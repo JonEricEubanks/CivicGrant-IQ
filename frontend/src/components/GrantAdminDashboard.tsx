@@ -3,6 +3,7 @@ import type { JSX } from "react";
 import type { AdminGrant, AdminMilestone, AdminComplianceItem, AdminPortfolioStats, AdminChatMessage, AdminWidgetData } from "../types";
 import { fetchAdminPortfolio, streamAdminChat, streamGenerateReport } from "../api";
 import type { ReportType } from "../api";
+import { AdminDashboardSkeleton } from "./AdminDashboardSkeleton";
 import "./GrantAdminDashboard.css";
 
 // ─── Status badge helpers ────────────────────────────────────────────────────
@@ -743,7 +744,7 @@ function GrantDetail({
 }
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
-export function GrantAdminDashboard(): JSX.Element {
+export function GrantAdminDashboard({ initialSelectedGrantId }: { initialSelectedGrantId?: string | null } = {}): JSX.Element {
   const [grants, setGrants] = useState<AdminGrant[]>([]);
   const [stats, setStats] = useState<AdminPortfolioStats | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -778,24 +779,22 @@ export function GrantAdminDashboard(): JSX.Element {
         setStats(s);
         if (fl) setFabricLive(true);
         if (fp) setFabricPulledAt(fp);
-        if (g.length > 0) setSelectedId(g[0].id);
+        const initialId = initialSelectedGrantId && g.some((grant) => grant.id === initialSelectedGrantId)
+          ? initialSelectedGrantId
+          : g[0]?.id ?? null;
+        setSelectedId(initialId);
         setLoading(false);
       })
       .catch((err: Error) => {
         setError(err.message);
         setLoading(false);
       });
-  }, []);
+  }, [initialSelectedGrantId]);
 
   const selected = grants.find((g) => g.id === selectedId) ?? null;
 
   if (loading) {
-    return (
-      <div className="admin-loading">
-        <div className="admin-spinner" />
-        Loading grant portfolio…
-      </div>
-    );
+    return <AdminDashboardSkeleton />;
   }
 
   if (error) {

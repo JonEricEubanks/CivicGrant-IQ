@@ -3,6 +3,7 @@ const API_BASE = import.meta.env.VITE_API_URL || "/api";
 type SSEHandler = {
   onStatus?: (msg: string) => void;
   onMeta?: (data: { isFollowUp: boolean }) => void;
+  onRoutingDecision?: (data: { intent: string; sources: string[]; widgetType: string }) => void;
   onWorkIqContext?: (data: import("./types").WorkIqCityContext) => void;
   onAgentStatus?: (data: { agent: string; message: string }) => void;
   onReasoningStep?: (step: import("./types").ReasoningStep) => void;
@@ -61,6 +62,7 @@ export async function streamChat(
         const parsed = JSON.parse(data);
         if (event === "status") handlers.onStatus?.(parsed.message);
         if (event === "meta") handlers.onMeta?.(parsed);
+        if (event === "routing_decision") handlers.onRoutingDecision?.(parsed);
         if (event === "work_iq_context") handlers.onWorkIqContext?.(parsed);
         if (event === "agent_status") handlers.onAgentStatus?.(parsed);
         if (event === "reasoning_step") handlers.onReasoningStep?.(parsed);
