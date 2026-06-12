@@ -1,5 +1,5 @@
 name: Deploy Backend to Azure App Service
-# Last triggered: 2026-06-10
+# Last triggered: 2026-06-12
 
 on:
   push:
