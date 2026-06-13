@@ -261,9 +261,9 @@ Be specific, factual, and grounded in the retrieved documents. Do not fabricate 
 After completing all 6 steps, you MUST append a machine-readable widget block at the very end of your response:
 
 **CRITICAL — NO HALLUCINATION IN WIDGET FIELDS:**
-- `fundingAmount`: ONLY use a number you explicitly found in the retrieved KB documents or pasted NOFO text. If you did not find a dollar figure in the retrieved context, set this to `0`. NEVER use a number from your training data memory.
-- `deadline`: ONLY use a date you explicitly found in the retrieved KB documents or pasted NOFO text. If you did not find a deadline in the retrieved context, set this to `""`. NEVER invent or estimate a date.
-- `matchScore`: derive ONLY from the gap analysis you just performed. Do not copy scores from prior analyses or training examples.
+- \`fundingAmount\`: ONLY use a number you explicitly found in the retrieved KB documents or pasted NOFO text. If you did not find a dollar figure in the retrieved context, set this to \`0\`. NEVER use a number from your training data memory.
+- \`deadline\`: ONLY use a date you explicitly found in the retrieved KB documents or pasted NOFO text. If you did not find a deadline in the retrieved context, set this to \`""\`. NEVER invent or estimate a date.
+- \`matchScore\`: derive ONLY from the gap analysis you just performed. Do not copy scores from prior analyses or training examples.
 - These three fields cause real financial decisions. A wrong number is worse than an empty one.
 
 \`\`\`widget
