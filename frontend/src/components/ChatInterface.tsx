@@ -1519,6 +1519,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
   const [isWorkspaceVisible, setIsWorkspaceVisible] = useState(true);
   const [fabricContext, setFabricContext] = useState<FabricIqContext | null>(null);
   const [fabricLoading, setFabricLoading] = useState(false);
+  const [backendStatus, setBackendStatus] = useState<"checking" | "ready" | "unreachable">("checking");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -1529,6 +1530,37 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
 
   // Detect if the input looks like a URL
   const detectedUrl = /^https?:\/\/\S{10,}/.test(input.trim()) ? input.trim() : null;
+
+  // Poll /api/health until the backend is awake, then dismiss the cold-start banner
+  useEffect(() => {
+    let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 8;
+    const poll = () => {
+      fetch("/api/health", { signal: AbortSignal.timeout(5000) })
+        .then((r) => {
+          if (cancelled) return;
+          if (r.ok) {
+            setBackendStatus("ready");
+          } else {
+            scheduleRetry();
+          }
+        })
+        .catch(() => {
+          if (!cancelled) scheduleRetry();
+        });
+    };
+    const scheduleRetry = () => {
+      attempts++;
+      if (attempts >= maxAttempts) {
+        setBackendStatus("unreachable");
+        return;
+      }
+      setTimeout(poll, 3000);
+    };
+    poll();
+    return () => { cancelled = true; };
+  }, []);
 
   // Fetch live grant data for hero cards once on mount
   useEffect(() => {
@@ -2545,10 +2577,31 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   <p className="hero-desc">
                     Combines Work IQ signals from meetings, emails, Teams, and SharePoint with Foundry-grounded grant intelligence to score fit, close gaps, and generate a complete application strategy.
                   </p>
-                  <div className="hero-coldstart-notice" role="status" aria-live="polite">
-                    <span className="hero-coldstart-icon">⏱</span>
-                    <span><strong>Demo tip:</strong> The backend may take 10–15 seconds to wake up on first request. Subsequent queries are instant.</span>
-                  </div>
+                  {backendStatus !== "ready" && (
+                    <div
+                      className={`hero-coldstart-notice hero-coldstart-notice--${backendStatus}`}
+                      role="status"
+                      aria-live="polite"
+                    >
+                      {backendStatus === "checking" ? (
+                        <>
+                          <span className="hero-coldstart-icon hero-coldstart-spinner" aria-hidden="true" />
+                          <span><strong>Waking backend…</strong> The first request may take 10–15 seconds.</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="hero-coldstart-icon">⚠️</span>
+                          <span><strong>Backend unreachable.</strong> Check your connection or refresh.</span>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {backendStatus === "ready" && (
+                    <div className="hero-coldstart-notice hero-coldstart-notice--ready" role="status" aria-live="polite">
+                      <span className="hero-coldstart-icon">✓</span>
+                      <span><strong>Backend ready</strong> — queries are instant.</span>
+                    </div>
+                  )}
                   <div className="hero-safety-notice">
                     <span className="hero-safety-icon">🛡</span>
                     <span>Architecturally never auto-submits. If evidence is insufficient, we tell you — we never bluff.</span>
