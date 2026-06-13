@@ -141,23 +141,36 @@ chatRouter.post("/", async (req: Request, res: Response) => {
       ? Promise.resolve({ fundingAmount: null, deadline: null, grantsGovUrl: null, title: null })
       : (async (): Promise<LiveGrantData> => {
           try {
-            // Extract 2-4 keyword terms from the query for the grants.gov search
-            const stopwords = new Set(["the","a","an","for","is","are","can","we","i","it","this","that","grant","grants","about","what","how","does","do","our","me","us","please","analyze","analysis","find","get","show"]);
-            const keywords = lowerMsg.replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w => w.length > 3 && !stopwords.has(w)).slice(0, 4).join(" ") || "infrastructure resilience";
+            // Extract meaningful domain keywords — skip generic grant/analysis terms and years
+            const stopwords = new Set([
+              "the","a","an","for","is","are","can","we","i","it","this","that",
+              "grant","grants","about","what","how","does","do","our","me","us",
+              "please","analyze","analysis","find","get","show","federal","fiscal",
+              "year","program","assess","score","gaps","eligibility","match","priority",
+              "priorities","assistance","illinois","buffalo","grove","city","local",
+              "government","2024","2025","2026","2027","apply","application","review",
+            ]);
+            const keywords = lowerMsg.replace(/[^a-z0-9 ]/g," ").split(/\s+/)
+              .filter(w => w.length > 4 && !stopwords.has(w)).slice(0, 5).join(" ") || "infrastructure resilience";
             const apiBase = `http://localhost:${process.env.PORT ?? 3001}`;
-            const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=5&withFunding=1`;
+            const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=8&withFunding=1`;
             const resp = await fetch(url, { signal: AbortSignal.timeout(8_000) });
             if (!resp.ok) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
             const data = await resp.json() as { grants?: Array<{ title: string; closeDate: string; estimatedFunding?: number | null; grantsGovUrl: string }> };
             const hits = data.grants ?? [];
             if (!hits.length) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
-            // Pick the hit whose title best matches the query
-            const best = hits.reduce((a, b) => {
-              const aScore = a.title.toLowerCase().split(/\s+/).filter(w => lowerMsg.includes(w) && w.length > 3).length;
-              const bScore = b.title.toLowerCase().split(/\s+/).filter(w => lowerMsg.includes(w) && w.length > 3).length;
-              return bScore > aScore ? b : a;
-            });
-            console.log(`[grants.gov] Best match: "${best.title}" | funding=${best.estimatedFunding} | deadline=${best.closeDate}`);
+            // Score each hit by how many title words appear in the user's query
+            const scored = hits.map(g => ({
+              ...g,
+              score: g.title.toLowerCase().split(/\s+/).filter(w => w.length > 4 && lowerMsg.includes(w)).length,
+            }));
+            const best = scored.reduce((a, b) => b.score > a.score ? b : a);
+            // Require at least 2 overlapping meaningful words — otherwise the match is noise
+            if (best.score < 2) {
+              console.log(`[grants.gov] No confident match (best score=${best.score}) — skipping injection`);
+              return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+            }
+            console.log(`[grants.gov] Matched "${best.title}" (score=${best.score}) | funding=${best.estimatedFunding} | deadline=${best.closeDate}`);
             return {
               fundingAmount: typeof best.estimatedFunding === "number" && best.estimatedFunding > 0 ? best.estimatedFunding : null,
               deadline: best.closeDate || null,
@@ -393,10 +406,11 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     const liveGov = await grantsGovPromise;
     let finalMessage = enrichedMessage;
     if (isComplexAnalysis && !isFollowUp && (liveGov.fundingAmount || liveGov.deadline)) {
-      const govLines: string[] = ["AUTHORITATIVE DATA FROM GRANTS.GOV (use these EXACT values in widget — do not override with estimates):"];
-      if (liveGov.title)          govLines.push(`- Grant title on grants.gov: ${liveGov.title}`);
-      if (liveGov.fundingAmount)  govLines.push(`- fundingAmount (verified): ${liveGov.fundingAmount}`);
-      if (liveGov.deadline)       govLines.push(`- deadline (verified): ${liveGov.deadline}`);
+      // IMPORTANT: never inject the grants.gov title — it could steer the LLM to analyze
+      // a different grant than what the user asked for. Only inject funding/deadline metadata.
+      const govLines: string[] = ["VERIFIED METADATA FROM GRANTS.GOV (use ONLY for widget fundingAmount and deadline fields — do NOT change which grant you are analyzing):"];
+      if (liveGov.fundingAmount)  govLines.push(`- fundingAmount (verified from grants.gov): ${liveGov.fundingAmount}`);
+      if (liveGov.deadline)       govLines.push(`- deadline (verified from grants.gov): ${liveGov.deadline}`);
       if (liveGov.grantsGovUrl)   govLines.push(`- grantsGovUrl: ${liveGov.grantsGovUrl}`);
       finalMessage = `${govLines.join("\n")}\n\n${enrichedMessage}`;
       send("grants_gov_verified", { fundingAmount: liveGov.fundingAmount, deadline: liveGov.deadline, title: liveGov.title });
