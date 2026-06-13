@@ -818,6 +818,25 @@
   line-height: 1.65;
 }
 
+.hero-coldstart-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #92400e;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  max-width: 480px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.hero-coldstart-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
 .hero-safety-notice {
   display: flex;
   align-items: center;

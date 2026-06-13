@@ -2545,6 +2545,10 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   <p className="hero-desc">
                     Combines Work IQ signals from meetings, emails, Teams, and SharePoint with Foundry-grounded grant intelligence to score fit, close gaps, and generate a complete application strategy.
                   </p>
+                  <div className="hero-coldstart-notice" role="status" aria-live="polite">
+                    <span className="hero-coldstart-icon">⏱</span>
+                    <span><strong>Demo tip:</strong> The backend may take 10–15 seconds to wake up on first request. Subsequent queries are instant.</span>
+                  </div>
                   <div className="hero-safety-notice">
                     <span className="hero-safety-icon">🛡</span>
                     <span>Architecturally never auto-submits. If evidence is insufficient, we tell you — we never bluff.</span>
