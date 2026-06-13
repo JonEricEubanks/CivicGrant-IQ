@@ -2597,9 +2597,15 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   <div className="hero-trust-strip" aria-label="System trust indicators">
                     <span className="hero-trust-item"><IconSparkle size={13} aria-hidden="true" /> 5 specialist agents</span>
                     <span className="hero-trust-dot" aria-hidden="true" />
-                    <span className="hero-trust-item"><IconBuilding size={13} aria-hidden="true" /> Work IQ · Foundry IQ · Fabric IQ</span>
+                    <span className="hero-trust-item"><IconBuilding size={13} aria-hidden="true" /> Work IQ: meetings, emails, Teams, SharePoint</span>
                     <span className="hero-trust-dot" aria-hidden="true" />
-                    <span className="hero-trust-item"><IconScales size={13} aria-hidden="true" /> Never auto-submits · Every claim cited</span>
+                    <span className="hero-trust-item"><IconSearch size={13} aria-hidden="true" /> Grounded in Foundry IQ</span>
+                    <span className="hero-trust-dot" aria-hidden="true" />
+                    <span className="hero-trust-item"><IconSearch size={13} aria-hidden="true" /> Grounded in Fabric IQ</span>
+                    <span className="hero-trust-dot" aria-hidden="true" />
+                    <span className="hero-trust-item"><IconCheck size={13} aria-hidden="true" /> Every claim cited to source</span>
+                    <span className="hero-trust-dot" aria-hidden="true" />
+                    <span className="hero-trust-item"><IconScales size={13} aria-hidden="true" /> Self-critique loop</span>
                   </div>
                 </section>
               </div>
