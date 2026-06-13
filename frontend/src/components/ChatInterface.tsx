@@ -1520,6 +1520,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
   const [fabricContext, setFabricContext] = useState<FabricIqContext | null>(null);
   const [fabricLoading, setFabricLoading] = useState(false);
   const [backendStatus, setBackendStatus] = useState<"checking" | "ready" | "unreachable">("checking");
+  const [workIqLoaded, setWorkIqLoaded] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -1616,7 +1617,8 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
           }));
           if (signals.length > 0) setM365Signals(signals);
         })
-        .catch(() => {/* fallback to LOCAL_WORK_IQ_DOCS */})
+        .then(() => { setWorkIqLoaded(true); })
+        .catch(() => { setWorkIqLoaded(true); /* fallback to LOCAL_WORK_IQ_DOCS */ })
     );
   }, []);
 
@@ -2509,16 +2511,18 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                       Live Grant Intelligence
                     </div>
                     {/* Backend status pill — elevated next to live badge */}
-                    {backendStatus !== "ready" ? (
+                    {backendStatus !== "ready" || !workIqLoaded ? (
                       <div
-                        className={`hero-status-pill hero-status-pill--${backendStatus}`}
+                        className={`hero-status-pill hero-status-pill--${backendStatus === "unreachable" ? "unreachable" : "checking"}`}
                         role="status"
                         aria-live="polite"
                       >
-                        {backendStatus === "checking" ? (
-                          <><span className="hero-coldstart-spinner" aria-hidden="true" /><span>Waking backend…</span></>
-                        ) : (
+                        {backendStatus === "unreachable" ? (
                           <><span>⚠️</span><span>Backend unreachable — refresh</span></>
+                        ) : backendStatus === "ready" && !workIqLoaded ? (
+                          <><span className="hero-coldstart-spinner" aria-hidden="true" /><span>Loading Work IQ…</span></>
+                        ) : (
+                          <><span className="hero-coldstart-spinner" aria-hidden="true" /><span>Waking backend…</span></>
                         )}
                       </div>
                     ) : (
