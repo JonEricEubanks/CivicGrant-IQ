@@ -3055,24 +3055,29 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   <IconPaperclip size={13} />
                   <span>Attach</span>
                 </button>
+                {(() => {
+                  const wiqCount = attachedDocs.filter((d) => d.source === "work-iq").length;
+                  const fiqCount = attachedDocs.filter((d) => d.source === "foundry-iq").length;
+                  const fabCount = attachedDocs.filter((d) => d.source === "fabric-iq").length;
+                  return (<>
                 <button
-                  className="source-chip source-chip--work-iq"
+                  className={`source-chip source-chip--work-iq${wiqCount > 0 ? " source-chip--on" : ""}`}
                   aria-label="Attach Work IQ files from SharePoint"
                   onClick={() => { setAttachPickerTab("all"); setShowAttachPicker(true); setAttachSearch(""); }}
                 >
                   <IconBolt size={11} />
-                  Work IQ Signals
+                  Work IQ Signals{wiqCount > 0 && <span className="source-chip-count">{wiqCount}</span>}
                 </button>
                 <button
-                  className="source-chip source-chip--foundry"
+                  className={`source-chip source-chip--foundry${fiqCount > 0 ? " source-chip--on" : ""}`}
                   aria-label="Attach Foundry IQ knowledge base documents"
                   onClick={() => { setAttachPickerTab("foundry-iq"); setShowAttachPicker(true); setAttachSearch(""); }}
                 >
                   <IconDatabase size={11} />
-                  Foundry IQ
+                  Foundry IQ{fiqCount > 0 && <span className="source-chip-count">{fiqCount}</span>}
                 </button>
                 <button
-                  className="source-chip source-chip--fabric"
+                  className={`source-chip source-chip--fabric${fabCount > 0 ? " source-chip--on" : ""}`}
                   aria-label="Attach Fabric IQ semantic models and ontology context"
                   onClick={async () => {
                     setAttachPickerTab("fabric-iq");
@@ -3089,8 +3094,10 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                   }}
                 >
                   <IconFabricIQ size={11} />
-                  {fabricLoading ? "Loading…" : fabricContext?.source === "fabric-live" ? "Fabric IQ ●" : "Fabric IQ"}
+                  {fabricLoading ? "Loading…" : fabricContext?.source === "fabric-live" ? "Fabric IQ ●" : "Fabric IQ"}{fabCount > 0 && <span className="source-chip-count">{fabCount}</span>}
                 </button>
+                  </>);
+                })()}
               </div>
             </div>
             <div className="input-hint">

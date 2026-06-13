@@ -1817,9 +1817,40 @@
   transition: background 0.12s, border-color 0.12s, color 0.12s;
   color: #6b7280;
 }
-.source-chip--work-iq:hover { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
-.source-chip--foundry:hover { background: #f5f3ff; border-color: #ddd6fe; color: #6d28d9; }
-.source-chip--fabric:hover { background: #f0fdf4; border-color: #86efac; color: #166534; }
+.source-chip--work-iq:hover  { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+.source-chip--foundry:hover  { background: #f5f3ff; border-color: #ddd6fe; color: #6d28d9; }
+.source-chip--fabric:hover   { background: #f0fdf4; border-color: #86efac; color: #166534; }
+
+/* Active / docs-attached state */
+.source-chip--work-iq.source-chip--on  { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+.source-chip--foundry.source-chip--on  { background: #f5f3ff; border-color: #ddd6fe; color: #6d28d9; }
+.source-chip--fabric.source-chip--on   { background: #f0fdf4; border-color: #86efac; color: #166534; }
+
+/* Count badge inside chip */
+.source-chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  margin-left: 4px;
+  border-radius: 8px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+  background: currentColor;
+  color: #fff;
+  opacity: 0.85;
+}
+.source-chip-count::before {
+  content: attr(data-n);
+}
+/* Override: text inside badge should be white regardless of chip color */
+.source-chip--work-iq .source-chip-count  { background: #1d4ed8; color: #fff; }
+.source-chip--foundry .source-chip-count  { background: #6d28d9; color: #fff; }
+.source-chip--fabric  .source-chip-count  { background: #166534; color: #fff; }
+
 .source-chip svg { flex-shrink: 0; }
 
 /* --- Attachment picker popover --- */
