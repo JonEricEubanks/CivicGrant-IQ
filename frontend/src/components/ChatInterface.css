@@ -3111,33 +3111,38 @@
   bottom: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #f5f9ff;
+  border: 1px solid #c8dff5;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  padding: 14px 14px 12px;
+  box-shadow: -4px 0 24px rgba(14,58,110,0.12), 0 8px 24px rgba(14,58,110,0.10);
+  overflow: hidden;
   z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 .ws-tier-popover-title {
-  font-size: 0.7rem;
+  background: linear-gradient(135deg, #1a3a5c 0%, #1a6fba 100%);
+  color: #ffffff;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #6b7280;
-  margin-bottom: 2px;
+  letter-spacing: 0.07em;
+  padding: 8px 12px;
+}
+.ws-tier-popover-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px;
 }
 .ws-tier-popover-row {
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid #f1f5f9;
-  background: #f8fafc;
+  border: 1px solid transparent;
+  background: transparent;
 }
 .ws-tier-popover-row--active {
-  border-color: rgba(99, 102, 241, 0.3);
-  background: rgba(99, 102, 241, 0.04);
+  border-color: #c8dff5;
+  background: #ffffff;
+  box-shadow: 0 1px 6px rgba(14,58,110,0.07);
 }
 .ws-tier-popover-row-header {
   display: flex;
@@ -3154,7 +3159,10 @@
 .ws-tier-popover-label {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #374151;
+  color: #0e3a6e;
+}
+.ws-tier-popover-row:not(.ws-tier-popover-row--active) .ws-tier-popover-label {
+  color: #6b7280;
 }
 .ws-tier-popover-current {
   margin-left: auto;
@@ -3162,21 +3170,22 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: rgba(99, 102, 241, 0.12);
-  color: #6366f1;
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  border-radius: 6px;
-  padding: 1px 6px;
+  background: #fef9ec;
+  color: #7a4a00;
+  border: 1px solid #f6d97a;
+  border-radius: 20px;
+  padding: 1px 7px;
 }
 .ws-tier-popover-sub {
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   color: #6b7280;
   line-height: 1.45;
   padding-left: 15px;
 }
 .ws-tier-popover-footer {
-  padding-top: 4px;
-  border-top: 1px solid #f1f5f9;
+  padding: 8px 12px;
+  border-top: 1px solid #deeaf7;
+  background: #eef5fd;
 }
 
 /* ── Foundry MCP tool call strip ───────────────────────────────────────────── */

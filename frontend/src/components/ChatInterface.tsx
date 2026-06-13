@@ -1300,20 +1300,22 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
                   {tierPopoverOpen && (
                     <div className="ws-tier-popover">
                       <div className="ws-tier-popover-title">AI Routing Tiers</div>
+                      <div className="ws-tier-popover-rows">
                       {([
-                        { t: 1, label: "Tier 1 — Foundry SDK", sub: "Full Azure AI Foundry Assistants API with MCP tool calls, knowledge base retrieval, and OpenAI Assistants thread management.", color: "#6366f1" },
+                        { t: 1, label: "Tier 1 — Foundry SDK", sub: "Full Azure AI Foundry Assistants API with MCP tool calls, knowledge base retrieval, and OpenAI Assistants thread management.", color: "#1a6fba" },
                         { t: 2, label: "Tier 2 — Azure OpenAI", sub: "Direct Azure OpenAI chat completions with SSE streaming. Guardrails and grounding still applied.", color: "#3b82f6" },
                         { t: 3, label: "Tier 3 — Mock Engine", sub: "Local deterministic mock — no AI calls. Used for offline demos or when Azure credentials are unavailable.", color: "#94a3b8" },
                       ] as { t: 1|2|3; label: string; sub: string; color: string }[]).map(({ t, label, sub, color }) => (
                         <div key={t} className={`ws-tier-popover-row${tierInfo.tier === t ? " ws-tier-popover-row--active" : ""}`}>
                           <div className="ws-tier-popover-row-header">
                             <span className="ws-tier-popover-dot" style={{ background: color }} />
-                            <span className="ws-tier-popover-label" style={tierInfo.tier === t ? { color } : {}}>{label}</span>
+                            <span className="ws-tier-popover-label">{label}</span>
                             {tierInfo.tier === t && <span className="ws-tier-popover-current">current</span>}
                           </div>
                           <p className="ws-tier-popover-sub">{sub}</p>
                         </div>
                       ))}
+                      </div>
                       <div className="ws-tier-popover-footer">
                         <span className="ws-tier-pill ws-tier-pill--pass">17 guardrail rules active</span>
                       </div>
