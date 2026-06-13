@@ -359,10 +359,14 @@ chatRouter.post("/", async (req: Request, res: Response) => {
       if (cityContext.teamsInsights?.length) m365Parts.push(`${cityContext.teamsInsights.length} Teams message${cityContext.teamsInsights.length > 1 ? "s" : ""}`);
       if (cityContext.mailSignals?.length) m365Parts.push(`${cityContext.mailSignals.length} email signal${cityContext.mailSignals.length > 1 ? "s" : ""}`);
       const m365Line = m365Parts.length ? `\n- Live M365 signals: ${m365Parts.join(", ")}` : "";
+      // Also reflect grants.gov fetch status in the step (already resolved since we awaited above)
+      const govLine = liveGov.fundingAmount || liveGov.deadline
+        ? `\n- Grants.gov live lookup: **${liveGov.title ?? "match found"}** — funding=${liveGov.fundingAmount ? `$${(liveGov.fundingAmount / 1_000_000).toFixed(0)}M` : "n/a"}, deadline=${liveGov.deadline ?? "n/a"}`
+        : "\n- Grants.gov live lookup: no exact match (will use KB docs)";
       send("reasoning_step", {
         step: 1,
         label: "Work IQ · Parse NOFO Requirements",
-        content: `Work IQ loaded from **${wiqSource}** (${cityContext.filesRead.length} files read).\n- Priority themes: ${wiqThemes}\n- Active projects: ${wiqProjects}${m365Line}\n\nParsing grant eligibility requirements…`,
+        content: `Work IQ loaded from **${wiqSource}** (${cityContext.filesRead.length} files read).\n- Priority themes: ${wiqThemes}\n- Active projects: ${wiqProjects}${m365Line}${govLine}\n\nParsing grant eligibility requirements…`,
         completed: false,
       });
     }
@@ -419,8 +423,11 @@ chatRouter.post("/", async (req: Request, res: Response) => {
             firstStepReceived = true;
             clearInterval(progressInterval);
           }
-          // For step 1 of a full analysis, prepend Work IQ context to the LLM's
+          // For step 1 of a full analysis, prepend Work IQ + grants.gov context to the LLM's
           // grant-parsing content so the expanded step shows both in one place.
+          const govStatusLine = liveGov.fundingAmount || liveGov.deadline
+            ? `- Grants.gov live lookup: **${liveGov.title ?? "match found"}** — funding=${liveGov.fundingAmount ? `$${(liveGov.fundingAmount / 1_000_000).toFixed(0)}M verified` : "n/a"}, deadline=${liveGov.deadline ?? "n/a"}`
+            : "- Grants.gov live lookup: no exact match — using KB documents for funding/deadline";
           const emitStep = (!isFollowUp && step.step === 1 && step.completed && step.content)
             ? {
                 ...step,
@@ -428,6 +435,7 @@ chatRouter.post("/", async (req: Request, res: Response) => {
                   `Work IQ loaded from **${cityContext.source === "sharepoint" ? "Microsoft 365 SharePoint" : "local KB fallback"}** (${cityContext.filesRead.length} files).`,
                   `- Priority themes: ${cityContext.priorityThemes.slice(0, 4).join(", ") || "none"}`,
                   `- Active projects: ${cityContext.activeProjects.slice(0, 3).map((p: { name: string }) => p.name).join(", ") || "none"}`,
+                  govStatusLine,
                   "",
                   step.content,
                 ].join("\n"),
