@@ -75,6 +75,7 @@ Every judge claim below points to a real, verifiable line of code:
 
 | Claim | File | Lines | What You'll See |
 |---|---|---|---|
+| **Hero grants — live Grants.gov cards** | [`routes/heroGrants.ts`](backend/src/routes/heroGrants.ts) | 89–170 | Three themed relevance-sorted searches (road/transportation, flood mitigation, clean water infrastructure) + `fetchOpportunity` detail call per card; `aggregateAvailableFunding` sums real award ceilings across all matched open grants; 19-pattern municipal relevance filter excludes non-applicable grants (tribal, NIH, DOD, etc.); curated fallbacks when API unreachable |
 | **Foundry IQ** — KB retrieval (Tier 1) | [`agent.ts`](backend/src/agent.ts) | 721–726 | Assistants API with `knowledge_base_retrieve` tool definition; citations and context extracted from tool outputs |
 | **Foundry IQ** — KB retrieval (Tier 2) | [`agent.ts`](backend/src/agent.ts) | 950–967 | `searchGrantKnowledgeBase()` via Azure AI Search semantic ranking; KB scores wired into dynamic GraphRAG confidence (`kbScoreMap` → `queryGraph`) |
 | **Work IQ** — SharePoint documents | [`graphContext.ts`](backend/src/graphContext.ts) | 286–306 | `loadSharePointDocuments()` calling Microsoft Graph `drives/{id}/root/children`, downloading each file, parsing PDF/DOCX, distilling with LLM |
@@ -125,8 +126,9 @@ Every reasoning hop is **pre-verified and cited to a real document**, with confi
 - **Transparent routing:** every orchestration choice (re-query, Red Team spawn, skip) is streamed as a `decision` SSE event with the signal metrics that triggered it — judges see *why* an agent spawned, not just that it did ([`chat.ts:349–383`](backend/src/routes/chat.ts#L349))
 - **Eager parallelism:** Competitive Intel launches concurrently with the Main analysis (it doesn't need Main's output), saving 3–5 s per run ([`chat.ts:126–135`](backend/src/routes/chat.ts#L126))
 - **Critic→actor loop:** Red Team and Competitive Intel feed a typed `RefinementHandoffPayload` into Narrative Refinement
-- **No fan-out waste:** Single-turn follow-ups skip parallel execution (48-keyword follow-up heuristic, [`chat.ts:81–96`](backend/src/routes/chat.ts#L81))
-- **Pasted-NOFO lock:** when a user pastes a full grant announcement, detection logic ([`chat.ts:61–104`](backend/src/routes/chat.ts#L61)) pins the agent to *that exact grant* — it cannot silently substitute a similar grant from its knowledge base (a real hallucination mode in RAG agents)
+- **A2A agent handoff traces:** every inter-agent handoff emits an `agent_handoff` SSE event with the typed `RefinementHandoffPayload` — judges see the *actual data* (match score, narrative length, quick fixes, win probability) flowing between agents, not just that one agent called another
+- **No fan-out waste:** Single-turn follow-ups skip parallel execution (follow-up heuristic, [`chat.ts:81–106`](backend/src/routes/chat.ts#L81))
+- **Pasted-NOFO lock:** when a user pastes a full grant announcement, detection logic ([`chat.ts:61–79`](backend/src/routes/chat.ts#L61)) pins the agent to *that exact grant* — it cannot silently substitute a similar grant from its knowledge base (a real hallucination mode in RAG agents). The NOFO parser also directly extracts `fundingAmount`, `awardCeiling`, `deadline`, `eligibleApplicants`, and the `grantsGovUrl` from the pasted text, so widget data is sourced from the document itself rather than a live API call
 - **Proof:** [`chat.ts`](backend/src/routes/chat.ts) router logic + [`multiAgent.ts`](backend/src/agents/multiAgent.ts)
 
 ### 4️⃣ **3-Tier Never-Down Fallback + 17-Rule Guardrails + Observe-Replan Loop**
@@ -142,6 +144,7 @@ Tier 3: Deterministic mock engine (zero credentials, deterministic output)
 ```
 - **17 guardrails:** G01–G09 (input: SSN/injection/DoS detection) + G10–G17 (output: reasoning completeness, match score range, citation grounding)
 - **BLOCK-level violations abort pre-LLM** — save compute, save hallucination risk
+- **Full guardrail audit broadcast:** every response emits a `guardrails_summary` SSE event listing all 17 rules with individual `PASS`/`WARN`/`BLOCK` status — judges see the complete pipeline verdict in the live UI, not just a count
 - **Format-drift insurance:** if Tier 2 ignores the 6-step output format, the server synthesizes steps from response paragraphs so the UI never breaks ([`chat.ts:233–255`](backend/src/routes/chat.ts#L233))
 - **Hardened beyond guardrails:** SSRF protection with DNS-rebinding defense, cost-aware rate limiting, capped context windows — see [Production Hardening](#-production-hardening-beyond-the-guardrails)
 - **Proof:** [`agent.ts:1166–1244`](backend/src/agent.ts#L1166) + [`guardrails.ts`](backend/src/guardrails.ts)
@@ -218,7 +221,7 @@ Every number is traced. Every claim is cited. No hallucination.
 |---|---|
 | 🔍 **Grant Analysis** | Paste any federal NOFO → AI runs a 6-step chain (Parse → Match → Verify → Gap → Narrative → Strategy) grounded in your city's real Capital Improvement Plan and past grant applications. Every number cited. |
 | 🤖 **Five-Agent Pressure Test** | While you watch, a GS-14 Red Team reviewer (simulated federal program officer) and Competitive Intelligence agent run in parallel. Red Team finds weaknesses; Narrative Refinement folds feedback into a polished draft. |
-| 🧭 **Smart Router** | System decides what to run: re-queries KB if grounding is weak, spawns Red Team only on viable matches (>55%), skips parallel execution on quick follow-ups. Save compute, focus analysis. |
+| 🧭 **Smart Router** | **Early query routing** runs `detectQueryIntent` *before* the full pipeline — portfolio health checks, compliance alerts, top-grants lists, and single grant detail queries are handled by a fast focused handler without spawning any AI agents. Complex grant analyses proceed through the full 6-agent pipeline. Re-queries KB if grounding is weak, spawns Red Team only on viable matches (>55%), skips parallel execution on quick follow-ups. |
 | 📡 **Live Grant Portfolio Scan** | Type "Buffalo Grove, Illinois" → ranked feed of live grants from Grants.gov sorted by deadline urgency and city-specific match. Funding figures are **verified, not hallucinated**: a second Grants.gov detail call pulls the real `estimatedFunding` for each opportunity ([`grantsLive.ts`](backend/src/routes/grantsLive.ts)). Updated daily. |
 | 📄 **One-Click Export** | Submission-ready package: polished narrative, gap analysis, 4-week compliance action plan, all traced to source documents. Plus full **application drafting** and **PDF report preview/export**. |
 | 🗂️ **Grant Admin Hub** | Post-award: track disbursements, milestone progress, compliance flags, auto-draft SF-425 closeout forms — with its own admin chat agent. |
@@ -296,7 +299,7 @@ graph TD
 4. If grounding is weak (< 2 sources), re-query KB
 5. If score > 55%, spawn Red Team + Competitive Intel in parallel (`Promise.allSettled`)
 6. Refinement merges feedback into polished narrative
-7. Stream response as **23 distinct SSE event types** (steps, citations, graph paths, agent status, orchestration decisions, widgets); render GraphPaths panel on client
+7. Stream response as **23 distinct SSE event types** — `agent_handoff` (typed A2A payloads between agents), `guardrails_summary` (full 17-rule audit), `routing_decision`, `grants_gov_verified`, `tool_call`, reasoning steps, citations, graph paths, widgets, and more; render GraphPaths panel on client
 8. Output guardrails validate (G10–G17) before streaming to user
 9. Every request traced to **Azure Application Insights** via OpenTelemetry; all operations fall back gracefully (Tier 1 → Tier 2 → Tier 3)
 

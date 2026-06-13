@@ -52,7 +52,7 @@
   </g>
   <g opacity="0">
     <rect x="416" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
-    <text x="504" y="138" text-anchor="middle" class="statn">17</text>
+    <text x="504" y="138" text-anchor="middle" class="statn">23</text>
     <text x="504" y="158" text-anchor="middle" class="statl">SSE EVENT TYPES</text>
     <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.3s" fill="freeze"/>
   </g>
@@ -70,8 +70,8 @@
   </g>
   <g opacity="0">
     <rect x="980" y="110" width="176" height="62" rx="8" fill="#fff" stroke="#E1DFDD"/>
-    <text x="1068" y="138" text-anchor="middle" class="statn">49</text>
-    <text x="1068" y="158" text-anchor="middle" class="statl">TYPED GRAPH EDGES · 29 ENTITIES</text>
+    <text x="1068" y="138" text-anchor="middle" class="statn">57</text>
+    <text x="1068" y="158" text-anchor="middle" class="statl">TYPED GRAPH EDGES · 40 ENTITIES</text>
     <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.75s" fill="freeze"/>
   </g>
 
@@ -129,7 +129,7 @@
     <rect x="55" y="225" width="6" height="130" rx="3" fill="#61DAFB"/>
     <text x="75" y="251" class="ct">🖥️ React 18 Frontend</text>
     <text x="75" y="274" class="cl">Azure Static Web Apps · Vite · TypeScript</text>
-    <text x="75" y="294" class="cl">ChatInterface — streams 17 SSE event types</text>
+    <text x="75" y="294" class="cl">ChatInterface — streams 23 SSE event types</text>
     <text x="75" y="314" class="cl">GraphPaths evidence-chain visualization</text>
     <text x="75" y="334" class="cl">Match · Red Team · Competitor widgets</text>
   </g>
@@ -162,7 +162,7 @@
     <rect x="840" y="445" width="305" height="140" rx="10" fill="#fff" stroke="#E1DFDD"/>
     <rect x="840" y="445" width="6" height="140" rx="3" fill="#6E40C9"/>
     <text x="860" y="471" class="ct">🔗 GraphRAG Engine</text>
-    <text x="860" y="494" class="cl">29 typed entities · 49 weighted edges</text>
+    <text x="860" y="494" class="cl">40 typed entities · 57 weighted edges</text>
     <text x="860" y="514" class="cl">Multi-hop BFS evidence paths</text>
     <text x="860" y="534" class="cl">Per-hop source citations</text>
     <text x="860" y="554" class="cl">CONFIRMED ≥0.85 · LIKELY ≥0.65</text>
@@ -230,8 +230,8 @@
     <rect x="290" y="906" width="118" height="46" rx="8" fill="#0078D4" opacity="0">
       <animate attributeName="opacity" dur="12.6s" begin="2.8s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
     </rect>
-    <text x="349" y="925" text-anchor="middle" class="chiptxt" font-weight="700">3 · 6-step chain</text>
-    <text x="349" y="941" text-anchor="middle" class="chiptxt">GraphRAG + Work IQ</text>
+    <text x="349" y="925" text-anchor="middle" class="chiptxt" font-weight="700">3 · Smart Route</text>
+    <text x="349" y="941" text-anchor="middle" class="chiptxt">early-out OR 6-step chain</text>
   </g>
   <g>
     <rect x="415" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>
@@ -263,7 +263,7 @@
       <animate attributeName="opacity" dur="12.6s" begin="8.4s" repeatCount="indefinite" keyTimes="0;0.005;0.106;0.111;1" values="0;0.16;0.16;0;0"/>
     </rect>
     <text x="849" y="925" text-anchor="middle" class="chiptxt" font-weight="700">7 · Stream SSE</text>
-    <text x="849" y="941" text-anchor="middle" class="chiptxt">17 event types</text>
+    <text x="849" y="941" text-anchor="middle" class="chiptxt">23 event types</text>
   </g>
   <g>
     <rect x="915" y="906" width="118" height="46" rx="8" fill="#fff" stroke="#E1DFDD"/>

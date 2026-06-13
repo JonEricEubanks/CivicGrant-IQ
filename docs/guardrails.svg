@@ -83,11 +83,11 @@
     <rect x="180" y="454" width="640" height="78" rx="10" fill="#0078D4" opacity="0">
       <animate attributeName="opacity" dur="7s" begin="5.2s" repeatCount="indefinite" keyTimes="0;0.02;0.2;0.24;1" values="0;0.12;0.12;0;0"/>
     </rect>
-    <text x="208" y="484" class="gt">G14–G17 — Output Quality</text>
-    <text x="208" y="508" class="gs">Incomplete gap suggestions · missing citations · excessive hedging · implausible funding</text>
+    <text x="208" y="484" class="gt">G14–G16 — Output Quality · G17 — Funding Enforcement</text>
+    <text x="208" y="508" class="gs">Incomplete gaps · missing citations · excessive hedging · G17 auto-corrects fabricated funding &gt;$100B</text>
     <rect x="700" y="466" width="100" height="24" rx="12" fill="#DEECF9" stroke="#0078D4"/>
     <text x="750" y="482" text-anchor="middle" class="bb" fill="#0078D4">ℹ️ INFO</text>
-    <text x="208" y="526" font-size="10.5" font-weight="700" fill="#0078D4">Advisory note — the user sees it</text>
+    <text x="208" y="526" font-size="10.5" font-weight="700" fill="#0078D4">G17 ENFORCE: widget corrected in-place + guardrail_correction SSE event emitted live</text>
   </g>
 
   <!-- safe output pill -->
@@ -99,5 +99,5 @@
     <text x="500" y="568" text-anchor="middle" font-size="12.5" font-weight="800" fill="#107C10">✓ SAFE, GROUNDED OUTPUT</text>
   </g>
 
-  <text x="500" y="616" text-anchor="middle" font-size="11" fill="#605E5C">17 rules · BLOCK aborts pre-LLM · every verdict traced to App Insights · guardrails.ts</text>
+  <text x="500" y="616" text-anchor="middle" font-size="11" fill="#605E5C">17 rules · BLOCK aborts pre-LLM · G17 auto-corrects widget · guardrails_summary SSE broadcasts full audit · guardrails.ts</text>
 </svg>
