@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { driver } from "driver.js";
 import type { Driver } from "driver.js";
 import "driver.js/dist/driver.css";
@@ -20,6 +20,13 @@ const SVG_FABRIC_INLINE = `<svg width="12" height="12" viewBox="0 0 24 24" fill=
 
 export function DemoTour({ onNavigate }: DemoTourProps) {
   const driverRef = useRef<Driver | null>(null);
+
+  // Auto-launch on first load so judges see the tour immediately
+  useEffect(() => {
+    const t = setTimeout(() => startTour(), 800);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function startTour() {
     // Ensure we start on the chat view
