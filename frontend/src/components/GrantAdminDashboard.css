@@ -55,6 +55,12 @@
   padding: 2px 8px 2px 6px;
 }
 
+.admin-fabric-badge--cached {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
 .fabric-dot {
   display: inline-block;
   width: 6px;
@@ -63,6 +69,12 @@
   background: #22c55e;
   box-shadow: 0 0 5px #22c55e;
   animation: fabric-pulse 2s ease-in-out infinite;
+}
+
+.fabric-dot--cached {
+  background: #64748b;
+  box-shadow: none;
+  animation: none;
 }
 
 @keyframes fabric-pulse {

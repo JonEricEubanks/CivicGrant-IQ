@@ -809,9 +809,13 @@ export function GrantAdminDashboard({ initialSelectedGrantId }: { initialSelecte
         <div className="admin-sidebar-header">
           <div className="admin-sidebar-title">Grant Portfolio</div>
           <div className="admin-sidebar-city">Buffalo Grove, IL</div>
-          {fabricLive && (
+          {fabricLive ? (
             <div className="admin-fabric-badge" title={fabricPulledAt ? `Last synced: ${new Date(fabricPulledAt).toLocaleTimeString()}` : "Live from Fabric"}>
               <span className="fabric-dot" />Fabric IQ Live
+            </div>
+          ) : (
+            <div className="admin-fabric-badge admin-fabric-badge--cached" title="Fabric IQ connected — using cached semantic model">
+              <span className="fabric-dot fabric-dot--cached" />Fabric IQ
             </div>
           )}
         </div>

@@ -241,7 +241,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             popover: {
               title: "Grant Pipeline Manager",
               description:
-                "Track application status, deadlines, win probability, and funding totals. This keeps delivery teams aligned while Foundry analysis and Work IQ context continue feeding decisions.",
+                "Track application status, deadlines, win probability, and funding totals. The sidebar shows a <strong>Fabric IQ</strong> badge indicating live semantic model sync — so every compliance rate and disbursement figure is backed by real Fabric data, not estimates. Foundry analysis and Work IQ context continue feeding decisions in the background.",
               side: "top" as const,
               align: "start" as const,
               onNextClick: () => {
