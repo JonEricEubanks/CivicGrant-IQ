@@ -136,9 +136,9 @@ chatRouter.post("/", async (req: Request, res: Response) => {
 
     // Live grants.gov lookup — extract keywords from query and fetch real funding/deadline
     // so the widget never shows hallucinated numbers. Runs in parallel, never blocks.
-    interface LiveGrantData { fundingAmount: number | null; deadline: string | null; grantsGovUrl: string | null; title: string | null }
+    interface LiveGrantData { fundingAmount: number | null; deadline: string | null; grantsGovUrl: string | null; title: string | null; eligibleApplicants: string[] | null; awardCeiling: number | null }
     const grantsGovPromise: Promise<LiveGrantData> = isFollowUp
-      ? Promise.resolve({ fundingAmount: null, deadline: null, grantsGovUrl: null, title: null })
+      ? Promise.resolve({ fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null })
       : isGrantTextPasted
       ? (() => {
           // When the user pastes NOFO text, parse funding & deadline directly from it —
@@ -152,10 +152,23 @@ chatRouter.post("/", async (req: Request, res: Response) => {
             const parsed = new Date(dateMatch[1].trim());
             rawDeadline = isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
           }
-          if (rawFunding || rawDeadline) {
-            console.log(`[nofo-parse] Extracted from pasted NOFO: funding=${rawFunding} deadline=${rawDeadline}`);
+          // Parse Award Ceiling: $150,000,000
+          const ceilingMatch = trimmed.match(/award\s+ceiling[:\s]*\$?\s*([0-9][0-9,]+)/i);
+          const rawCeiling = ceilingMatch ? parseInt(ceilingMatch[1].replace(/,/g, ""), 10) : null;
+          // Parse Eligible Applicants list — section ends at "Additional Information on Eligibility" or next label
+          const eligSection = trimmed.match(/eligible\s+applicants?[:\s]+([\s\S]+?)(?=additional\s+information\s+on\s+eligibility|cost\s+sharing|agency\s+name|description:|version:|\n\n##)/i);
+          let rawEligible: string[] | null = null;
+          if (eligSection) {
+            rawEligible = eligSection[1]
+              .split(/\n|;/)
+              .map(s => s.trim().replace(/^[-•*]+\s*/, ""))
+              .filter(s => s.length > 3 && s.length < 120);
+            if (!rawEligible.length) rawEligible = null;
           }
-          return Promise.resolve({ fundingAmount: rawFunding, deadline: rawDeadline, grantsGovUrl: null, title: null });
+          if (rawFunding || rawDeadline || rawEligible) {
+            console.log(`[nofo-parse] Extracted from pasted NOFO: funding=${rawFunding} deadline=${rawDeadline} ceiling=${rawCeiling} eligibleTypes=${rawEligible?.length ?? 0}`);
+          }
+          return Promise.resolve({ fundingAmount: rawFunding, deadline: rawDeadline, grantsGovUrl: null, title: null, eligibleApplicants: rawEligible, awardCeiling: rawCeiling });
         })()
       : (async (): Promise<LiveGrantData> => {
           try {
@@ -173,10 +186,10 @@ chatRouter.post("/", async (req: Request, res: Response) => {
             const apiBase = `http://localhost:${process.env.PORT ?? 3001}`;
             const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=8&withFunding=1`;
             const resp = await fetch(url, { signal: AbortSignal.timeout(8_000) });
-            if (!resp.ok) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+            if (!resp.ok) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
             const data = await resp.json() as { grants?: Array<{ title: string; closeDate: string; estimatedFunding?: number | null; grantsGovUrl: string }> };
             const hits = data.grants ?? [];
-            if (!hits.length) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+            if (!hits.length) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
             // Score each hit by how many title words appear in the user's query
             const scored = hits.map(g => ({
               ...g,
@@ -186,7 +199,7 @@ chatRouter.post("/", async (req: Request, res: Response) => {
             // Require at least 2 overlapping meaningful words — otherwise the match is noise
             if (best.score < 2) {
               console.log(`[grants.gov] No confident match (best score=${best.score}) — skipping injection`);
-              return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+              return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
             }
             console.log(`[grants.gov] Matched "${best.title}" (score=${best.score}) | funding=${best.estimatedFunding} | deadline=${best.closeDate}`);
             return {
@@ -194,10 +207,12 @@ chatRouter.post("/", async (req: Request, res: Response) => {
               deadline: best.closeDate || null,
               grantsGovUrl: best.grantsGovUrl || null,
               title: best.title,
+              eligibleApplicants: null,
+              awardCeiling: null,
             };
           } catch (e) {
             console.warn("[grants.gov] Live lookup failed:", (e as Error).message);
-            return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+            return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
           }
         })();
 
@@ -552,7 +567,7 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     // ── Override widget funding/deadline with verified grants.gov values ───
     // This is the authoritative post-process step: no matter what the LLM said,
     // if we have real data from grants.gov we stamp it onto the widget before emit.
-    if (result.widget?.type === "grant_match" && (liveGov.fundingAmount || liveGov.deadline)) {
+    if (result.widget?.type === "grant_match" && (liveGov.fundingAmount || liveGov.deadline || liveGov.eligibleApplicants || liveGov.awardCeiling)) {
       const d = result.widget.data as Record<string, unknown>;
       if (liveGov.fundingAmount && liveGov.fundingAmount > 0) {
         d.fundingAmount = liveGov.fundingAmount;
@@ -560,6 +575,8 @@ chatRouter.post("/", async (req: Request, res: Response) => {
       }
       if (liveGov.deadline) d.deadline = liveGov.deadline;
       if (liveGov.grantsGovUrl) d.grantsGovUrl = liveGov.grantsGovUrl;
+      if (liveGov.eligibleApplicants?.length) d.eligibleApplicants = liveGov.eligibleApplicants;
+      if (liveGov.awardCeiling && liveGov.awardCeiling > 0) d.awardCeiling = liveGov.awardCeiling;
     }
 
     if (result.widget) send("widget", result.widget);

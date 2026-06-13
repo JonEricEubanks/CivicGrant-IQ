@@ -12,6 +12,8 @@ export interface GrantMatchData {
   deadline: string;
   matchScore: number;
   grantsGovUrl?: string;
+  eligibleApplicants?: string[];
+  awardCeiling?: number;
   gaps: Array<{ title: string; severity: "critical" | "moderate" | "minor"; suggestion: string }>;
   strengths: string[];
   narrativeDraft: string;
@@ -187,6 +189,28 @@ export function GrantMatchWidget({ data, isRefined, refinementImprovements, refi
           </div>
         );
       })()}
+
+      {/* Eligibility row — shown only when parsed from pasted NOFO */}
+      {data.eligibleApplicants && data.eligibleApplicants.length > 0 && (
+        <div className="eligibility-row">
+          <span className="eligibility-label">Eligible Applicants</span>
+          <div className="eligibility-tags">
+            {data.eligibleApplicants.map((type, i) => {
+              const isCityMatch = /city|township|local|municipal/i.test(type);
+              return (
+                <span key={i} className={`eligibility-tag${isCityMatch ? " eligibility-tag--match" : ""}`}>
+                  {isCityMatch && <span className="eligibility-check">✓</span>}{type}
+                </span>
+              );
+            })}
+            {data.awardCeiling && data.awardCeiling > 0 && (
+              <span className="eligibility-tag eligibility-tag--ceiling">
+                Award ceiling: ${data.awardCeiling >= 1_000_000 ? `${(data.awardCeiling / 1_000_000).toFixed(0)}M` : data.awardCeiling.toLocaleString()}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Gaps */}
       {data.gaps.length > 0 && (

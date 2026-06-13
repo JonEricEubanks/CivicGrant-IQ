@@ -209,6 +209,53 @@
   font-size: 0.64rem;
 }
 
+/* Eligibility row — parsed from pasted NOFO text */
+.eligibility-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 14px 9px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  font-size: 0.68rem;
+}
+.eligibility-label {
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.eligibility-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.eligibility-tag {
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 4px;
+  padding: 2px 7px;
+  color: #94a3b8;
+  font-size: 0.65rem;
+}
+.eligibility-tag--match {
+  background: rgba(34, 197, 94, 0.09);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+  font-weight: 600;
+}
+.eligibility-tag--ceiling {
+  background: rgba(96, 165, 250, 0.08);
+  border-color: rgba(96, 165, 250, 0.25);
+  color: #7dd3fc;
+}
+.eligibility-check {
+  margin-right: 4px;
+  color: #22c55e;
+}
+
+
 .gauge-center {
   position: absolute;
   inset: 0;
