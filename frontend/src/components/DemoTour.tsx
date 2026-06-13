@@ -9,6 +9,11 @@ interface DemoTourProps {
   onNavigate: (tab: AppTab) => void;
 }
 
+// ── Inline SVG strings for tour HTML content (no JSX allowed in driver.js steps) ──
+const SVG_FOUNDRY = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:5px"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>`;
+const SVG_WORKIQ = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:5px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+const SVG_FABRIC = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:5px"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="8.5" x2="22" y2="8.5"/><line x1="2" y1="15.5" x2="22" y2="15.5"/></svg>`;
+
 export function DemoTour({ onNavigate }: DemoTourProps) {
   const driverRef = useRef<Driver | null>(null);
 
@@ -37,13 +42,13 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
               title:
                 '<span class="tour-badge">Hackathon Demo</span><br/>Welcome to CivicGrant IQ',
               description:
-                '<p class="tour-intro-sub">The municipal copilot that turns <strong>Work IQ signals + Foundry intelligence</strong> into fundable grant strategy.</p>' +
-                '<div class="tour-stat-row">' +
-                '<div class="tour-stat"><span class="tour-stat-num">$8.7M</span><span class="tour-stat-label">Avg opportunity identified per city</span></div>' +
-                '<div class="tour-stat"><span class="tour-stat-num">M365</span><span class="tour-stat-label">Meetings, emails, Teams, SharePoint context</span></div>' +
-                '<div class="tour-stat"><span class="tour-stat-num">Foundry</span><span class="tour-stat-label">Grounded retrieval + orchestrated AI reasoning</span></div>' +
-                "</div>" +
-                '<p class="tour-cta-hint">Let\'s walk through the key features</p>',
+                '<p class="tour-intro-sub">The municipal copilot powered by three intelligence layers — turning city data into fundable grant strategy.</p>' +
+                '<div class="tour-iq-trio">' +
+                `<div class="tour-iq-card tour-iq-card--foundry"><div class="tour-iq-icon">${SVG_FOUNDRY}</div><strong>Foundry IQ</strong><span>GPT-4o + Azure AI Search grounded retrieval</span></div>` +
+                `<div class="tour-iq-card tour-iq-card--workiq"><div class="tour-iq-icon">${SVG_WORKIQ}</div><strong>Work IQ</strong><span>SharePoint, Meetings, Emails &amp; Teams</span></div>` +
+                `<div class="tour-iq-card tour-iq-card--fabric"><div class="tour-iq-icon">${SVG_FABRIC}</div><strong>Fabric IQ</strong><span>Semantic models + operational data</span></div>` +
+                '</div>' +
+                '<p class="tour-cta-hint">Let\'s walk through each layer</p>',
               side: "over" as const,
               align: "center" as const,
             },
@@ -89,7 +94,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
           {
             element: ".header-badge",
             popover: {
-              title: '🔷 Foundry IQ — The Intelligence Engine',
+              title: `${SVG_FOUNDRY}<span style="vertical-align:middle">Foundry IQ — The Intelligence Engine</span>`,
               description:
                 '<p>Every answer is grounded in <strong>Azure AI Foundry</strong> — not hallucinated from training data.</p>' +
                 '<ul class="tour-feature-list">' +
@@ -107,7 +112,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
           {
             element: ".source-chip--work-iq",
             popover: {
-              title: '📅 Work IQ — Microsoft 365 Workflow Intelligence',
+              title: `${SVG_WORKIQ}<span style="vertical-align:middle">Work IQ — Microsoft 365 Workflow Intelligence</span>`,
               description:
                 '<p>Work IQ pulls <strong>live signals from Microsoft 365</strong> and injects them directly into grant analysis — so every recommendation reflects what your team is actually working on.</p>' +
                 '<ul class="tour-feature-list">' +
@@ -116,7 +121,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
                 '<li><strong>Outlook Mail</strong> — grant-related email threads and staff communications</li>' +
                 '<li><strong>Microsoft Teams</strong> — active project discussions and department insights</li>' +
                 '</ul>' +
-                '<p class="tour-tip">💡 Demo line: <em>"It already knows about the Aptakisic Road project from your SharePoint — it used that as eligibility evidence."</em></p>',
+                '<p class="tour-tip">Demo line: <em>"It already knows about the Aptakisic Road project from your SharePoint — it used that as eligibility evidence."</em></p>',
               side: "top" as const,
               align: "start" as const,
               onNextClick: () => {
@@ -133,7 +138,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
           {
             element: ".attach-picker-tabs-row",
             popover: {
-              title: 'Work IQ Signal Sources — Live & Selectable',
+              title: `${SVG_WORKIQ}<span style="vertical-align:middle">Work IQ Signal Sources — Live &amp; Selectable</span>`,
               description:
                 '<p>All M365 signal sources are individually selectable. Pin exactly the context you want — or attach all of them with one click.</p>' +
                 '<div class="tour-chip-row">' +
@@ -143,7 +148,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
                 '<span class="tour-mini-chip tour-mini-chip--foundry">Foundry IQ 13</span>' +
                 '<span class="tour-mini-chip tour-mini-chip--fabric">Fabric IQ 4</span>' +
                 '</div>' +
-                '<p class="tour-tip">💡 This is the proof of <strong>real workflow intelligence</strong> — not generic prompt engineering. The AI knows your city\'s operational context.</p>',
+                '<p class="tour-tip">This is the proof of <strong>real workflow intelligence</strong> — not generic prompt engineering. The AI knows your city\'s operational context.</p>',
               side: "top" as const,
               align: "center" as const,
               onNextClick: () => {
@@ -160,7 +165,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
           {
             element: ".source-chip--fabric",
             popover: {
-              title: '🧱 Fabric IQ — Operational Data Intelligence',
+              title: `${SVG_FABRIC}<span style="vertical-align:middle">Fabric IQ — Operational Data Intelligence</span>`,
               description:
                 '<p><strong>Fabric IQ</strong> connects grant strategy to your city\'s real financial and operational data via <strong>Microsoft Fabric</strong> semantic models.</p>' +
                 '<ul class="tour-feature-list">' +
@@ -169,7 +174,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
                 '<li><strong>Ontology</strong> — grant lifecycle knowledge graph for structured reasoning</li>' +
                 '<li>Enables claims like: <em>"Your city has a 94% compliance rate on past federal grants"</em> — backed by real Fabric data</li>' +
                 '</ul>' +
-                '<p class="tour-tip">💡 Demo line: <em>"Fabric IQ is what separates a smart chatbot from a true municipal intelligence platform."</em></p>',
+                '<p class="tour-tip">Demo line: <em>"Fabric IQ is what separates a smart chatbot from a true municipal intelligence platform."</em></p>',
               side: "top" as const,
               align: "start" as const,
             },
@@ -253,11 +258,11 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             popover: {
               title: "That's CivicGrant IQ",
               description:
-                '<p class="tour-final-text">Three intelligence layers — <strong>Foundry IQ</strong>, <strong>Work IQ</strong>, and <strong>Fabric IQ</strong> — unified into one municipal grant workflow.</p>' +
-                '<div class="tour-stat-row">' +
-                '<div class="tour-stat"><span class="tour-stat-num">🔷</span><span class="tour-stat-label">Foundry IQ — GPT-4o + AI Search grounded retrieval</span></div>' +
-                '<div class="tour-stat"><span class="tour-stat-num">📅</span><span class="tour-stat-label">Work IQ — SharePoint, Meetings, Emails, Teams</span></div>' +
-                '<div class="tour-stat"><span class="tour-stat-num">🧱</span><span class="tour-stat-label">Fabric IQ — Semantic models + operational data</span></div>' +
+                '<p class="tour-final-text">Three intelligence layers — unified into one municipal grant workflow.</p>' +
+                '<div class="tour-iq-trio">' +
+                `<div class="tour-iq-card tour-iq-card--foundry"><div class="tour-iq-icon">${SVG_FOUNDRY}</div><strong>Foundry IQ</strong><span>GPT-4o + AI Search grounded retrieval</span></div>` +
+                `<div class="tour-iq-card tour-iq-card--workiq"><div class="tour-iq-icon">${SVG_WORKIQ}</div><strong>Work IQ</strong><span>SharePoint, Meetings, Emails, Teams</span></div>` +
+                `<div class="tour-iq-card tour-iq-card--fabric"><div class="tour-iq-icon">${SVG_FABRIC}</div><strong>Fabric IQ</strong><span>Semantic models + operational data</span></div>` +
                 '</div>' +
                 '<div class="tour-tech-row">' +
                 '<span class="tour-tech-chip">Azure AI Foundry</span>' +

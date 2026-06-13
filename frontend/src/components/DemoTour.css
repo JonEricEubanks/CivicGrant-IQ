@@ -36,7 +36,7 @@
   border: 1px solid #e5e7eb !important;
   border-radius: 12px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-  max-width: 380px !important;
+  max-width: 420px !important;
   padding: 20px 22px 18px !important;
   color: #111827 !important;
 }
@@ -230,6 +230,70 @@
   margin: 0 !important;
   line-height: 1.5 !important;
 }
+
+/* ── IQ trio cards (welcome + final step) ────────────────────────────────── */
+.tour-iq-trio {
+  display: flex;
+  gap: 7px;
+  margin: 10px 0 12px;
+}
+
+.tour-iq-card {
+  flex: 1;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  padding: 9px 8px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.tour-iq-card strong {
+  display: block;
+  font-size: 0.73rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.tour-iq-card span {
+  display: block;
+  font-size: 0.62rem;
+  line-height: 1.35;
+  color: #6b7280;
+}
+
+.tour-iq-card .tour-iq-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  margin-bottom: 2px;
+}
+
+.tour-iq-card--foundry {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+.tour-iq-card--foundry strong { color: #5b21b6; }
+.tour-iq-card--foundry .tour-iq-icon { background: #ede9fe; color: #6d28d9; }
+
+.tour-iq-card--workiq {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+.tour-iq-card--workiq strong { color: #c2410c; }
+.tour-iq-card--workiq .tour-iq-icon { background: #ffedd5; color: #ea580c; }
+
+.tour-iq-card--fabric {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+.tour-iq-card--fabric strong { color: #be123c; }
+.tour-iq-card--fabric .tour-iq-icon { background: #ffe4e6; color: #e11d48; }
 
 /* ── Feature list inside IQ steps ────────────────────────────────────────── */
 .tour-feature-list {
