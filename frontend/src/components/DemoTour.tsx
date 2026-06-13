@@ -90,25 +90,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             },
           },
 
-          // ── Step 5: Foundry IQ ───────────────────────────────────────────
-          {
-            element: ".header-badge",
-            popover: {
-              title: `${SVG_FOUNDRY}<span style="vertical-align:middle">Foundry IQ — The Intelligence Engine</span>`,
-              description:
-                '<p>Every answer is grounded in <strong>Azure AI Foundry</strong> — not hallucinated from training data.</p>' +
-                '<ul class="tour-feature-list">' +
-                '<li><strong>Azure AI Search</strong> retrieves city-specific grant docs, past applications, and CIP context</li>' +
-                '<li><strong>GPT-4o</strong> orchestrates a 6-step reasoning chain: Parse → Match → Verify → Gaps → Narrative → Strategy</li>' +
-                '<li><strong>Knowledge base</strong> holds 12+ curated grant guidance docs — Buffalo Grove CIP, federal rubrics, stacking strategies</li>' +
-                '<li>Agents cite every claim back to a source — no black-box answers</li>' +
-                '</ul>',
-              side: "bottom" as const,
-              align: "end" as const,
-            },
-          },
-
-          // ── Step 6: Work IQ chip ──────────────────────────────────────
+          // ── Step 5: Work IQ chip ──────────────────────────────────────
           {
             element: ".source-chip--work-iq",
             popover: {
@@ -161,7 +143,25 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             },
           },
 
-          // ── Step 7b: Fabric IQ chip ───────────────────────────────────
+          // ── Step 7b: Foundry IQ chip ──────────────────────────────────
+          {
+            element: ".source-chip--foundry",
+            popover: {
+              title: `${SVG_FOUNDRY}<span style="vertical-align:middle">Foundry IQ — The Intelligence Engine</span>`,
+              description:
+                '<p>Every answer is grounded in <strong>Azure AI Foundry</strong> — not hallucinated from training data.</p>' +
+                '<ul class="tour-feature-list">' +
+                '<li><strong>Azure AI Search</strong> retrieves city-specific grant docs, past applications, and CIP context</li>' +
+                '<li><strong>GPT-4o</strong> orchestrates a 6-step reasoning chain: Parse → Match → Verify → Gaps → Narrative → Strategy</li>' +
+                '<li><strong>Knowledge base</strong> holds 12+ curated grant guidance docs — Buffalo Grove CIP, federal rubrics, stacking strategies</li>' +
+                '<li>Agents cite every claim back to a source — no black-box answers</li>' +
+                '</ul>',
+              side: "top" as const,
+              align: "start" as const,
+            },
+          },
+
+          // ── Step 7c: Fabric IQ chip ───────────────────────────────────
           {
             element: ".source-chip--fabric",
             popover: {
