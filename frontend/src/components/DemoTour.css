@@ -230,3 +230,62 @@
   margin: 0 !important;
   line-height: 1.5 !important;
 }
+
+/* ── Feature list inside IQ steps ────────────────────────────────────────── */
+.tour-feature-list {
+  margin: 8px 0 10px 0 !important;
+  padding-left: 1.2rem !important;
+  list-style: disc !important;
+  color: #4b5563 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.65 !important;
+}
+
+.tour-feature-list li {
+  margin-bottom: 4px !important;
+}
+
+.tour-feature-list li strong {
+  color: #1a6fba !important;
+  font-weight: 600 !important;
+}
+
+/* Demo tip callout */
+.tour-tip {
+  background: #f0fdf4 !important;
+  border-left: 3px solid #22c55e !important;
+  border-radius: 0 6px 6px 0 !important;
+  padding: 6px 10px !important;
+  margin: 8px 0 0 !important;
+  font-size: 0.78rem !important;
+  color: #15803d !important;
+  line-height: 1.5 !important;
+}
+
+.tour-tip em {
+  color: #15803d !important;
+  font-style: italic !important;
+}
+
+/* ── Mini-chips for the attach picker tab preview ────────────────────────── */
+.tour-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0 10px !important;
+}
+
+.tour-mini-chip {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.tour-mini-chip--sp    { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+.tour-mini-chip--cal   { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+.tour-mini-chip--mail  { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+.tour-mini-chip--foundry { background: #f5f3ff; border-color: #ddd6fe; color: #6d28d9; }
+.tour-mini-chip--fabric  { background: #fff1f2; border-color: #fecdd3; color: #be123c; }

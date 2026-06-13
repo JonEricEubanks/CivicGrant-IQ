@@ -85,25 +85,38 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             },
           },
 
-          // ── Step 5: Foundry badge ────────────────────────────────────────
+          // ── Step 5: Foundry IQ ───────────────────────────────────────────
           {
             element: ".header-badge",
             popover: {
-              title: "Foundry-Powered Intelligence Layer",
+              title: '🔷 Foundry IQ — The Intelligence Engine',
               description:
-                "CivicGrant IQ runs on <strong>Azure AI Foundry</strong>: GPT-4o analysis, Azure AI Search retrieval, and grants orchestration. Foundry grounds every recommendation in trusted evidence before strategy is generated.",
+                '<p>Every answer is grounded in <strong>Azure AI Foundry</strong> — not hallucinated from training data.</p>' +
+                '<ul class="tour-feature-list">' +
+                '<li><strong>Azure AI Search</strong> retrieves city-specific grant docs, past applications, and CIP context</li>' +
+                '<li><strong>GPT-4o</strong> orchestrates a 6-step reasoning chain: Parse → Match → Verify → Gaps → Narrative → Strategy</li>' +
+                '<li><strong>Knowledge base</strong> holds 12+ curated grant guidance docs — Buffalo Grove CIP, federal rubrics, stacking strategies</li>' +
+                '<li>Agents cite every claim back to a source — no black-box answers</li>' +
+                '</ul>',
               side: "bottom" as const,
               align: "end" as const,
             },
           },
 
-          // ── Step 6: Source chips / attach launcher ─────────────────────
+          // ── Step 6: Work IQ chip ──────────────────────────────────────
           {
-            element: ".input-toolbar",
+            element: ".source-chip--work-iq",
             popover: {
-              title: "Work IQ + Foundry Context Controls",
+              title: '📅 Work IQ — Microsoft 365 Workflow Intelligence',
               description:
-                "This is where users pin context from <strong>Work IQ</strong> (SharePoint docs, meetings, emails, Teams) and Foundry IQ knowledge. It demonstrates the Microsoft 365 + Power Platform side, not just LLM chat.",
+                '<p>Work IQ pulls <strong>live signals from Microsoft 365</strong> and injects them directly into grant analysis — so every recommendation reflects what your team is actually working on.</p>' +
+                '<ul class="tour-feature-list">' +
+                '<li><strong>SharePoint</strong> — city grant documents, CIP files, past applications</li>' +
+                '<li><strong>Outlook Calendar</strong> — upcoming deadline meetings, council votes, project milestones</li>' +
+                '<li><strong>Outlook Mail</strong> — grant-related email threads and staff communications</li>' +
+                '<li><strong>Microsoft Teams</strong> — active project discussions and department insights</li>' +
+                '</ul>' +
+                '<p class="tour-tip">💡 Demo line: <em>"It already knows about the Aptakisic Road project from your SharePoint — it used that as eligibility evidence."</em></p>',
               side: "top" as const,
               align: "start" as const,
               onNextClick: () => {
@@ -116,13 +129,21 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             },
           },
 
-          // ── Step 7: Attach picker tabs (meetings/emails/foundry) ──────
+          // ── Step 7: Work IQ attach picker (open) ─────────────────────
           {
             element: ".attach-picker-tabs-row",
             popover: {
-              title: "Work IQ Signals in One Place",
+              title: 'Work IQ Signal Sources — Live & Selectable',
               description:
-                "Show this during demos: <strong>Meetings + Emails + Teams + SharePoint + Foundry IQ</strong> are all selectable context. This is the proof of real workflow intelligence, not generic prompt engineering.",
+                '<p>All M365 signal sources are individually selectable. Pin exactly the context you want — or attach all of them with one click.</p>' +
+                '<div class="tour-chip-row">' +
+                '<span class="tour-mini-chip tour-mini-chip--sp">SharePoint 5</span>' +
+                '<span class="tour-mini-chip tour-mini-chip--cal">Meetings</span>' +
+                '<span class="tour-mini-chip tour-mini-chip--mail">Emails</span>' +
+                '<span class="tour-mini-chip tour-mini-chip--foundry">Foundry IQ 13</span>' +
+                '<span class="tour-mini-chip tour-mini-chip--fabric">Fabric IQ 4</span>' +
+                '</div>' +
+                '<p class="tour-tip">💡 This is the proof of <strong>real workflow intelligence</strong> — not generic prompt engineering. The AI knows your city\'s operational context.</p>',
               side: "top" as const,
               align: "center" as const,
               onNextClick: () => {
@@ -132,6 +153,25 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
                 }
                 setTimeout(() => driverObj.moveNext(), 280);
               },
+            },
+          },
+
+          // ── Step 7b: Fabric IQ chip ───────────────────────────────────
+          {
+            element: ".source-chip--fabric",
+            popover: {
+              title: '🧱 Fabric IQ — Operational Data Intelligence',
+              description:
+                '<p><strong>Fabric IQ</strong> connects grant strategy to your city\'s real financial and operational data via <strong>Microsoft Fabric</strong> semantic models.</p>' +
+                '<ul class="tour-feature-list">' +
+                '<li><strong>Semantic models</strong> — grant lifecycle, disbursement facts, milestone tracking</li>' +
+                '<li><strong>Dim tables</strong> — agency, city, program, and grant reference data</li>' +
+                '<li><strong>Ontology</strong> — grant lifecycle knowledge graph for structured reasoning</li>' +
+                '<li>Enables claims like: <em>"Your city has a 94% compliance rate on past federal grants"</em> — backed by real Fabric data</li>' +
+                '</ul>' +
+                '<p class="tour-tip">💡 Demo line: <em>"Fabric IQ is what separates a smart chatbot from a true municipal intelligence platform."</em></p>',
+              side: "top" as const,
+              align: "start" as const,
             },
           },
 
@@ -213,17 +253,21 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
             popover: {
               title: "That's CivicGrant IQ",
               description:
-                '<p class="tour-final-text">A production-style municipal AI workflow: Work IQ context from daily operations, Foundry-grounded intelligence, and practical grant execution.</p>' +
+                '<p class="tour-final-text">Three intelligence layers — <strong>Foundry IQ</strong>, <strong>Work IQ</strong>, and <strong>Fabric IQ</strong> — unified into one municipal grant workflow.</p>' +
+                '<div class="tour-stat-row">' +
+                '<div class="tour-stat"><span class="tour-stat-num">🔷</span><span class="tour-stat-label">Foundry IQ — GPT-4o + AI Search grounded retrieval</span></div>' +
+                '<div class="tour-stat"><span class="tour-stat-num">📅</span><span class="tour-stat-label">Work IQ — SharePoint, Meetings, Emails, Teams</span></div>' +
+                '<div class="tour-stat"><span class="tour-stat-num">🧱</span><span class="tour-stat-label">Fabric IQ — Semantic models + operational data</span></div>' +
+                '</div>' +
                 '<div class="tour-tech-row">' +
                 '<span class="tour-tech-chip">Azure AI Foundry</span>' +
                 '<span class="tour-tech-chip">Microsoft 365 Work IQ</span>' +
-                '<span class="tour-tech-chip">Power Platform Signals</span>' +
+                '<span class="tour-tech-chip">Microsoft Fabric IQ</span>' +
                 '<span class="tour-tech-chip">GPT-4o</span>' +
                 '<span class="tour-tech-chip">Azure AI Search</span>' +
                 '<span class="tour-tech-chip">Grants.gov API</span>' +
-                '<span class="tour-tech-chip">React 18 + Vite</span>' +
-                "</div>" +
-                '<p class="tour-final-tagline">Try: <em>"Use my latest meetings, emails, and Foundry docs to prioritize the top 3 grants this quarter."</em></p>',
+                '</div>' +
+                '<p class="tour-final-tagline">Try: <em>"Use my latest meetings, SharePoint docs, and Fabric data to prioritize the top 3 grants this quarter."</em></p>',
               side: "over" as const,
               align: "center" as const,
             },
