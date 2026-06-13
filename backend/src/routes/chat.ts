@@ -213,11 +213,27 @@ chatRouter.post("/", async (req: Request, res: Response) => {
             const sortParam = acronymHit ? "&sortBy=relevance&categories=none" : "";
             const apiBase = `http://localhost:${process.env.PORT ?? 3001}`;
             const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=8&withFunding=1${sortParam}`;
+            console.log(`[grants.gov] acronym=${acronymHit ?? "none"} keywords="${keywords}" url=${url}`);
             const resp = await fetch(url, { signal: AbortSignal.timeout(8_000) });
             if (!resp.ok) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
             const data = await resp.json() as { grants?: Array<{ title: string; closeDate: string; estimatedFunding?: number | null; grantsGovUrl: string }> };
             const hits = data.grants ?? [];
             if (!hits.length) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
+            // When an acronym search was used, grants.gov already sorted by relevance — the first
+            // result IS the best match. No need to re-score by title-word overlap (which would
+            // fail anyway because BRIC appears as "(BRIC)" with parentheses in the title).
+            if (acronymHit) {
+              const top = hits[0];
+              console.log(`[grants.gov] Acronym "${acronymHit.toUpperCase()}" → "${top.title}" | funding=${top.estimatedFunding} | deadline=${top.closeDate}`);
+              return {
+                fundingAmount: typeof top.estimatedFunding === "number" && top.estimatedFunding > 0 ? top.estimatedFunding : null,
+                deadline: top.closeDate || null,
+                grantsGovUrl: top.grantsGovUrl || null,
+                title: top.title,
+                eligibleApplicants: null,
+                awardCeiling: null,
+              };
+            }
             // Score each hit by how many title words appear in the user's query (include short acronyms)
             const scored = hits.map(g => ({
               ...g,
