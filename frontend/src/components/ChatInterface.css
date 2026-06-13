@@ -533,7 +533,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1.5rem;
+  gap: 0.75rem;
   max-width: 700px;
   width: 100%;
   animation: heroFadeIn 0.6s ease-out both;
@@ -559,6 +559,42 @@
   text-transform: uppercase;
 }
 
+.hero-top-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Elevated backend status pill — lives next to the LIVE badge */
+.hero-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 100px;
+  padding: 4px 11px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+.hero-status-pill--checking {
+  color: #92400e;
+  background: rgba(251,191,36,0.1);
+  border-color: rgba(251,191,36,0.35);
+}
+.hero-status-pill--unreachable {
+  color: #b91c1c;
+  background: rgba(239,68,68,0.08);
+  border-color: rgba(239,68,68,0.3);
+}
+.hero-status-pill--ready {
+  color: #166534;
+  background: rgba(34,197,94,0.08);
+  border-color: rgba(34,197,94,0.3);
+  animation: coldstart-fadein 0.3s ease, coldstart-fadeout 0.5s ease 2.5s forwards;
+}
+
 .hero-live-dot {
   width: 7px;
   height: 7px;
@@ -580,7 +616,7 @@
 }
 
 .hero-pipeline-amount {
-  font-size: 4rem;
+  font-size: 3.2rem;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -592,10 +628,10 @@
 }
 
 .hero-pipeline-sub {
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   color: #6b7280;
   max-width: 340px;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 /* --- Hero grant cards ----------------------------------------- */
@@ -898,8 +934,7 @@
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.55rem;
-  margin-top: 12px;
+  gap: 0.45rem;
   max-width: 600px;
 }
 .hero-trust-item {

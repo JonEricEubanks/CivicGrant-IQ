@@ -2503,9 +2503,29 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
               <div className="chat-empty">
                 {/* Animated hero */}
                 <section className="hero-section" aria-label="Live federal grant intelligence for Buffalo Grove, IL">
-                  <div className="hero-live-badge" aria-hidden="true">
-                    <span className="hero-live-dot" />
-                    Live Grant Intelligence
+                  <div className="hero-top-row">
+                    <div className="hero-live-badge" aria-hidden="true">
+                      <span className="hero-live-dot" />
+                      Live Grant Intelligence
+                    </div>
+                    {/* Backend status pill — elevated next to live badge */}
+                    {backendStatus !== "ready" ? (
+                      <div
+                        className={`hero-status-pill hero-status-pill--${backendStatus}`}
+                        role="status"
+                        aria-live="polite"
+                      >
+                        {backendStatus === "checking" ? (
+                          <><span className="hero-coldstart-spinner" aria-hidden="true" /><span>Waking backend…</span></>
+                        ) : (
+                          <><span>⚠️</span><span>Backend unreachable — refresh</span></>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="hero-status-pill hero-status-pill--ready" role="status" aria-live="polite">
+                        <span>✓</span><span>Ready</span>
+                      </div>
+                    )}
                   </div>
                   <div className="hero-pipeline">
                     <h1 className="hero-pipeline-amount" aria-label={`${formatHeroAmount(heroAmt)} in live federal grant funding`}>{formatHeroAmount(heroAmt)}</h1>
@@ -2574,48 +2594,12 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
                       <div className="hero-grant-scan-sub">Surface every matching grant in ~60s</div>
                     </button>
                   </div>
-                  <p className="hero-desc">
-                    Combines Work IQ signals from meetings, emails, Teams, and SharePoint with Foundry-grounded grant intelligence to score fit, close gaps, and generate a complete application strategy.
-                  </p>
-                  {backendStatus !== "ready" && (
-                    <div
-                      className={`hero-coldstart-notice hero-coldstart-notice--${backendStatus}`}
-                      role="status"
-                      aria-live="polite"
-                    >
-                      {backendStatus === "checking" ? (
-                        <>
-                          <span className="hero-coldstart-icon hero-coldstart-spinner" aria-hidden="true" />
-                          <span><strong>Waking backend…</strong> The first request may take 10–15 seconds.</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="hero-coldstart-icon">⚠️</span>
-                          <span><strong>Backend unreachable.</strong> Check your connection or refresh.</span>
-                        </>
-                      )}
-                    </div>
-                  )}
-                  {backendStatus === "ready" && (
-                    <div className="hero-coldstart-notice hero-coldstart-notice--ready" role="status" aria-live="polite">
-                      <span className="hero-coldstart-icon">✓</span>
-                      <span><strong>Backend ready</strong> — queries are instant.</span>
-                    </div>
-                  )}
-                  <div className="hero-safety-notice">
-                    <span className="hero-safety-icon">🛡</span>
-                    <span>Architecturally never auto-submits. If evidence is insufficient, we tell you — we never bluff.</span>
-                  </div>
                   <div className="hero-trust-strip" aria-label="System trust indicators">
                     <span className="hero-trust-item"><IconSparkle size={13} aria-hidden="true" /> 5 specialist agents</span>
                     <span className="hero-trust-dot" aria-hidden="true" />
-                    <span className="hero-trust-item"><IconBuilding size={13} aria-hidden="true" /> Work IQ: meetings, emails, Teams, SharePoint</span>
+                    <span className="hero-trust-item"><IconBuilding size={13} aria-hidden="true" /> Work IQ · Foundry IQ · Fabric IQ</span>
                     <span className="hero-trust-dot" aria-hidden="true" />
-                    <span className="hero-trust-item"><IconSearch size={13} aria-hidden="true" /> Grounded in Foundry IQ</span>
-                    <span className="hero-trust-dot" aria-hidden="true" />
-                    <span className="hero-trust-item"><IconCheck size={13} aria-hidden="true" /> Every claim cited to source</span>
-                    <span className="hero-trust-dot" aria-hidden="true" />
-                    <span className="hero-trust-item"><IconScales size={13} aria-hidden="true" /> Self-critique loop</span>
+                    <span className="hero-trust-item"><IconScales size={13} aria-hidden="true" /> Never auto-submits · Every claim cited</span>
                   </div>
                 </section>
               </div>
