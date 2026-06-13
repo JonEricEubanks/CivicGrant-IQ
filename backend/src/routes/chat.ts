@@ -165,10 +165,16 @@ chatRouter.post("/", async (req: Request, res: Response) => {
               .filter(s => s.length > 3 && s.length < 120);
             if (!rawEligible.length) rawEligible = null;
           }
-          if (rawFunding || rawDeadline || rawEligible) {
-            console.log(`[nofo-parse] Extracted from pasted NOFO: funding=${rawFunding} deadline=${rawDeadline} ceiling=${rawCeiling} eligibleTypes=${rawEligible?.length ?? 0}`);
+          // Parse grants.gov URL — look for search-results-detail/NNN or oppId=NNN in the pasted text
+          let rawGovUrl: string | null = null;
+          const directUrlMatch = trimmed.match(/grants\.gov\/search-results-detail\/(\d+)/i);
+          const oppIdMatch = trimmed.match(/oppId=(\d+)/i);
+          const oppId = directUrlMatch?.[1] ?? oppIdMatch?.[1] ?? null;
+          if (oppId) rawGovUrl = `https://www.grants.gov/search-results-detail/${oppId}`;
+          if (rawFunding || rawDeadline || rawEligible || rawGovUrl) {
+            console.log(`[nofo-parse] Extracted from pasted NOFO: funding=${rawFunding} deadline=${rawDeadline} ceiling=${rawCeiling} eligibleTypes=${rawEligible?.length ?? 0} url=${rawGovUrl}`);
           }
-          return Promise.resolve({ fundingAmount: rawFunding, deadline: rawDeadline, grantsGovUrl: null, title: null, eligibleApplicants: rawEligible, awardCeiling: rawCeiling });
+          return Promise.resolve({ fundingAmount: rawFunding, deadline: rawDeadline, grantsGovUrl: rawGovUrl, title: null, eligibleApplicants: rawEligible, awardCeiling: rawCeiling });
         })()
       : (async (): Promise<LiveGrantData> => {
           try {
