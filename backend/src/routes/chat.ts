@@ -131,8 +131,44 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     // so it can render the answer as a plain reply (follow-up) vs. a report (analysis).
     send("meta", { isFollowUp });
 
-    // ── Start Work IQ loading and Competitor Intel concurrently ──────────────
+    // ── Start Work IQ loading, Competitor Intel, and Grants.gov lookup concurrently ──
     const cityContextPromise = getCityContext(false);
+
+    // Live grants.gov lookup — extract keywords from query and fetch real funding/deadline
+    // so the widget never shows hallucinated numbers. Runs in parallel, never blocks.
+    interface LiveGrantData { fundingAmount: number | null; deadline: string | null; grantsGovUrl: string | null; title: string | null }
+    const grantsGovPromise: Promise<LiveGrantData> = (isFollowUp || isGrantTextPasted)
+      ? Promise.resolve({ fundingAmount: null, deadline: null, grantsGovUrl: null, title: null })
+      : (async (): Promise<LiveGrantData> => {
+          try {
+            // Extract 2-4 keyword terms from the query for the grants.gov search
+            const stopwords = new Set(["the","a","an","for","is","are","can","we","i","it","this","that","grant","grants","about","what","how","does","do","our","me","us","please","analyze","analysis","find","get","show"]);
+            const keywords = lowerMsg.replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w => w.length > 3 && !stopwords.has(w)).slice(0, 4).join(" ") || "infrastructure resilience";
+            const apiBase = `http://localhost:${process.env.PORT ?? 3001}`;
+            const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=5&withFunding=1`;
+            const resp = await fetch(url, { signal: AbortSignal.timeout(8_000) });
+            if (!resp.ok) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+            const data = await resp.json() as { grants?: Array<{ title: string; closeDate: string; estimatedFunding?: number | null; grantsGovUrl: string }> };
+            const hits = data.grants ?? [];
+            if (!hits.length) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+            // Pick the hit whose title best matches the query
+            const best = hits.reduce((a, b) => {
+              const aScore = a.title.toLowerCase().split(/\s+/).filter(w => lowerMsg.includes(w) && w.length > 3).length;
+              const bScore = b.title.toLowerCase().split(/\s+/).filter(w => lowerMsg.includes(w) && w.length > 3).length;
+              return bScore > aScore ? b : a;
+            });
+            console.log(`[grants.gov] Best match: "${best.title}" | funding=${best.estimatedFunding} | deadline=${best.closeDate}`);
+            return {
+              fundingAmount: typeof best.estimatedFunding === "number" && best.estimatedFunding > 0 ? best.estimatedFunding : null,
+              deadline: best.closeDate || null,
+              grantsGovUrl: best.grantsGovUrl || null,
+              title: best.title,
+            };
+          } catch (e) {
+            console.warn("[grants.gov] Live lookup failed:", (e as Error).message);
+            return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null };
+          }
+        })();
 
     // For follow-ups: skip Competitor Intel — that already ran for the initial query
     const competitorPromise = isFollowUp
@@ -352,10 +388,24 @@ chatRouter.post("/", async (req: Request, res: Response) => {
 
     let result;
     const streamedStepNums = new Set<number>();
+
+    // Await grants.gov data so we can inject it before the LLM runs
+    const liveGov = await grantsGovPromise;
+    let finalMessage = enrichedMessage;
+    if (isComplexAnalysis && !isFollowUp && (liveGov.fundingAmount || liveGov.deadline)) {
+      const govLines: string[] = ["AUTHORITATIVE DATA FROM GRANTS.GOV (use these EXACT values in widget — do not override with estimates):"];
+      if (liveGov.title)          govLines.push(`- Grant title on grants.gov: ${liveGov.title}`);
+      if (liveGov.fundingAmount)  govLines.push(`- fundingAmount (verified): ${liveGov.fundingAmount}`);
+      if (liveGov.deadline)       govLines.push(`- deadline (verified): ${liveGov.deadline}`);
+      if (liveGov.grantsGovUrl)   govLines.push(`- grantsGovUrl: ${liveGov.grantsGovUrl}`);
+      finalMessage = `${govLines.join("\n")}\n\n${enrichedMessage}`;
+      send("grants_gov_verified", { fundingAmount: liveGov.fundingAmount, deadline: liveGov.deadline, title: liveGov.title });
+    }
+
     try {
       // ── Main analysis (runs concurrently with competitorPromise above)
       result = await runGrantAnalysis({
-        message: enrichedMessage,
+        message: finalMessage,
         threadId,
         cityContext,
         onRetrying: (waitMs) => {
@@ -462,6 +512,20 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     }
 
     if (result.citations.length > 0) send("citations", { citations: result.citations });
+
+    // ── Override widget funding/deadline with verified grants.gov values ───
+    // This is the authoritative post-process step: no matter what the LLM said,
+    // if we have real data from grants.gov we stamp it onto the widget before emit.
+    if (result.widget?.type === "grant_match" && (liveGov.fundingAmount || liveGov.deadline)) {
+      const d = result.widget.data as Record<string, unknown>;
+      if (liveGov.fundingAmount && liveGov.fundingAmount > 0) {
+        d.fundingAmount = liveGov.fundingAmount;
+        d.fundingVerified = true;
+      }
+      if (liveGov.deadline) d.deadline = liveGov.deadline;
+      if (liveGov.grantsGovUrl) d.grantsGovUrl = liveGov.grantsGovUrl;
+    }
+
     if (result.widget) send("widget", result.widget);
 
     // G17 enforcement: if the guardrail auto-corrected a fabricated funding amount,
