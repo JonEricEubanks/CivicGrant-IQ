@@ -880,6 +880,7 @@ interface WorkspacePanelProps {
   graphPaths?: import("../types").GraphPath[];
   artifacts: WorkspaceArtifact[];
   inputs: AttachDoc[];
+  autoSignals: AttachDoc[];
   widget?: WidgetPayload;
   analysisText: string;
   isLoading: boolean;
@@ -897,7 +898,7 @@ interface WorkspacePanelProps {
   onOpenDrawer: (view: DrawerView) => void;
 }
 
-function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, tierInfo, isVisible, onToggleVisibility, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
+function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, autoSignals, widget, analysisText, isLoading, hasMessages, redTeamReview, competitorIntel, refinement, reviewStreaming, competitorStreaming, refinementStreaming, tierInfo, isVisible, onToggleVisibility, onOpenPreview, onOpenDrawer }: WorkspacePanelProps) {
   const [planOpen, setPlanOpen] = useState(true);
   const [outputOpen, setOutputOpen] = useState(true);
   const [inputsOpen, setInputsOpen] = useState(true);
@@ -979,51 +980,58 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
         )}
       </div>
 
-      {/* Inputs — pinned context docs & M365 signals used in this analysis */}
-      {inputs.length > 0 && (
+      {/* Context Used — manual inputs + auto Work IQ signals */}
+      {(inputs.length > 0 || autoSignals.length > 0) && (
         <div className="ws-section">
           <button className="ws-section-header" onClick={() => setInputsOpen(!inputsOpen)}>
-            <span className="ws-section-name">Inputs</span>
+            <span className="ws-section-name">Context Used</span>
             <div className="ws-section-meta">
-              <span className="ws-badge ws-badge--count">{inputs.length}</span>
+              <span className="ws-badge ws-badge--count">{inputs.length + autoSignals.length}</span>
               <span className={`ws-chevron ${inputsOpen ? "ws-chevron--open" : ""}`}>›</span>
             </div>
           </button>
           {inputsOpen && (
             <div className="ws-section-body">
-              {inputs.map((doc) => {
-                const isExpanded = selectedInput?.id === doc.id;
-                const icon = doc.kind === "calendar" ? "📅"
-                  : doc.kind === "email" ? "✉️"
-                  : doc.kind === "teams" ? "💬"
-                  : null;
-                const preview = doc.content ?? doc.desc;
-                return (
-                  <div key={doc.id} className="ws-input-item">
-                    <button
-                      className={`ws-file-item ws-file-item--clickable${isExpanded ? " ws-file-item--active" : ""}`}
-                      onClick={() => setSelectedInput(isExpanded ? null : doc)}
-                      title="Click to preview"
-                    >
-                      <span className="ws-input-icon">
-                        {icon
-                          ? <span className="ws-input-emoji">{icon}</span>
-                          : doc.source === "foundry-iq"
-                            ? <IconDatabase size={13} className="ws-file-icon" />
-                            : <IconFileText size={13} className="ws-file-icon" />}
-                      </span>
-                      <span className="ws-file-name ws-file-name--truncate">{doc.label}</span>
-                      <span className="ws-file-menu">{isExpanded ? "∧" : "›"}</span>
-                    </button>
-                    {isExpanded && (
-                      <div className="ws-input-preview">
-                        <div className="ws-input-preview-source">{doc.desc}</div>
-                        <div className="ws-input-preview-body">{preview}</div>
+              {inputs.length > 0 && (
+                <>
+                  <div className="ws-context-group-label">Pinned by you</div>
+                  {inputs.map((doc) => {
+                    const isExpanded = selectedInput?.id === doc.id;
+                    const icon = doc.kind === "calendar" ? "📅" : doc.kind === "email" ? "✉️" : doc.kind === "teams" ? "💬" : null;
+                    const preview = doc.content ?? doc.desc;
+                    return (
+                      <div key={doc.id} className="ws-input-item">
+                        <button className={`ws-file-item ws-file-item--clickable${isExpanded ? " ws-file-item--active" : ""}`} onClick={() => setSelectedInput(isExpanded ? null : doc)} title="Click to preview">
+                          <span className="ws-input-icon">{icon ? <span className="ws-input-emoji">{icon}</span> : doc.source === "foundry-iq" ? <IconDatabase size={13} className="ws-file-icon" /> : <IconFileText size={13} className="ws-file-icon" />}</span>
+                          <span className="ws-file-name ws-file-name--truncate">{doc.label}</span>
+                          <span className="ws-file-menu">{isExpanded ? "∧" : "›"}</span>
+                        </button>
+                        {isExpanded && <div className="ws-input-preview"><div className="ws-input-preview-source">{doc.desc}</div><div className="ws-input-preview-body">{preview}</div></div>}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </>
+              )}
+              {autoSignals.length > 0 && (
+                <>
+                  <div className="ws-context-group-label">Work IQ auto-loaded</div>
+                  {autoSignals.map((doc) => {
+                    const isExpanded = selectedInput?.id === doc.id;
+                    const icon = doc.kind === "calendar" ? "📅" : doc.kind === "email" ? "✉️" : doc.kind === "teams" ? "💬" : null;
+                    const preview = doc.content ?? doc.desc;
+                    return (
+                      <div key={doc.id} className="ws-input-item">
+                        <button className={`ws-file-item ws-file-item--clickable${isExpanded ? " ws-file-item--active" : ""}`} onClick={() => setSelectedInput(isExpanded ? null : doc)} title="Click to preview">
+                          <span className="ws-input-icon">{icon ? <span className="ws-input-emoji">{icon}</span> : <IconFileText size={13} className="ws-file-icon" />}</span>
+                          <span className="ws-file-name ws-file-name--truncate">{doc.label}</span>
+                          <span className="ws-file-menu">{isExpanded ? "∧" : "›"}</span>
+                        </button>
+                        {isExpanded && <div className="ws-input-preview"><div className="ws-input-preview-source">{doc.desc}</div><div className="ws-input-preview-body">{preview}</div></div>}
+                      </div>
+                    );
+                  })}
+                </>
+              )}
             </div>
           )}
         </div>
@@ -3146,6 +3154,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
         graphPaths={wsGraphPaths}
         artifacts={artifacts}
         inputs={wsInputs}
+        autoSignals={[...m365Signals, ...spDocs]}
         widget={wsWidget}
         analysisText={wsAnalysisText}
         isLoading={isLoading}
