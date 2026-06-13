@@ -178,6 +178,66 @@ chatRouter.post("/", async (req: Request, res: Response) => {
         })()
       : (async (): Promise<LiveGrantData> => {
           try {
+            // Hero card clicks embed the exact opportunity ID in the prompt:
+            // "Analyze the "Title" [grants.gov/search-results-detail/358015] ..."
+            // Use it to fetch data directly — zero ambiguity, no title search needed.
+            const embeddedOppIdMatch = trimmed.match(/grants\.gov\/search-results-detail\/(\d+)/i);
+            const embeddedOppId = embeddedOppIdMatch?.[1] ?? null;
+            if (embeddedOppId) {
+              console.log(`[grants.gov] Embedded opp ID ${embeddedOppId} — fetching detail directly`);
+              const detailUrl = `https://api.grants.gov/v1/api/fetchOpportunity`;
+              const detailResp = await fetch(detailUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ opportunityId: embeddedOppId }),
+                signal: AbortSignal.timeout(10_000),
+              });
+              if (detailResp.ok) {
+                const detail = await detailResp.json() as {
+                  data?: {
+                    synopsis?: {
+                      estimatedFunding?: number | string;
+                      awardCeiling?: number | string;
+                      closeDate?: string;
+                      responseDate?: string;
+                      responseDateStr?: string;
+                    };
+                  };
+                };
+                const syn = detail?.data?.synopsis;
+                const toNum = (v: number | string | undefined): number | null => {
+                  const n = typeof v === "string" ? parseInt(v.replace(/[^0-9]/g, ""), 10) : v;
+                  return n && n > 0 ? (n as number) : null;
+                };
+                const rawFunding = toNum(syn?.estimatedFunding) ?? toNum(syn?.awardCeiling);
+                // Grants.gov uses 'responseDate' (actual deadline) not 'closeDate' in synopsis
+                // responseDateStr format: "2026-08-06-00-00-00" → take first 10 chars
+                const deadlineSrc = syn?.responseDateStr || syn?.closeDate || syn?.responseDate;
+                const rawDeadline = deadlineSrc
+                  ? (() => {
+                      // responseDateStr: "2026-08-06-00-00-00"
+                      const rds = (deadlineSrc as string).match(/^(\d{4}-\d{2}-\d{2})/);
+                      if (rds) return rds[1];
+                      // MM/DD/YYYY
+                      const m = (deadlineSrc as string).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                      if (m) return `${m[3]}-${m[1]}-${m[2]}`;
+                      // "Aug 06, 2026 12:00:00 AM EDT" → JS Date parse
+                      const t = new Date(deadlineSrc as string).getTime();
+                      return isNaN(t) ? null : new Date(t).toISOString().split("T")[0];
+                    })()
+                  : null;
+                const grantsGovUrl = `https://www.grants.gov/search-results-detail/${embeddedOppId}`;
+                console.log(`[grants.gov] Direct fetch opp ${embeddedOppId}: funding=${rawFunding} deadline=${rawDeadline}`);
+                return {
+                  fundingAmount: rawFunding,
+                  deadline: rawDeadline,
+                  grantsGovUrl,
+                  title: null,
+                  eligibleApplicants: null,
+                  awardCeiling: null,
+                };
+              }
+            }
             // Extract meaningful domain keywords — skip generic grant/analysis terms and years
             const stopwords = new Set([
               "the","a","an","for","is","are","can","we","i","it","this","that",
@@ -190,41 +250,52 @@ chatRouter.post("/", async (req: Request, res: Response) => {
               "eligible","eligibility","funding","funded","qualify","qualifying",
               "available","opportunity","opportunities","infrastructure",
             ]);
+            // Hero card clicks send: Analyze the "Full Grant Title" federal grant...
+            // Extract the quoted title and use it as a direct grants.gov search term.
+            // This avoids the keyword-stripping and date-sort issues that bury specific grants.
+            const quotedTitleMatch = trimmed.match(/[Aa]nalyze the "([^"]{5,150})"/);
+            const quotedTitle = quotedTitleMatch?.[1]?.trim() ?? null;
             // Known FEMA/HUD/DOT/EPA program acronyms — if present, use them directly
             // as the single search term to maximize grants.gov relevance accuracy.
             const GRANT_PROGRAM_ACRONYMS = [
               "bric","hmgp","raise","cdbg","tiger","build","cmaq","stbg","arpa",
               "lihtc","hope","nfip","msp","wif","bead","reap","srap","eap",
             ];
-            const acronymHit = GRANT_PROGRAM_ACRONYMS.find(a => {
+            const acronymHit: string | undefined = !quotedTitle ? GRANT_PROGRAM_ACRONYMS.find(a => {
               const re = new RegExp(`(?:^|\\s)${a}(?:\\s|$|[?!.,])`, "i");
               return re.test(lowerMsg);
-            });
+            }) : undefined;
             // If user mentioned a specific program acronym, search grants.gov with that
             // term and relevance sorting — this gives a precise, narrow result.
             // Otherwise fall back to multi-keyword closeDate-sorted search.
-            const keywords = acronymHit
+            // Priority 1: Quoted grant title from hero card click (most precise)
+            // Priority 2: Known program acronym (BRIC, RAISE, etc.)
+            // Priority 3: Multi-keyword fallback with date sort
+            const keywords = quotedTitle
+              ? quotedTitle
+              : acronymHit
               ? acronymHit.toUpperCase()
               : lowerMsg.replace(/[^a-z0-9 ]/g," ").split(/\s+/)
                   .filter(w => w.length >= 3 && !stopwords.has(w)).slice(0, 4).join(" ")
                   || "infrastructure resilience";
-            // For acronym lookups: relevance sort + no category filter (some FEMA grants have
-            // empty categoryOfFunding and are blocked by the default RA|ENV|T|AR|HO|CD filter)
-            const sortParam = acronymHit ? "&sortBy=relevance&categories=none" : "";
+            // Quoted title / acronym: use relevance sort + no category filter so grants with
+            // empty categoryOfFunding (FMA, CSG, BRIC, etc.) are not blocked by the default filter.
+            const useDirectSearch = !!(quotedTitle || acronymHit);
+            const sortParam = useDirectSearch ? "&sortBy=relevance&categories=none" : "";
             const apiBase = `http://localhost:${process.env.PORT ?? 3001}`;
             const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=8&withFunding=1${sortParam}`;
-            console.log(`[grants.gov] acronym=${acronymHit ?? "none"} keywords="${keywords}" url=${url}`);
+            console.log(`[grants.gov] quotedTitle=${quotedTitle ?? "none"} acronym=${acronymHit ?? "none"} keywords="${keywords}"`);
             const resp = await fetch(url, { signal: AbortSignal.timeout(8_000) });
             if (!resp.ok) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
             const data = await resp.json() as { grants?: Array<{ title: string; closeDate: string; estimatedFunding?: number | null; grantsGovUrl: string }> };
             const hits = data.grants ?? [];
             if (!hits.length) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
-            // When an acronym search was used, grants.gov already sorted by relevance — the first
-            // result IS the best match. No need to re-score by title-word overlap (which would
-            // fail anyway because BRIC appears as "(BRIC)" with parentheses in the title).
-            if (acronymHit) {
+            // When a direct search was used (quoted title or acronym), grants.gov sorted by
+            // relevance already — take the first result without re-scoring by title-word overlap.
+            if (useDirectSearch) {
               const top = hits[0];
-              console.log(`[grants.gov] Acronym "${acronymHit.toUpperCase()}" → "${top.title}" | funding=${top.estimatedFunding} | deadline=${top.closeDate}`);
+              const searchType = quotedTitle ? `quoted title "${quotedTitle}"` : `acronym "${acronymHit!.toUpperCase()}"`;
+              console.log(`[grants.gov] ${searchType} → "${top.title}" | funding=${top.estimatedFunding} | deadline=${top.closeDate}`);
               return {
                 fundingAmount: typeof top.estimatedFunding === "number" && top.estimatedFunding > 0 ? top.estimatedFunding : null,
                 deadline: top.closeDate || null,

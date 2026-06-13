@@ -273,24 +273,24 @@ function tidyTitle(title: string): string {
 
 interface ThemeDef {
   keyword: string;
-  prompt: (grantTitle: string) => string;
+  prompt: (grantTitle: string, oppId?: string | number) => string;
 }
 
 const THEMES: ThemeDef[] = [
   {
     keyword: "road street safety transportation improvement",
-    prompt: (t) =>
-      `Analyze the "${t}" federal grant for Buffalo Grove IL — Aptakisic Road/IL-83 intersection and complete-streets improvements. Assess eligibility, match score, and gaps.`,
+    prompt: (t, id) =>
+      `Analyze the "${t}" federal grant${id ? ` [grants.gov/search-results-detail/${id}]` : ""} for Buffalo Grove IL — Aptakisic Road/IL-83 intersection and complete-streets improvements. Assess eligibility, match score, and gaps.`,
   },
   {
     keyword: "flood mitigation hazard resilience",
-    prompt: (t) =>
-      `Analyze the "${t}" federal grant for Buffalo Grove IL stormwater resilience and flood mitigation priorities. Assess eligibility, match score, and gaps.`,
+    prompt: (t, id) =>
+      `Analyze the "${t}" federal grant${id ? ` [grants.gov/search-results-detail/${id}]` : ""} for Buffalo Grove IL stormwater resilience and flood mitigation priorities. Assess eligibility, match score, and gaps.`,
   },
   {
     keyword: "clean water state revolving fund infrastructure",
-    prompt: (t) =>
-      `Analyze the "${t}" federal grant for Buffalo Grove IL water main replacement and water infrastructure projects. Assess eligibility, match score, and gaps.`,
+    prompt: (t, id) =>
+      `Analyze the "${t}" federal grant${id ? ` [grants.gov/search-results-detail/${id}]` : ""} for Buffalo Grove IL water main replacement and water infrastructure projects. Assess eligibility, match score, and gaps.`,
   },
 ];
 
@@ -374,7 +374,7 @@ heroGrantsRouter.get("/", async (_req: Request, res: Response) => {
         closeDate,
         url: hit.id ? `https://www.grants.gov/search-results-detail/${hit.id}` : null,
         live: true,
-        prompt: theme.prompt(title),
+        prompt: theme.prompt(title, hit.id),
       };
     });
 
