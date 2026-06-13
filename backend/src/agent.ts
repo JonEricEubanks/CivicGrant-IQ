@@ -979,18 +979,11 @@ function patchWidget(
     }
 
     if (!d.fundingAmount || d.fundingAmount === 0) {
-      const fm = responseText.match(
-        /\$\s*([\d,.]+)\s*(trillion|billion|million|T|B|M)\b|(?:total|available)\s+funding[^$\n]{0,40}\$\s*([\d,.]+)\s*(trillion|billion|million|T|B|M)?/i
-      );
-      if (fm) {
-        const num = parseFloat((fm[1] ?? fm[3] ?? "0").replace(/,/g, ""));
-        const unit = (fm[2] ?? fm[4] ?? "").toLowerCase();
-        d.fundingAmount =
-          unit === "trillion" || unit === "t" ? Math.round(num * 1_000_000_000_000) :
-          unit === "billion"  || unit === "b" ? Math.round(num * 1_000_000_000) :
-          unit === "million"  || unit === "m" ? Math.round(num * 1_000_000) :
-          Math.round(num);
-      }
+      // DO NOT scan responseText for dollar amounts here — patchWidget cannot distinguish
+      // grant program funding from city CIP/budget figures mentioned in the same response
+      // (e.g. "$89.4M CIP" gets misread as the grant's fundingAmount).
+      // The authoritative post-process override in chat.ts stamps verified grants.gov values.
+      // Leave fundingAmount as 0 so it renders as "Varies" — honest over hallucinated.
     }
     // Roll past-cycle deadlines forward to the next anticipated cycle.
     if (typeof d.deadline === "string") {

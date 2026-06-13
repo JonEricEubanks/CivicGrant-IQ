@@ -107,6 +107,10 @@ grantsLiveRouter.get("/", async (req: Request, res: Response) => {
   const status = (req.query.status as string | undefined) ?? "forecasted|posted";
   const withFunding = req.query.withFunding === "1" || req.query.withFunding === "true";
   const rawCategories = (req.query.categories as string | undefined) ?? DEFAULT_CATEGORIES;
+  // Allow callers to override sort — "relevance" (grants.gov default) works best for
+  // specific program-name queries (e.g. "BRIC"); "closeDate|asc" is best for
+  // soonest-closing dashboards. Default: "closeDate|asc" for backward compat.
+  const rawSortBy = (req.query.sortBy as string | undefined) ?? "closeDate|asc";
 
   // Sanitize keywords — strip any HTML/JS injection attempts
   const keyword = rawKeywords
@@ -115,16 +119,29 @@ grantsLiveRouter.get("/", async (req: Request, res: Response) => {
     .trim()
     .slice(0, 200);
 
-  // Sanitize categories — only allow pipe-separated uppercase alphanumeric codes
-  const categories = rawCategories.replace(/[^A-Z|]/g, "").slice(0, 60) || DEFAULT_CATEGORIES;
+  // categories=none skips the filter entirely (needed for grants with empty categoryOfFunding, e.g. BRIC).
+  // Otherwise sanitize — only allow pipe-separated uppercase alphanumeric codes.
+  const skipCategories = rawCategories.toLowerCase() === "none";
+  const categories = skipCategories ? null : (rawCategories.replace(/[^A-Z|]/g, "").slice(0, 60) || DEFAULT_CATEGORIES);
 
-  const body = {
+  // Sanitize sortBy — allow only word chars and pipe/hyphen
+  const sortBy = /^[\w|]+$/.test(rawSortBy) ? rawSortBy : "closeDate|asc";
+
+  const body: Record<string, unknown> = {
     keyword,
     oppStatuses: status,
     rows,
-    sortBy: "closeDate|asc",    // soonest-closing first — most actionable for users
-    fundingCategories: categories,
   };
+  // Only apply category filter when caller hasn't opted out — some grants (e.g. FEMA BRIC)
+  // have an empty categoryOfFunding and would be filtered out otherwise.
+  if (categories) {
+    body.fundingCategories = categories;
+  }
+  // Only add sortBy when not requesting relevance — omitting the field lets grants.gov
+  // use its default relevance scoring, which is what we want for specific-name searches.
+  if (sortBy !== "relevance") {
+    body.sortBy = sortBy;
+  }
 
   try {
     const response = await fetch(GRANTS_GOV_SEARCH, {

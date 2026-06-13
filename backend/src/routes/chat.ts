@@ -186,24 +186,46 @@ chatRouter.post("/", async (req: Request, res: Response) => {
               "year","program","assess","score","gaps","eligibility","match","priority",
               "priorities","assistance","illinois","buffalo","grove","city","local",
               "government","2024","2025","2026","2027","apply","application","review",
+              // Generic terms that dilute keyword matching and return unrelated grants
+              "eligible","eligibility","funding","funded","qualify","qualifying",
+              "available","opportunity","opportunities","infrastructure",
             ]);
-            const keywords = lowerMsg.replace(/[^a-z0-9 ]/g," ").split(/\s+/)
-              .filter(w => w.length > 4 && !stopwords.has(w)).slice(0, 5).join(" ") || "infrastructure resilience";
+            // Known FEMA/HUD/DOT/EPA program acronyms — if present, use them directly
+            // as the single search term to maximize grants.gov relevance accuracy.
+            const GRANT_PROGRAM_ACRONYMS = [
+              "bric","hmgp","raise","cdbg","tiger","build","cmaq","stbg","arpa",
+              "lihtc","hope","nfip","msp","wif","bead","reap","srap","eap",
+            ];
+            const acronymHit = GRANT_PROGRAM_ACRONYMS.find(a => {
+              const re = new RegExp(`(?:^|\\s)${a}(?:\\s|$|[?!.,])`, "i");
+              return re.test(lowerMsg);
+            });
+            // If user mentioned a specific program acronym, search grants.gov with that
+            // term and relevance sorting — this gives a precise, narrow result.
+            // Otherwise fall back to multi-keyword closeDate-sorted search.
+            const keywords = acronymHit
+              ? acronymHit.toUpperCase()
+              : lowerMsg.replace(/[^a-z0-9 ]/g," ").split(/\s+/)
+                  .filter(w => w.length >= 3 && !stopwords.has(w)).slice(0, 4).join(" ")
+                  || "infrastructure resilience";
+            // For acronym lookups: relevance sort + no category filter (some FEMA grants have
+            // empty categoryOfFunding and are blocked by the default RA|ENV|T|AR|HO|CD filter)
+            const sortParam = acronymHit ? "&sortBy=relevance&categories=none" : "";
             const apiBase = `http://localhost:${process.env.PORT ?? 3001}`;
-            const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=8&withFunding=1`;
+            const url = `${apiBase}/api/grants-live?keywords=${encodeURIComponent(keywords)}&rows=8&withFunding=1${sortParam}`;
             const resp = await fetch(url, { signal: AbortSignal.timeout(8_000) });
             if (!resp.ok) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
             const data = await resp.json() as { grants?: Array<{ title: string; closeDate: string; estimatedFunding?: number | null; grantsGovUrl: string }> };
             const hits = data.grants ?? [];
             if (!hits.length) return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
-            // Score each hit by how many title words appear in the user's query
+            // Score each hit by how many title words appear in the user's query (include short acronyms)
             const scored = hits.map(g => ({
               ...g,
-              score: g.title.toLowerCase().split(/\s+/).filter(w => w.length > 4 && lowerMsg.includes(w)).length,
+              score: g.title.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && lowerMsg.includes(w)).length,
             }));
             const best = scored.reduce((a, b) => b.score > a.score ? b : a);
-            // Require at least 2 overlapping meaningful words — otherwise the match is noise
-            if (best.score < 2) {
+            // Require at least 1 overlapping meaningful word (BRIC, FEMA, RAISE are short but distinctive)
+            if (best.score < 1) {
               console.log(`[grants.gov] No confident match (best score=${best.score}) — skipping injection`);
               return { fundingAmount: null, deadline: null, grantsGovUrl: null, title: null, eligibleApplicants: null, awardCeiling: null };
             }
