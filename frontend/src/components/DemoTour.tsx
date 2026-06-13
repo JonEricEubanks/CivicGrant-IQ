@@ -13,6 +13,10 @@ interface DemoTourProps {
 const SVG_FOUNDRY = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:5px"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>`;
 const SVG_WORKIQ = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:5px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
 const SVG_FABRIC = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:5px"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="8.5" x2="22" y2="8.5"/><line x1="2" y1="15.5" x2="22" y2="15.5"/></svg>`;
+// Inline variants (margin-right:3px) for use inside list items
+const SVG_FOUNDRY_INLINE = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:3px"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>`;
+const SVG_WORKIQ_INLINE = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:3px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+const SVG_FABRIC_INLINE = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:3px"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="8.5" x2="22" y2="8.5"/><line x1="2" y1="15.5" x2="22" y2="15.5"/></svg>`;
 
 export function DemoTour({ onNavigate }: DemoTourProps) {
   const driverRef = useRef<Driver | null>(null);
@@ -106,40 +110,7 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
                 '<p class="tour-tip">Demo line: <em>"It already knows about the Aptakisic Road project from your SharePoint — it used that as eligibility evidence."</em></p>',
               side: "top" as const,
               align: "start" as const,
-              onNextClick: () => {
-                const attachBtn = document.querySelector<HTMLButtonElement>(".attach-btn");
-                if (!document.querySelector(".attach-picker-popover")) {
-                  attachBtn?.click();
-                }
-                setTimeout(() => driverObj.moveNext(), 280);
-              },
-            },
-          },
-
-          // ── Step 7: Work IQ attach picker (open) ─────────────────────
-          {
-            element: ".attach-picker-tabs-row",
-            popover: {
-              title: `${SVG_WORKIQ}<span style="vertical-align:middle">Work IQ Signal Sources — Live &amp; Selectable</span>`,
-              description:
-                '<p>All M365 signal sources are individually selectable. Pin exactly the context you want — or attach all of them with one click.</p>' +
-                '<div class="tour-chip-row">' +
-                '<span class="tour-mini-chip tour-mini-chip--sp">SharePoint 5</span>' +
-                '<span class="tour-mini-chip tour-mini-chip--cal">Meetings</span>' +
-                '<span class="tour-mini-chip tour-mini-chip--mail">Emails</span>' +
-                '<span class="tour-mini-chip tour-mini-chip--foundry">Foundry IQ 13</span>' +
-                '<span class="tour-mini-chip tour-mini-chip--fabric">Fabric IQ 4</span>' +
-                '</div>' +
-                '<p class="tour-tip">This is the proof of <strong>real workflow intelligence</strong> — not generic prompt engineering. The AI knows your city\'s operational context.</p>',
-              side: "top" as const,
-              align: "center" as const,
-              onNextClick: () => {
-                const attachBtn = document.querySelector<HTMLButtonElement>(".attach-btn");
-                if (document.querySelector(".attach-picker-popover")) {
-                  attachBtn?.click();
-                }
-                setTimeout(() => driverObj.moveNext(), 280);
-              },
+              onNextClick: () => { driverObj.moveNext(); },
             },
           },
 
@@ -177,6 +148,45 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
                 '<p class="tour-tip">Demo line: <em>"Fabric IQ is what separates a smart chatbot from a true municipal intelligence platform."</em></p>',
               side: "top" as const,
               align: "start" as const,
+              onNextClick: () => {
+                const attachBtn = document.querySelector<HTMLButtonElement>(".attach-btn");
+                if (!document.querySelector(".attach-picker-popover")) {
+                  attachBtn?.click();
+                }
+                setTimeout(() => driverObj.moveNext(), 280);
+              },
+            },
+          },
+
+          // ── Step 7d: All-IQ attach picker ─────────────────────────────
+          {
+            element: ".attach-picker-tabs-row",
+            popover: {
+              title: `<span style="vertical-align:middle">Three IQ Layers — All in One Picker</span>`,
+              description:
+                '<p>Every intelligence layer is a first-class source you can pin to any conversation. Mix and match based on your query.</p>' +
+                '<div class="tour-chip-row">' +
+                `<span class="tour-mini-chip tour-mini-chip--sp">SharePoint 5</span>` +
+                `<span class="tour-mini-chip tour-mini-chip--cal">Meetings</span>` +
+                `<span class="tour-mini-chip tour-mini-chip--mail">Emails</span>` +
+                `<span class="tour-mini-chip tour-mini-chip--foundry">Foundry IQ 13</span>` +
+                `<span class="tour-mini-chip tour-mini-chip--fabric">Fabric IQ 4</span>` +
+                '</div>' +
+                '<ul class="tour-feature-list">' +
+                `<li>${SVG_WORKIQ_INLINE} <strong>Work IQ</strong> — SharePoint, Calendar, Mail &amp; Teams signals from your live M365 tenant</li>` +
+                `<li>${SVG_FOUNDRY_INLINE} <strong>Foundry IQ</strong> — 13 curated grant guidance docs indexed in Azure AI Search</li>` +
+                `<li>${SVG_FABRIC_INLINE} <strong>Fabric IQ</strong> — Semantic models &amp; ontology from Microsoft Fabric</li>` +
+                '</ul>' +
+                '<p class="tour-tip">This is <strong>the only grant platform</strong> that combines live workflow signals, a curated knowledge base, and operational data in a single context window.</p>',
+              side: "top" as const,
+              align: "center" as const,
+              onNextClick: () => {
+                const attachBtn = document.querySelector<HTMLButtonElement>(".attach-btn");
+                if (document.querySelector(".attach-picker-popover")) {
+                  attachBtn?.click();
+                }
+                setTimeout(() => driverObj.moveNext(), 280);
+              },
             },
           },
 
