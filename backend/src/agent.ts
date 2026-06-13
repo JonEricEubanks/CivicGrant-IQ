@@ -272,7 +272,7 @@ After completing all 6 steps, you MUST append a machine-readable widget block at
   "data": {
     "grantName": "<full grant program name>",
     "agency": "<agency name>",
-    "fundingAmount": <integer from retrieved docs only — 0 if not found>,
+    "fundingAmount": <integer from retrieved KB docs or pasted NOFO text — 0 if not found>,
     "awardRange": "<e.g. $500K-$25M per award — from retrieved docs only>",
     "deadline": "<ISO 8601 date from retrieved docs only — empty string if not found>",
     "matchScore": <integer 0-100>,

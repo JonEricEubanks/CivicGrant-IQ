@@ -137,8 +137,26 @@ chatRouter.post("/", async (req: Request, res: Response) => {
     // Live grants.gov lookup — extract keywords from query and fetch real funding/deadline
     // so the widget never shows hallucinated numbers. Runs in parallel, never blocks.
     interface LiveGrantData { fundingAmount: number | null; deadline: string | null; grantsGovUrl: string | null; title: string | null }
-    const grantsGovPromise: Promise<LiveGrantData> = (isFollowUp || isGrantTextPasted)
+    const grantsGovPromise: Promise<LiveGrantData> = isFollowUp
       ? Promise.resolve({ fundingAmount: null, deadline: null, grantsGovUrl: null, title: null })
+      : isGrantTextPasted
+      ? (() => {
+          // When the user pastes NOFO text, parse funding & deadline directly from it —
+          // more authoritative than grants.gov and avoids the LLM "retrieved docs only" ambiguity.
+          const fundingMatch = trimmed.match(/estimated\s+total\s+program\s+funding[^0-9$]*\$?\s*([0-9][0-9,]+)/i);
+          const rawFunding = fundingMatch ? parseInt(fundingMatch[1].replace(/,/g, ""), 10) : null;
+          // Match "Current Closing Date for Applications: Jul 23, 2026" or "07/23/2026"
+          const dateMatch = trimmed.match(/current\s+closing\s+date\s+for\s+applications[:\s]*([A-Za-z]+ \d{1,2},?\s*\d{4}|\d{1,2}\/\d{1,2}\/\d{4})/i);
+          let rawDeadline: string | null = null;
+          if (dateMatch) {
+            const parsed = new Date(dateMatch[1].trim());
+            rawDeadline = isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
+          }
+          if (rawFunding || rawDeadline) {
+            console.log(`[nofo-parse] Extracted from pasted NOFO: funding=${rawFunding} deadline=${rawDeadline}`);
+          }
+          return Promise.resolve({ fundingAmount: rawFunding, deadline: rawDeadline, grantsGovUrl: null, title: null });
+        })()
       : (async (): Promise<LiveGrantData> => {
           try {
             // Extract meaningful domain keywords — skip generic grant/analysis terms and years
