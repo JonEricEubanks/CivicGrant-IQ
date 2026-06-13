@@ -3063,9 +3063,15 @@
 }
 
 /* Tier / provenance card */
+.ws-tier-card-wrap { position: relative; }
 .ws-intel-card--tier {
   border-color: rgba(99, 102, 241, 0.25);
   background: rgba(99, 102, 241, 0.03);
+}
+.ws-tier-expand-hint {
+  margin-left: auto;
+  font-size: 0.6rem;
+  color: #9ca3af;
 }
 .ws-tier-label {
   font-size: 0.72rem;
@@ -3097,6 +3103,80 @@
   background: rgba(239, 68, 68, 0.1);
   border-color: rgba(239, 68, 68, 0.35);
   color: #dc2626;
+}
+
+/* Tier popover */
+.ws-tier-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  padding: 14px 14px 12px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ws-tier-popover-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+.ws-tier-popover-row {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+.ws-tier-popover-row--active {
+  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(99, 102, 241, 0.04);
+}
+.ws-tier-popover-row-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+}
+.ws-tier-popover-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ws-tier-popover-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #374151;
+}
+.ws-tier-popover-current {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+.ws-tier-popover-sub {
+  font-size: 0.68rem;
+  color: #6b7280;
+  line-height: 1.45;
+  padding-left: 15px;
+}
+.ws-tier-popover-footer {
+  padding-top: 4px;
+  border-top: 1px solid #f1f5f9;
 }
 
 /* ── Foundry MCP tool call strip ───────────────────────────────────────────── */

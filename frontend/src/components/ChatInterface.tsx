@@ -906,6 +906,7 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
   const [selectedRef, setSelectedRef] = useState<Citation | null>(null);
   const [selectedInput, setSelectedInput] = useState<AttachDoc | null>(null);
   const [graphPopoutOpen, setGraphPopoutOpen] = useState(false);
+  const [tierPopoverOpen, setTierPopoverOpen] = useState(false);
 
   // Only show steps that are fully completed — don't pollute the Plan with in-flight partial labels
   const completedSteps = steps.filter(s => s.completed);
@@ -1278,17 +1279,46 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
 
               {/* Tier / provenance card */}
               {tierInfo && (
-                <div className="ws-intel-card ws-intel-card--tier ws-intel-card--ready">
-                  <div className="ws-intel-card-header">
-                    <span className="ws-intel-icon">⬡</span>
-                    <span className="ws-intel-label">AI Provenance</span>
+                <div className="ws-tier-card-wrap">
+                  <div
+                    className="ws-intel-card ws-intel-card--tier ws-intel-card--ready"
+                    onClick={() => setTierPopoverOpen((o) => !o)}
+                    title="Click to see all AI tiers"
+                  >
+                    <div className="ws-intel-card-header">
+                      <span className="ws-intel-icon">⬡</span>
+                      <span className="ws-intel-label">AI Provenance</span>
+                      <span className="ws-tier-expand-hint">{tierPopoverOpen ? "▲" : "▼"}</span>
+                    </div>
+                    <div className="ws-tier-label">{tierInfo.tier === 1 ? "Tier 1 — Foundry SDK" : tierInfo.tier === 2 ? "Tier 2 — Azure OpenAI" : "Tier 3 — Mock Engine"}</div>
+                    <div className="ws-tier-rules">
+                      <span className={`ws-tier-pill ${tierInfo.guardrailsPassed ? "ws-tier-pill--pass" : "ws-tier-pill--warn"}`}>
+                        {tierInfo.guardrailsPassed ? `17 rules passed` : `${tierInfo.violations} flag${tierInfo.violations === 1 ? "" : "s"}`}
+                      </span>
+                    </div>
                   </div>
-                  <div className="ws-tier-label">{tierInfo.tier === 1 ? "Tier 1 — Foundry SDK" : tierInfo.tier === 2 ? "Tier 2 — Azure OpenAI" : "Tier 3 — Mock Engine"}</div>
-                  <div className="ws-tier-rules">
-                    <span className={`ws-tier-pill ${tierInfo.guardrailsPassed ? "ws-tier-pill--pass" : "ws-tier-pill--warn"}`}>
-                      {tierInfo.guardrailsPassed ? `17 rules passed` : `${tierInfo.violations} flag${tierInfo.violations === 1 ? "" : "s"}`}
-                    </span>
-                  </div>
+                  {tierPopoverOpen && (
+                    <div className="ws-tier-popover">
+                      <div className="ws-tier-popover-title">AI Routing Tiers</div>
+                      {([
+                        { t: 1, label: "Tier 1 — Foundry SDK", sub: "Full Azure AI Foundry Assistants API with MCP tool calls, knowledge base retrieval, and OpenAI Assistants thread management.", color: "#6366f1" },
+                        { t: 2, label: "Tier 2 — Azure OpenAI", sub: "Direct Azure OpenAI chat completions with SSE streaming. Guardrails and grounding still applied.", color: "#3b82f6" },
+                        { t: 3, label: "Tier 3 — Mock Engine", sub: "Local deterministic mock — no AI calls. Used for offline demos or when Azure credentials are unavailable.", color: "#94a3b8" },
+                      ] as { t: 1|2|3; label: string; sub: string; color: string }[]).map(({ t, label, sub, color }) => (
+                        <div key={t} className={`ws-tier-popover-row${tierInfo.tier === t ? " ws-tier-popover-row--active" : ""}`}>
+                          <div className="ws-tier-popover-row-header">
+                            <span className="ws-tier-popover-dot" style={{ background: color }} />
+                            <span className="ws-tier-popover-label" style={tierInfo.tier === t ? { color } : {}}>{label}</span>
+                            {tierInfo.tier === t && <span className="ws-tier-popover-current">current</span>}
+                          </div>
+                          <p className="ws-tier-popover-sub">{sub}</p>
+                        </div>
+                      ))}
+                      <div className="ws-tier-popover-footer">
+                        <span className="ws-tier-pill ws-tier-pill--pass">17 guardrail rules active</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
