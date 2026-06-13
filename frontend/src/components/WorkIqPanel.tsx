@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { IconCheck, IconDownload } from "./Icons";
+import { IconCheck, IconDownload, IconClock, IconChat, IconFileText } from "./Icons";
 import { fetchCityContext, refreshCityContext } from "../api";
 import type { WorkIqCityContext } from "../types";
 import "./WorkIqPanel.css";
@@ -252,7 +252,7 @@ export function WorkIqPanel({ grantName, agency, deadline, milestones, actionIte
                 <span className="workiq-live-label">Live M365 Signals</span>
                 {context.calendarEvents?.length ? (
                   <div className="workiq-signal-group">
-                    <span className="workiq-signal-icon">📅</span>
+                    <span className="workiq-signal-icon"><IconClock size={13} /></span>
                     <ul className="workiq-signal-list">
                       {context.calendarEvents.slice(0, 4).map((e, i) => <li key={i}>{e}</li>)}
                     </ul>
@@ -260,7 +260,7 @@ export function WorkIqPanel({ grantName, agency, deadline, milestones, actionIte
                 ) : null}
                 {context.teamsInsights?.length ? (
                   <div className="workiq-signal-group">
-                    <span className="workiq-signal-icon">💬</span>
+                    <span className="workiq-signal-icon"><IconChat size={13} /></span>
                     <ul className="workiq-signal-list">
                       {context.teamsInsights.slice(0, 3).map((t, i) => <li key={i}>{t}</li>)}
                     </ul>
@@ -268,7 +268,7 @@ export function WorkIqPanel({ grantName, agency, deadline, milestones, actionIte
                 ) : null}
                 {context.mailSignals?.length ? (
                   <div className="workiq-signal-group">
-                    <span className="workiq-signal-icon">✉️</span>
+                    <span className="workiq-signal-icon"><IconFileText size={13} /></span>
                     <ul className="workiq-signal-list">
                       {context.mailSignals.slice(0, 3).map((m, i) => <li key={i}>{m}</li>)}
                     </ul>
