@@ -11,6 +11,7 @@ export interface GrantMatchData {
   awardRange: string;
   deadline: string;
   matchScore: number;
+  grantsGovUrl?: string;
   gaps: Array<{ title: string; severity: "critical" | "moderate" | "minor"; suggestion: string }>;
   strengths: string[];
   narrativeDraft: string;
@@ -113,7 +114,20 @@ export function GrantMatchWidget({ data, isRefined, refinementImprovements, refi
       <div className="widget-header">
         <div className="widget-badge"><IconChart size={13} color="#3b82f6" style={{ verticalAlign: "middle", marginRight: 4 }} />Grant Analysis</div>
         <h2 className="widget-title">{data.grantName}</h2>
-        <div className="widget-agency">{data.agency}</div>
+        <div className="widget-agency">
+          {data.agency}
+          {data.grantsGovUrl && (
+            <a
+              href={data.grantsGovUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="widget-grants-gov-link"
+              aria-label={`View ${data.grantName} on Grants.gov (opens in new tab)`}
+            >
+              View on Grants.gov ↗
+            </a>
+          )}
+        </div>
       </div>
 
       {/* Hero Stats Row */}
