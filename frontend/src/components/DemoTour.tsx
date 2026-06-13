@@ -21,8 +21,11 @@ const SVG_FABRIC_INLINE = `<svg width="12" height="12" viewBox="0 0 24 24" fill=
 export function DemoTour({ onNavigate }: DemoTourProps) {
   const driverRef = useRef<Driver | null>(null);
 
-  // Auto-launch on first load so judges see the tour immediately
+  // Auto-launch on first load so judges see the tour immediately.
+  // sessionStorage flag prevents re-launch when DemoTour remounts during tab navigation.
   useEffect(() => {
+    if (sessionStorage.getItem("civicgrant-tour-shown")) return;
+    sessionStorage.setItem("civicgrant-tour-shown", "1");
     const t = setTimeout(() => startTour(), 800);
     return () => clearTimeout(t);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +136,8 @@ export function DemoTour({ onNavigate }: DemoTourProps) {
                 '<li><strong>GPT-4o</strong> orchestrates a 6-step reasoning chain: Parse → Match → Verify → Gaps → Narrative → Strategy</li>' +
                 '<li><strong>Knowledge base</strong> holds 12+ curated grant guidance docs — Buffalo Grove CIP, federal rubrics, stacking strategies</li>' +
                 '<li>Agents cite every claim back to a source — no black-box answers</li>' +
-                '</ul>',
+                '</ul>' +
+                '<p class="tour-tip">Demo line: <em>"Ask it about the BRIC grant — it will cite the actual Buffalo Creek application and score gaps from the knowledge base, not a generic answer."</em></p>',
               side: "top" as const,
               align: "start" as const,
             },
