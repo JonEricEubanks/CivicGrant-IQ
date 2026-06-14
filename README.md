@@ -55,7 +55,7 @@
 ## 🎯 For Judges: Where to Look
 
 **If you have 6 minutes:**
-- [Live demo](https://proud-field-00978990f.7.azurestaticapps.net) — paste a real NOFO, watch it reason through grounded steps.
+- [Live demo](https://proud-field-00978990f.7.azurestaticapps.net) — Live demo enivronment paste a real NOFO, watch it reason through grounded steps.
 - Look for the **GraphPaths panel** in the UI — this is the hero artifact that makes reasoning transparent.
 
 **If you have 8 minutes:**
