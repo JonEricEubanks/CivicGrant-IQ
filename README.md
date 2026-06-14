@@ -49,7 +49,7 @@
 |---|---|---|---|
 | **Jon Eric Eubanks** | Lead / full‑stack | [JonEricEubanks](https://learn.microsoft.com/en-us/users/jonericeubanks/) | [@JonEricEubanks](https://github.com/JonEricEubanks) |
 
-> **Note:** Add a demo video URL above before final submission (the live demo link is the current placeholder).
+
 
 ---
 
