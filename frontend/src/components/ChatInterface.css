@@ -2797,6 +2797,206 @@
   40% { opacity: 1; transform: scale(1.2); }
 }
 
+.ws-mobile-backdrop { display: none; }
+
+@media (max-width: 980px) {
+  .chat-interface {
+    height: 100dvh;
+  }
+
+  .chat-body-row {
+    position: relative;
+  }
+
+  .chat-messages {
+    padding: 1rem 0.85rem 1.1rem;
+    gap: 1rem;
+  }
+
+  .chat-input-area {
+    padding: 0.6rem 0.75rem 0.75rem;
+  }
+
+  .input-wrapper {
+    padding: 0.55rem 0.55rem 0.45rem 0.7rem;
+  }
+
+  .message-bubble--user {
+    max-width: 86%;
+    font-size: 0.84rem;
+  }
+
+  .assistant-row {
+    gap: 0.55rem;
+  }
+
+  .assistant-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .hero-section {
+    max-width: 100%;
+    gap: 0.65rem;
+  }
+
+  .hero-pipeline-amount {
+    font-size: clamp(2rem, 10vw, 2.5rem);
+  }
+
+  .hero-pipeline-sub {
+    max-width: 100%;
+    font-size: 0.74rem;
+  }
+
+  .hero-grant-cards {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .hero-grant-card {
+    width: 100%;
+    max-width: none;
+    padding: 0.75rem 0.8rem;
+  }
+
+  .hero-grant-name {
+    min-height: 0;
+    -webkit-line-clamp: 2;
+  }
+
+  .hero-trust-strip {
+    justify-content: flex-start;
+    gap: 0.35rem 0.45rem;
+  }
+
+  .hero-trust-dot {
+    display: none;
+  }
+
+  .city-context-indicator {
+    align-items: flex-start;
+  }
+
+  .city-context-change-btn {
+    margin-left: 0;
+  }
+
+  .input-toolbar {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .attach-btn,
+  .source-chip {
+    min-height: 32px;
+  }
+
+  .send-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .workspace-panel {
+    position: fixed;
+    top: 56px;
+    right: 0;
+    bottom: 0;
+    width: min(92vw, 360px);
+    z-index: 350;
+    transform: translateX(100%);
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 1px solid #e5e7eb;
+    box-shadow: -12px 0 28px rgba(15, 23, 42, 0.2);
+  }
+
+  .workspace-panel--visible {
+    width: min(92vw, 360px);
+    transform: translateX(0);
+    overflow-y: auto;
+  }
+
+  .ws-mobile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 56px 0 0 0;
+    background: rgba(15, 23, 42, 0.35);
+    border: none;
+    padding: 0;
+    margin: 0;
+    z-index: 340;
+  }
+
+  .settings-panel {
+    left: auto;
+    right: 0;
+    top: 56px;
+    width: min(92vw, 360px);
+    z-index: 360;
+    box-shadow: -12px 0 28px rgba(15, 23, 42, 0.2);
+  }
+
+  .ref-preview-card,
+  .ref-preview-card--graphrag {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    top: 56px;
+    max-height: calc(100dvh - 72px);
+    transform: none;
+  }
+
+  .ref-preview-body--kb,
+  .ref-preview-body--graphrag {
+    max-height: calc(100dvh - 230px);
+  }
+}
+
+@media (max-width: 640px) {
+  .chat-messages {
+    padding: 0.75rem 0.6rem 1rem;
+  }
+
+  .hero-top-row {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .hero-live-badge,
+  .hero-status-pill {
+    font-size: 0.62rem;
+    padding: 4px 9px;
+  }
+
+  .followup-card-tag {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .followup-card-body .assistant-text {
+    padding: 10px 12px 14px;
+  }
+
+  .quick-actions-bar {
+    gap: 6px;
+  }
+
+  .qa-btn,
+  .followup-chip {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .attach-picker-popover {
+    left: -4px;
+    right: -4px;
+  }
+
+  .chat-input {
+    font-size: 16px;
+  }
+}
+
 /* --- Workspace Agent Intel cards -------------------------------- */
 .ws-badge--intel {
   background: #e8f1fb;

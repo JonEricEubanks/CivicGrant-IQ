@@ -685,3 +685,110 @@
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+@media (max-width: 980px) {
+  .app-header {
+    height: auto;
+    min-height: 56px;
+    padding: 0.55rem 0.75rem;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .header-brand {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .header-brand-text {
+    min-width: 0;
+  }
+
+  .header-name {
+    font-size: 0.92rem;
+  }
+
+  .header-tag {
+    font-size: 0.52rem;
+  }
+
+  .header-right {
+    order: 2;
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .header-right-divider {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 0.3rem;
+  }
+
+  .header-badge {
+    max-width: 65%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-tabs {
+    order: 3;
+    flex: 1 1 100%;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .tab-btn {
+    white-space: nowrap;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .scan-page {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 12px;
+  }
+
+  .intel-card-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .intel-card-total-amount {
+    font-size: 1.25rem;
+  }
+
+  .intel-panel {
+    padding: 1rem;
+  }
+
+  .admin-page {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-tag,
+  .header-badge {
+    display: none;
+  }
+
+  .header-mgp-logo {
+    height: 24px;
+  }
+
+  .header-name {
+    font-size: 0.86rem;
+  }
+
+  .tab-btn {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.62rem;
+  }
+}

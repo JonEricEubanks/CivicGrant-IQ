@@ -921,6 +921,7 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
   const allPlanDone = !isLoading && completedCount > 0;
 
   return (
+    <>
     <aside className={`workspace-panel ${hasMessages && isVisible ? "workspace-panel--visible" : ""}`}>
       <div className="ws-header">
         <span className="ws-title">Workspace</span>
@@ -1469,6 +1470,15 @@ function WorkspacePanel({ steps, citations, graphPaths, artifacts, inputs, widge
         );
       })()}
     </aside>
+    {hasMessages && isVisible && (
+      <button
+        type="button"
+        className="ws-mobile-backdrop ws-mobile-backdrop--visible"
+        aria-label="Close details panel"
+        onClick={onToggleVisibility}
+      />
+    )}
+    </>
   );
 }
 
@@ -1546,7 +1556,7 @@ export function ChatInterface({ onSwitchToScan, onSwitchToAdmin, tourButton, aut
   const [m365Signals, setM365Signals] = useState<AttachDoc[]>([]);
   const [wsInputs, setWsInputs] = useState<AttachDoc[]>([]);
   const [attachSearch, setAttachSearch] = useState("");
-  const [isWorkspaceVisible, setIsWorkspaceVisible] = useState(true);
+  const [isWorkspaceVisible, setIsWorkspaceVisible] = useState(() => window.innerWidth > 980);
   const [fabricContext, setFabricContext] = useState<FabricIqContext | null>(null);
   const [fabricLoading, setFabricLoading] = useState(false);
   const [backendStatus, setBackendStatus] = useState<"checking" | "ready" | "unreachable">("checking");
